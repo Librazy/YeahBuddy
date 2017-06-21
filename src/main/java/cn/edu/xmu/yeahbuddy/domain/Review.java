@@ -10,8 +10,12 @@ import javax.persistence.*;
 public class Review {
 
     @Id
-    @Column(name = "ReviewTeamStage", updatable = false, nullable = false)
-    private TeamStage teamStage;
+    @Column(name = "ReviewTeamId", nullable = false)
+    private int teamId;
+
+    @Id
+    @Column(name = "ReviewStage", nullable = false)
+    private int stage;
 
     @Id
     @Column(name = "ReviewViewer", nullable = false)
@@ -30,30 +34,27 @@ public class Review {
     @Column(name = "ReviewSubmitted", nullable = false)
     private boolean submitted;
 
-    public Review(TeamStage teamStage, int viewer, boolean viewerIsAdmin) {
-        this.teamStage = teamStage;
+    public Review(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
+        this.teamId = teamId;
+        this.stage = stage;
         this.viewer = viewer;
         this.viewerIsAdmin = viewerIsAdmin;
     }
 
-    public TeamStage getTeamStage() {
-        return teamStage;
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public int getStage() {
+        return stage;
     }
 
     public int getViewer() {
         return viewer;
     }
 
-    public void setViewer(int viewer) {
-        this.viewer = viewer;
-    }
-
     public boolean isViewerIsAdmin() {
         return viewerIsAdmin;
-    }
-
-    public void setViewerIsAdmin(boolean viewerIsAdmin) {
-        this.viewerIsAdmin = viewerIsAdmin;
     }
 
     public int getRank() {
