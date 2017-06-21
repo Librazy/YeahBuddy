@@ -1,4 +1,4 @@
-package hello;
+package cn.edu.xmu.yeahbuddy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package hello;
+package cn.edu.xmu.yeahbuddy.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
