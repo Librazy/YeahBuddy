@@ -13,6 +13,9 @@ public class TeamStage implements Serializable {
     @Column(name = "Stage", nullable = false)
     private int stage;
 
+    public TeamStage() {
+    }
+
     public TeamStage(int teamId, int stage) {
         this.teamId = teamId;
         this.stage = stage;
