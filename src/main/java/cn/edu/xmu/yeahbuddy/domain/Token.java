@@ -33,9 +33,10 @@ public class Token {
     public Token() {
     }
 
-    public Token(String tokenValue, int tutorId, Collection<String> teamIds) {
+    public Token(String tokenValue, int tutorId, int stage, Collection<String> teamIds) {
         this.tokenValue = tokenValue;
         this.tutorId = tutorId;
+        this.stage = stage;
         this.teamIds = teamIds;
     }
 
@@ -51,12 +52,16 @@ public class Token {
         this.tutorId = tutorId;
     }
 
-    public Time getTime() {
-        return time;
+    public int getStage() {
+        return stage;
     }
 
-    public void setTime(Time time) {
-        this.time = time;
+    public void setTime(int stage) {
+        this.stage = stage;
+    }
+
+    public Time getTime() {
+        return time;
     }
 
     public boolean isRevoked() {

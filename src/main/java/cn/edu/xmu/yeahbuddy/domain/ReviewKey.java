@@ -9,6 +9,16 @@ public class ReviewKey implements Serializable {
     private int viewer;
     private boolean viewerIsAdmin;
 
+    public ReviewKey() {
+    }
+
+    public ReviewKey(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
+        this.teamId = teamId;
+        this.stage = stage;
+        this.viewer = viewer;
+        this.viewerIsAdmin = viewerIsAdmin;
+    }
+
     public int getTeamId() {
         return teamId;
     }
