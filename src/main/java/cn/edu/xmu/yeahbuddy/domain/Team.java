@@ -9,7 +9,6 @@ import javax.persistence.Id;
 public class Team {
 
     @Id
-    @GeneratedValue
     @Column(name = "TeamId", updatable = false, nullable = false)
     private int id;
 
@@ -34,7 +33,8 @@ public class Team {
     public Team() {
     }
 
-    public Team(String password, String salt, String name) {
+    public Team(int id, String password, String salt, String name) {
+        this.id = id;
         this.password = password;
         this.salt = salt;
         this.name = name;

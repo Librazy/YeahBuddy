@@ -16,6 +16,9 @@ public class Token {
     @Column(name = "TokenTutorId", nullable = false)
     private int tutorId;
 
+    @Column(name = "TokenStage", nullable = false)
+    private int stage;
+
     @CreationTimestamp
     @Column(name = "TokenTime", nullable = false)
     private Time time;
