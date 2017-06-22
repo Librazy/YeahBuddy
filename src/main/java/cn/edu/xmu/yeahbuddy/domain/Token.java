@@ -14,7 +14,7 @@ public class Token {
     private String tokenValue;
 
     @Column(name = "TokenTutorId", nullable = false)
-    private String tutorId;
+    private int tutorId;
 
     @CreationTimestamp
     @Column(name = "TokenTime", nullable = false)
@@ -30,7 +30,7 @@ public class Token {
     public Token() {
     }
 
-    public Token(String tokenValue, String tutorId, Collection<String> teamIds) {
+    public Token(String tokenValue, int tutorId, Collection<String> teamIds) {
         this.tokenValue = tokenValue;
         this.tutorId = tutorId;
         this.teamIds = teamIds;
@@ -40,11 +40,11 @@ public class Token {
         return tokenValue;
     }
 
-    public String getTutorId() {
+    public int getTutorId() {
         return tutorId;
     }
 
-    public void setTutorId(String tutorId) {
+    public void setTutorId(int tutorId) {
         this.tutorId = tutorId;
     }
 

@@ -19,8 +19,10 @@ repositories {
 }
 
 dependencies {
+    compile 'org.springframework.boot:spring-boot-starter'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.boot:spring-boot-starter-test'
     compile 'org.springframework.boot:spring-boot-devtools'
     compile 'mysql:mysql-connector-java'
     compile group: 'org.jetbrains', name: 'annotations', version: '15.0'

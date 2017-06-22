@@ -19,6 +19,9 @@ public final class Administrator {
     @Column(name = "AdministratorSalt", nullable = false)
     private String salt;
 
+    @Column(name = "AdministratorName", nullable = false)
+    private String name;
+
     @ElementCollection(targetClass = AdministratorPermission.class)
     @JoinTable(name = "AdministratorPermissions", joinColumns = @JoinColumn(name = "AdministratorId"))
     @Column(name = "AdministratorPermission", nullable = false)
@@ -28,7 +31,8 @@ public final class Administrator {
     public Administrator() {
     }
 
-    public Administrator(String password, String salt) {
+    public Administrator(String name, String password, String salt) {
+        this.name = name;
         this.password = password;
         this.salt = salt;
     }
@@ -51,6 +55,14 @@ public final class Administrator {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Collection<AdministratorPermission> getPermissions() {
