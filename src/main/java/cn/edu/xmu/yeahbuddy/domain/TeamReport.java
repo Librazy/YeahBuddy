@@ -19,6 +19,9 @@ public class TeamReport {
     @CollectionTable(name = "TeamReportFiles")
     private Collection<String> files;
 
+    public TeamReport() {
+    }
+
     public TeamReport(TeamStage teamStage) {
         this.teamStage = teamStage;
     }

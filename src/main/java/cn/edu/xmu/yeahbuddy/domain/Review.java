@@ -34,6 +34,9 @@ public class Review {
     @Column(name = "ReviewSubmitted", nullable = false)
     private boolean submitted;
 
+    public Review() {
+    }
+
     public Review(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
         this.teamId = teamId;
         this.stage = stage;

@@ -31,6 +31,9 @@ public class Team {
     @Column(name = "TeamEmail")
     private String email;
 
+    public Team() {
+    }
+
     public Team(String password, String salt, String name) {
         this.password = password;
         this.salt = salt;

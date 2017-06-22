@@ -28,6 +28,9 @@ public class Tutor {
     @Column(name = "TutorEmail")
     private String email;
 
+    public Tutor() {
+    }
+
     public Tutor(String password, String salt, String name) {
         this.password = password;
         this.salt = salt;

@@ -27,6 +27,9 @@ public class Token {
     @CollectionTable(name = "TokenTeamIds")
     private Collection<String> teamIds;
 
+    public Token() {
+    }
+
     public Token(String tokenValue, String tutorId, Collection<String> teamIds) {
         this.tokenValue = tokenValue;
         this.tutorId = tutorId;

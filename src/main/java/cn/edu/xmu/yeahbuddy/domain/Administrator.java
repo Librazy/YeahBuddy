@@ -25,6 +25,14 @@ public final class Administrator {
     @Enumerated(EnumType.STRING)
     private Collection<AdministratorPermission> permissions;
 
+    public Administrator() {
+    }
+
+    public Administrator(String password, String salt) {
+        this.password = password;
+        this.salt = salt;
+    }
+
     public int getId() {
         return id;
     }

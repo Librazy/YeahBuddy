@@ -37,4 +37,14 @@ public class TeamStage implements Serializable {
     public void setStage(int stage) {
         this.stage = stage;
     }
+
+    @Override
+    public boolean equals(Object t) {
+        return t instanceof TeamStage && ((TeamStage) t).getTeamId() == this.getTeamId() && ((TeamStage) t).getStage() == this.getStage();
+    }
+
+    @Override
+    public int hashCode(){
+        return (teamId << 16) + stage;
+    }
 }
