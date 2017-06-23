@@ -11,6 +11,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -63,7 +65,11 @@ public class ApplicationTests {
         // 测试findAll, 查询所有记录
         Assert.assertEquals(9, reviewRepository.findAll().size());
 
-        Assert.assertEquals("test text", reviewRepository.findOne(new ReviewKey(1 ,201701 ,1 ,false)).getText());
+        Optional<Review> review2 = reviewRepository.findById(new ReviewKey(1 ,201701 ,1 ,false));
+
+        Assert.assertTrue(review2.isPresent());
+
+        Assert.assertEquals("test text", review2.get().getText());
 
         Assert.assertEquals(2, reviewRepository.findAll(Example.of(new Review(0 ,201702 ,0 , false), ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("teamId", "viewer", "viewerIsAdmin", "rank", "submitted"))).size());
     }
