@@ -1,6 +1,7 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.*;
+import cn.edu.xmu.yeahbuddy.service.PasswordUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,5 +75,14 @@ public class ApplicationTests {
         Assert.assertEquals(2, reviewRepository.findAll(Example.of(new Review(0 ,201702 ,0 , false), ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("teamId", "viewer", "viewerIsAdmin", "rank", "submitted"))).size());
     }
 
+    @Test
+    public void passwordUtilsTest() throws Exception {
+        String salt = PasswordUtils.generateSalt();
 
+        Assert.assertEquals(24, salt.length());
+
+        byte[] hash = PasswordUtils.hash("password".toCharArray(), salt);
+
+        Assert.assertTrue(PasswordUtils.isExpectedPassword("password".toCharArray(), salt, hash));
+    }
 }

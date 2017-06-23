@@ -16,10 +16,6 @@ plugins {
 
 apply plugin: 'org.springframework.boot'
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
