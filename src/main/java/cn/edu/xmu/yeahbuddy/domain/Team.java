@@ -1,5 +1,7 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.jetbrains.annotations.Contract;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,10 +42,12 @@ public class Team {
         this.name = name;
     }
 
+    @Contract(pure = true)
     public int getId() {
         return id;
     }
 
+    @Contract(pure = true)
     public String getPassword() {
         return password;
     }
@@ -52,6 +56,7 @@ public class Team {
         this.password = password;
     }
 
+    @Contract(pure = true)
     public String getSalt() {
         return salt;
     }
@@ -60,6 +65,7 @@ public class Team {
         this.salt = salt;
     }
 
+    @Contract(pure = true)
     public String getName() {
         return name;
     }
@@ -68,6 +74,7 @@ public class Team {
         this.name = name;
     }
 
+    @Contract(pure = true)
     public String getProjectName() {
         return projectName;
     }
@@ -76,6 +83,7 @@ public class Team {
         this.projectName = projectName;
     }
 
+    @Contract(pure = true)
     public String getPhone() {
         return phone;
     }
@@ -84,6 +92,7 @@ public class Team {
         this.phone = phone;
     }
 
+    @Contract(pure = true)
     public String getEmail() {
         return email;
     }

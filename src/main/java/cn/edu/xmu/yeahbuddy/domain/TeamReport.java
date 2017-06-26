@@ -12,7 +12,10 @@ public class TeamReport {
     @Column(name = "TeamReportSubmitted", nullable = false)
     private boolean submitted;
 
-    @Column(name = "TeamReportText", nullable = false)
+    @Column(name = "TeamReportTitle", nullable = false)
+    private String title;
+
+    @Column(name = "TeamReportText")
     private String text;
 
     @ElementCollection
@@ -52,5 +55,13 @@ public class TeamReport {
 
     public void setFiles(Collection<String> files) {
         this.files = files;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

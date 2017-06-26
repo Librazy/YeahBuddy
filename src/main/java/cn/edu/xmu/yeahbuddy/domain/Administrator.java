@@ -37,10 +37,12 @@ public final class Administrator {
         this.salt = salt;
     }
 
+    @Contract(pure = true)
     public int getId() {
         return id;
     }
 
+    @Contract(pure = true)
     public String getPassword() {
         return password;
     }
@@ -49,6 +51,7 @@ public final class Administrator {
         this.password = password;
     }
 
+    @Contract(pure = true)
     public String getSalt() {
         return salt;
     }
@@ -57,6 +60,7 @@ public final class Administrator {
         this.salt = salt;
     }
 
+    @Contract(pure = true)
     public String getName() {
         return name;
     }
@@ -65,6 +69,7 @@ public final class Administrator {
         this.name = name;
     }
 
+    @Contract(pure = true)
     public Collection<AdministratorPermission> getPermissions() {
         return permissions;
     }

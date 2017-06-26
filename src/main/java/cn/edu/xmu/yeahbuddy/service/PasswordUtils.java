@@ -1,5 +1,6 @@
 package cn.edu.xmu.yeahbuddy.service;
 
+import org.jetbrains.annotations.Contract;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKeyFactory;
@@ -20,16 +21,21 @@ public final class PasswordUtils {
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
 
+    private PasswordUtils(){
+    }
+
     public static String generateSalt(){
         byte[] salt = new byte[16];
         random.nextBytes(salt);
         return Base64.getEncoder().encodeToString(salt);
     }
 
+    @Contract(pure = true)
     public static byte[] hash(char[] password, String salt) {
         return hash(password, Base64.getDecoder().decode(salt));
     }
 
+    @Contract(pure = true)
     private static byte[] hash(char[] password, byte[] salt) {
         PBEKeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, KEY_LENGTH);
         Arrays.fill(password, Character.MIN_VALUE);
@@ -43,10 +49,12 @@ public final class PasswordUtils {
         }
     }
 
+    @Contract(pure = true)
     public static boolean isExpectedPassword(char[] password, String salt, byte[] expectedHash) {
         return isExpectedPassword(password, Base64.getDecoder().decode(salt), expectedHash);
     }
 
+    @Contract(pure = true)
     private static boolean isExpectedPassword(char[] password, byte[] salt, byte[] expectedHash) {
         byte[] pwdHash = hash(password, salt);
         Arrays.fill(password, Character.MIN_VALUE);

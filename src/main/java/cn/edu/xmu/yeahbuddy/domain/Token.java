@@ -1,6 +1,7 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
 import java.sql.Time;
@@ -40,10 +41,12 @@ public class Token {
         this.teamIds = teamIds;
     }
 
+    @Contract(pure = true)
     public String getTokenValue() {
         return tokenValue;
     }
 
+    @Contract(pure = true)
     public int getTutorId() {
         return tutorId;
     }
@@ -52,6 +55,7 @@ public class Token {
         this.tutorId = tutorId;
     }
 
+    @Contract(pure = true)
     public int getStage() {
         return stage;
     }
@@ -60,10 +64,12 @@ public class Token {
         this.stage = stage;
     }
 
+    @Contract(pure = true)
     public Time getTime() {
         return time;
     }
 
+    @Contract(pure = true)
     public boolean isRevoked() {
         return revoked;
     }
@@ -72,6 +78,7 @@ public class Token {
         this.revoked = revoked;
     }
 
+    @Contract(pure = true)
     public Collection<String> getTeamIds() {
         return teamIds;
     }

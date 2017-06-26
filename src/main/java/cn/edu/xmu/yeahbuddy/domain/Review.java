@@ -44,14 +44,17 @@ public class Review {
         this.viewerIsAdmin = viewerIsAdmin;
     }
 
+    @Contract(pure = true)
     public int getTeamId() {
         return teamId;
     }
 
+    @Contract(pure = true)
     public int getStage() {
         return stage;
     }
 
+    @Contract(pure = true)
     public int getViewer() {
         return viewer;
     }
@@ -60,6 +63,7 @@ public class Review {
         return viewerIsAdmin;
     }
 
+    @Contract(pure = true)
     public int getRank() {
         return rank;
     }
@@ -68,6 +72,7 @@ public class Review {
         this.rank = rank;
     }
 
+    @Contract(pure = true)
     public String getText() {
         return text;
     }
@@ -76,6 +81,7 @@ public class Review {
         this.text = text;
     }
 
+    @Contract(pure = true)
     public boolean isSubmitted() {
         return submitted;
     }

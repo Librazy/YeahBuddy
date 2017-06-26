@@ -1,5 +1,7 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.jetbrains.annotations.Contract;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -21,6 +23,7 @@ public class TeamStage implements Serializable {
         this.stage = stage;
     }
 
+    @Contract(pure = true)
     public int getTeamId() {
         return teamId;
     }
@@ -29,7 +32,7 @@ public class TeamStage implements Serializable {
         this.teamId = teamId;
     }
 
-
+    @Contract(pure = true)
     public int getStage() {
         return stage;
     }
@@ -38,11 +41,13 @@ public class TeamStage implements Serializable {
         this.stage = stage;
     }
 
+    @Contract(pure = true)
     @Override
     public boolean equals(Object t) {
         return t instanceof TeamStage && ((TeamStage) t).getTeamId() == this.getTeamId() && ((TeamStage) t).getStage() == this.getStage();
     }
 
+    @Contract(pure = true)
     @Override
     public int hashCode(){
         return (teamId << 16) + stage;

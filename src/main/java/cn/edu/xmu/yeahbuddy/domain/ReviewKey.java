@@ -1,5 +1,7 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.jetbrains.annotations.Contract;
+
 import java.io.Serializable;
 
 public class ReviewKey implements Serializable {
@@ -19,6 +21,7 @@ public class ReviewKey implements Serializable {
         this.viewerIsAdmin = viewerIsAdmin;
     }
 
+    @Contract(pure = true)
     public int getTeamId() {
         return teamId;
     }
@@ -27,6 +30,7 @@ public class ReviewKey implements Serializable {
         this.teamId = teamId;
     }
 
+    @Contract(pure = true)
     public int getStage() {
         return stage;
     }
@@ -35,6 +39,7 @@ public class ReviewKey implements Serializable {
         this.stage = stage;
     }
 
+    @Contract(pure = true)
     public int getViewer() {
         return viewer;
     }
@@ -43,6 +48,7 @@ public class ReviewKey implements Serializable {
         this.viewer = viewer;
     }
 
+    @Contract(pure = true)
     public boolean isViewerIsAdmin() {
         return viewerIsAdmin;
     }
