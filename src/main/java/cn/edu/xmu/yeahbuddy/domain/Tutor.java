@@ -1,14 +1,19 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
 import org.jetbrains.annotations.Contract;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
-public class Tutor {
+public class Tutor implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -44,6 +49,7 @@ public class Tutor {
         return id;
     }
 
+    @Override
     @Contract(pure = true)
     public String getPassword() {
         return password;
@@ -87,5 +93,41 @@ public class Tutor {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_TUTOR"));
+    }
+
+    @Override
+    public String getUsername() {
+        return getName();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Contract(value = "null -> false", pure = true)
+    @Override
+    public boolean equals(Object rhs) {
+        return rhs instanceof Tutor && id == ((Tutor) rhs).id;
     }
 }

@@ -1,12 +1,13 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
 import org.jetbrains.annotations.Contract;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-public final class Administrator {
+public final class Administrator implements UserDetails {
 
     @Id
     @GeneratedValue
@@ -26,7 +27,7 @@ public final class Administrator {
     @JoinTable(name = "AdministratorPermissions", joinColumns = @JoinColumn(name = "AdministratorId"))
     @Column(name = "AdministratorPermission", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Collection<AdministratorPermission> permissions;
+    private Collection<AdministratorPermission> authorities;
 
     public Administrator() {
     }
@@ -42,6 +43,7 @@ public final class Administrator {
         return id;
     }
 
+    @Override
     @Contract(pure = true)
     public String getPassword() {
         return password;
@@ -60,6 +62,7 @@ public final class Administrator {
         this.salt = salt;
     }
 
+    @Override
     @Contract(pure = true)
     public String getName() {
         return name;
@@ -69,13 +72,46 @@ public final class Administrator {
         this.name = name;
     }
 
+    @Override
     @Contract(pure = true)
-    public Collection<AdministratorPermission> getPermissions() {
-        return permissions;
+    public Collection<AdministratorPermission> getAuthorities() {
+        return authorities;
     }
 
-    public void setPermissions(Collection<AdministratorPermission> permissions) {
-        this.permissions = permissions;
+    public void setAuthorities(Collection<AdministratorPermission> authorities) {
+        this.authorities = authorities;
+    }
+
+
+    @Override
+    public String getUsername() {
+        return getName();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Contract(value = "null -> false", pure = true)
+    @Override
+    public boolean equals(Object rhs) {
+        return rhs instanceof Administrator && id == ((Administrator) rhs).id;
     }
 }
 

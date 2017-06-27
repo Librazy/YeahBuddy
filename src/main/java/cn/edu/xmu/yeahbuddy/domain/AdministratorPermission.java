@@ -1,11 +1,18 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
-public enum AdministratorPermission {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum AdministratorPermission implements GrantedAuthority {
     CreateTask,
     CloseSubmit,
     CreateLink,
     CloseTutorReview,
     ViewReport,
     ViewReview,
-    FinalReview
+    FinalReview;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

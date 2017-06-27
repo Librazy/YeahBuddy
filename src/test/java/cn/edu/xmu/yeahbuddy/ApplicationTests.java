@@ -1,7 +1,7 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.*;
-import cn.edu.xmu.yeahbuddy.service.PasswordUtils;
+import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,9 +77,9 @@ public class ApplicationTests {
 
     @Test
     public void passwordUtilsTest() throws Exception {
-        String salt = PasswordUtils.generateSalt();
+        byte[] salt = PasswordUtils.generateSalt();
 
-        Assert.assertEquals(24, salt.length());
+        Assert.assertEquals(16, salt.length);
 
         byte[] hash = PasswordUtils.hash("password".toCharArray(), salt);
 

@@ -1,4 +1,4 @@
-package cn.edu.xmu.yeahbuddy.service;
+package cn.edu.xmu.yeahbuddy.utils;
 
 import org.jetbrains.annotations.Contract;
 import org.springframework.stereotype.Service;
@@ -24,19 +24,14 @@ public final class PasswordUtils {
     private PasswordUtils(){
     }
 
-    public static String generateSalt(){
+    public static byte[] generateSalt(){
         byte[] salt = new byte[16];
         random.nextBytes(salt);
-        return Base64.getEncoder().encodeToString(salt);
+        return salt;
     }
 
     @Contract(pure = true)
-    public static byte[] hash(char[] password, String salt) {
-        return hash(password, Base64.getDecoder().decode(salt));
-    }
-
-    @Contract(pure = true)
-    private static byte[] hash(char[] password, byte[] salt) {
+    public static byte[] hash(char[] password, byte[] salt) {
         PBEKeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, KEY_LENGTH);
         Arrays.fill(password, Character.MIN_VALUE);
         try {
@@ -50,12 +45,7 @@ public final class PasswordUtils {
     }
 
     @Contract(pure = true)
-    public static boolean isExpectedPassword(char[] password, String salt, byte[] expectedHash) {
-        return isExpectedPassword(password, Base64.getDecoder().decode(salt), expectedHash);
-    }
-
-    @Contract(pure = true)
-    private static boolean isExpectedPassword(char[] password, byte[] salt, byte[] expectedHash) {
+    public static boolean isExpectedPassword(char[] password, byte[] salt, byte[] expectedHash) {
         byte[] pwdHash = hash(password, salt);
         Arrays.fill(password, Character.MIN_VALUE);
         return MessageDigest.isEqual(pwdHash, expectedHash);
