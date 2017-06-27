@@ -11,16 +11,13 @@ public final class Administrator implements UserDetails {
 
     @Id
     @GeneratedValue
-    @Column(name = "AdministratorId", updatable = false, nullable = false)
-    private int id;
+    @Column(name = "AdministratorId", unique = true, updatable = false, nullable = false)
+    private int id = Integer.MIN_VALUE;
 
     @Column(name = "AdministratorPassword", nullable = false)
     private String password;
 
-    @Column(name = "AdministratorSalt", nullable = false)
-    private String salt;
-
-    @Column(name = "AdministratorName", nullable = false)
+    @Column(name = "AdministratorName", unique = true, nullable = false)
     private String name;
 
     @ElementCollection(targetClass = AdministratorPermission.class)
@@ -32,10 +29,9 @@ public final class Administrator implements UserDetails {
     public Administrator() {
     }
 
-    public Administrator(String name, String password, String salt) {
+    public Administrator(String name, String password) {
         this.name = name;
         this.password = password;
-        this.salt = salt;
     }
 
     @Contract(pure = true)
@@ -51,15 +47,6 @@ public final class Administrator implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Contract(pure = true)
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 
     @Override
@@ -83,26 +70,31 @@ public final class Administrator implements UserDetails {
     }
 
 
+    @Contract(pure = true)
     @Override
     public String getUsername() {
         return getName();
     }
 
+    @Contract(pure = true)
     @Override
     public boolean isAccountNonExpired() {
         return false;
     }
 
+    @Contract(pure = true)
     @Override
     public boolean isAccountNonLocked() {
         return false;
     }
 
+    @Contract(pure = true)
     @Override
     public boolean isCredentialsNonExpired() {
         return false;
     }
 
+    @Contract(pure = true)
     @Override
     public boolean isEnabled() {
         return true;
@@ -111,7 +103,7 @@ public final class Administrator implements UserDetails {
     @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object rhs) {
-        return rhs instanceof Administrator && id == ((Administrator) rhs).id;
+        return id != Integer.MIN_VALUE && rhs instanceof Administrator && id == ((Administrator) rhs).id;
     }
 }
 

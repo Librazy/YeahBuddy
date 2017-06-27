@@ -1,9 +1,15 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.*;
+import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
+import cn.edu.xmu.yeahbuddy.service.AdministratorService;
+import cn.edu.xmu.yeahbuddy.service.YbPasswordEncoder;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
+import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -12,7 +18,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @RunWith(SpringRunner.class)
@@ -20,30 +30,57 @@ import java.util.Optional;
 public class ApplicationTests {
 
     @Autowired
+    private YbPasswordEncoder ybPasswordEncoder;
+
+    @Autowired
     private AdministratorRepository administratorRepository;
 
     @Autowired
+    private AdministratorService administratorService;
+
+    @Autowired
     private ReviewRepository reviewRepository;
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     @Test
     public void administratorRepositoryTest() throws Exception {
 
         // 创建2条记录
-        administratorRepository.save(new Administrator("AAA", "xxx", "yyy"));
-        administratorRepository.save(new Administrator("BBB", "xxx", "xxx"));
+        administratorRepository.save(new Administrator("AAA", "xxx"));
+        administratorRepository.save(new Administrator("BBB", "xxx"));
 
         // 测试findAll, 查询所有记录
         Assert.assertEquals(2, administratorRepository.findAll().size());
 
         // 测试findByName, 查询姓名为AAA的Administrator
-        Assert.assertEquals("yyy", administratorRepository.findByName("AAA").getSalt());
+        Assert.assertEquals("xxx", administratorRepository.findByName("AAA").getPassword());
 
-        // 测试删除姓名为AAA的Administrator
+        // 测试删除姓名为BBB的Administrator
         administratorRepository.delete(administratorRepository.findByName("BBB"));
 
         // 测试findAll, 查询所有记录, 验证上面的删除是否成功
         Assert.assertEquals(1, administratorRepository.findAll().size());
 
+        // 测试删除姓名为AAA的Administrator
+        administratorRepository.delete(administratorRepository.findByName("AAA"));
+    }
+
+    @Test
+    public void administratorServiceTest() throws Exception{
+        Administrator ultimate = new Administrator();
+        ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(new HashSet<>()), ultimate);
+        Administrator admin2 = administratorService.registerNewAdministrator(new AdministratorDto().setName("BBB").setPassword("CCC").setAuthorities(new HashSet<>()), admin1);
+
+        Assert.assertTrue(ybPasswordEncoder.matches("BBB", admin1.getPassword()));
+        Assert.assertTrue(ybPasswordEncoder.matches("CCC", administratorService.loadUserByUsername("BBB").getPassword()));
+
+        Assert.assertNotEquals(admin1.getId(),admin2.getId());
+
+        exception.expect(UsernameAlreadyExistsException.class);
+        administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(new HashSet<>()), ultimate);
     }
 
 

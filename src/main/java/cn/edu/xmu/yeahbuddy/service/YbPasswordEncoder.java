@@ -2,9 +2,11 @@ package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 
+@Service
 public class YbPasswordEncoder implements PasswordEncoder {
     @Override
     public String encode(CharSequence rawPassword) {
@@ -18,7 +20,7 @@ public class YbPasswordEncoder implements PasswordEncoder {
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         String salt = encodedPassword.split("\\$", 2)[0];
         String hash = encodedPassword.split("\\$", 2)[1];
-        Base64.Decoder base64d  = Base64.getDecoder();
+        Base64.Decoder base64d = Base64.getDecoder();
 
         return PasswordUtils.isExpectedPassword(rawPassword.toString().toCharArray(),
                 base64d.decode(salt),

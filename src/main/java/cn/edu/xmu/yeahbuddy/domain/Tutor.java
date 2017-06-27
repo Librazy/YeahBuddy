@@ -96,31 +96,37 @@ public class Tutor implements UserDetails {
     }
 
     @Override
+    @Contract(pure = true)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_TUTOR"));
     }
 
     @Override
+    @Contract(pure = true)
     public String getUsername() {
         return getName();
     }
 
     @Override
+    @Contract(pure = true)
     public boolean isAccountNonExpired() {
         return false;
     }
 
     @Override
+    @Contract(pure = true)
     public boolean isAccountNonLocked() {
         return false;
     }
 
     @Override
+    @Contract(pure = true)
     public boolean isCredentialsNonExpired() {
         return false;
     }
 
     @Override
+    @Contract(pure = true)
     public boolean isEnabled() {
         return true;
     }
