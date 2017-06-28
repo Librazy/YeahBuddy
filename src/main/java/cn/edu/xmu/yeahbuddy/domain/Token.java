@@ -27,7 +27,7 @@ public class Token {
     @Column(name = "TokenRevoked", nullable = false)
     private boolean revoked;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TokenTeamIds")
     private Collection<String> teamIds;
 

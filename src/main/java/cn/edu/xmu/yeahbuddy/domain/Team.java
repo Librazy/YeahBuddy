@@ -18,16 +18,14 @@ import java.util.List;
 public class Team implements UserDetails {
 
     @Id
-    @Column(name = "TeamId", updatable = false, nullable = false)
-    private int id;
+    @GeneratedValue
+    @Column(name = "TeamId", unique = true, updatable = false, nullable = false)
+    private int id = Integer.MIN_VALUE;
 
     @Column(name = "TeamPassword", nullable = false)
     private String password;
 
-    @Column(name = "TeamSalt", nullable = false)
-    private String salt;
-
-    @Column(name = "TeamName", nullable = false)
+    @Column(name = "TeamName", unique = true, nullable = false)
     private String name;
 
     @Column(name = "TeamProjectName", nullable = false)
@@ -42,10 +40,8 @@ public class Team implements UserDetails {
     public Team() {
     }
 
-    public Team(int id, String password, String salt, String name) {
-        this.id = id;
+    public Team(String password, String name) {
         this.password = password;
-        this.salt = salt;
         this.name = name;
     }
 
@@ -62,15 +58,6 @@ public class Team implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Contract(pure = true)
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 
     @Contract(pure = true)
@@ -121,17 +108,17 @@ public class Team implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
@@ -142,6 +129,6 @@ public class Team implements UserDetails {
     @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object rhs) {
-        return rhs instanceof Team && id == ((Team) rhs).id;
+        return id != Integer.MIN_VALUE && rhs instanceof Team && id == ((Team) rhs).id;
     }
 }

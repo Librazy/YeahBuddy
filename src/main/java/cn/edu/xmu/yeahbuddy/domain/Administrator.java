@@ -1,13 +1,17 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.security.auth.Subject;
 import java.util.Collection;
 
 @Entity
-public final class Administrator implements UserDetails {
+public final class Administrator implements UserDetails, Authentication {
 
     @Id
     @GeneratedValue
@@ -20,7 +24,7 @@ public final class Administrator implements UserDetails {
     @Column(name = "AdministratorName", unique = true, nullable = false)
     private String name;
 
-    @ElementCollection(targetClass = AdministratorPermission.class)
+    @ElementCollection(targetClass = AdministratorPermission.class, fetch = FetchType.EAGER)
     @JoinTable(name = "AdministratorPermissions", joinColumns = @JoinColumn(name = "AdministratorId"))
     @Column(name = "AdministratorPermission", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -79,19 +83,19 @@ public final class Administrator implements UserDetails {
     @Contract(pure = true)
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Contract(pure = true)
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Contract(pure = true)
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Contract(pure = true)
@@ -104,6 +108,37 @@ public final class Administrator implements UserDetails {
     @Override
     public boolean equals(Object rhs) {
         return id != Integer.MIN_VALUE && rhs instanceof Administrator && id == ((Administrator) rhs).id;
+    }
+
+    @Contract(pure = true)
+    @Override
+    public String getCredentials() {
+        return getName();
+    }
+
+    @Override
+    public Object getDetails() {
+        return getName();
+    }
+
+    @Contract(pure = true)
+    @Override
+    public String getPrincipal() {
+        return getName();
+    }
+
+    @Contract(pure = true)
+    @Override
+    public boolean isAuthenticated() {
+        return true;
+    }
+
+    @Contract("false -> fail")
+    @Override
+    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+        if(!isAuthenticated){
+            throw new IllegalArgumentException();
+        }
     }
 }
 

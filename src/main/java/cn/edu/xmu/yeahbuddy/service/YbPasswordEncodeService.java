@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import java.util.Base64;
 
 @Service
-public class YbPasswordEncoder implements PasswordEncoder {
+public class YbPasswordEncodeService implements PasswordEncoder {
+
     @Override
     public String encode(CharSequence rawPassword) {
         byte[] salt = PasswordUtils.generateSalt();
@@ -18,13 +19,12 @@ public class YbPasswordEncoder implements PasswordEncoder {
 
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
-        String salt = encodedPassword.split("\\$", 2)[0];
-        String hash = encodedPassword.split("\\$", 2)[1];
+        String[] s = encodedPassword.split("\\$", 2);
         Base64.Decoder base64d = Base64.getDecoder();
 
         return PasswordUtils.isExpectedPassword(rawPassword.toString().toCharArray(),
-                base64d.decode(salt),
-                base64d.decode(hash)
+                base64d.decode(s[0]),
+                base64d.decode(s[1])
         );
     }
 }

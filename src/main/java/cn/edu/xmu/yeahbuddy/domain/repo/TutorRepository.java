@@ -1,9 +1,7 @@
-package cn.edu.xmu.yeahbuddy.domain;
+package cn.edu.xmu.yeahbuddy.domain.repo;
 
+import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.sql.Time;
-import java.util.List;
 
 public interface TutorRepository extends JpaRepository<Tutor, Integer> {
     Tutor findByName(String name);

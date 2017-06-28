@@ -18,7 +18,7 @@ public class TeamReport {
     @Column(name = "TeamReportText")
     private String text;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TeamReportFiles")
     private Collection<String> files;
 

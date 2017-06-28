@@ -9,7 +9,9 @@ public enum AdministratorPermission implements GrantedAuthority {
     CloseTutorReview,
     ViewReport,
     ViewReview,
-    FinalReview;
+    FinalReview,
+    RegisterAdministrator,
+    RegisterTeam;
 
     @Override
     public String getAuthority() {

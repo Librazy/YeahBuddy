@@ -2,12 +2,12 @@ package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
-import cn.edu.xmu.yeahbuddy.domain.AdministratorRepository;
+import cn.edu.xmu.yeahbuddy.domain.repo.AdministratorRepository;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.utils.AdministratorNoPermissionException;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,20 +17,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 public class AdministratorService implements UserDetailsService {
 
-    private final YbPasswordEncoder ybPasswordEncoder;
+    private final YbPasswordEncodeService ybPasswordEncodeService;
 
     private final AdministratorRepository administratorRepository;
 
     @Autowired
-    public AdministratorService(AdministratorRepository administratorRepository, YbPasswordEncoder ybPasswordEncoder) {
+    public AdministratorService(AdministratorRepository administratorRepository, YbPasswordEncodeService ybPasswordEncodeService) {
         this.administratorRepository = administratorRepository;
-        this.ybPasswordEncoder = ybPasswordEncoder;
+        this.ybPasswordEncodeService = ybPasswordEncodeService;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Administrator loadUserByUsername(String username) throws UsernameNotFoundException {
         Administrator admin = administratorRepository.findByName(username);
         if (admin == null) {
@@ -40,11 +40,12 @@ public class AdministratorService implements UserDetailsService {
     }
 
     @Transactional
+    @PreAuthorize("hasAuthority('RegisterAdministrator')")
     public Administrator registerNewAdministrator(AdministratorDto dto, Administrator actor) throws UsernameAlreadyExistsException, AdministratorNoPermissionException {
         if(administratorRepository.findByName(dto.getName()) != null){
             throw new UsernameAlreadyExistsException("administrator.name.exist");
         }
-        Administrator admin = new Administrator(dto.getName(), ybPasswordEncoder.encode(dto.getPassword()));
+        Administrator admin = new Administrator(dto.getName(), ybPasswordEncodeService.encode(dto.getPassword()));
 
         admin.setAuthorities(dto.getAuthorities().stream().map(AdministratorPermission::valueOf).collect(Collectors.toSet()));
 

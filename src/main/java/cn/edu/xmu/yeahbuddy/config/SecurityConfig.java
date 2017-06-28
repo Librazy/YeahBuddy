@@ -1,7 +1,7 @@
 package cn.edu.xmu.yeahbuddy.config;
 
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
-import cn.edu.xmu.yeahbuddy.service.YbPasswordEncoder;
+import cn.edu.xmu.yeahbuddy.service.YbPasswordEncodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -33,10 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .formLogin()
             .loginPage("/login")
             .permitAll()
-            .loginProcessingUrl("/doLogin")
-            .permitAll()
-            .failureUrl("/login?error=loginError")
-            .defaultSuccessUrl("/postLogin")
+            .failureUrl("/login-error")
+            .defaultSuccessUrl("/admin")
             // logout
             .and().logout().logoutUrl("/**/logout")
             .permitAll()
@@ -47,6 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(administratorService).passwordEncoder(new YbPasswordEncoder());
+        auth.userDetailsService(administratorService).passwordEncoder(new YbPasswordEncodeService());
     }
 }

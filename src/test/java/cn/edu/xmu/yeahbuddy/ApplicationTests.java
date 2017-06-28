@@ -1,9 +1,11 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.*;
+import cn.edu.xmu.yeahbuddy.domain.repo.AdministratorRepository;
+import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
-import cn.edu.xmu.yeahbuddy.service.YbPasswordEncoder;
+import cn.edu.xmu.yeahbuddy.service.YbPasswordEncodeService;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.junit.Assert;
@@ -13,24 +15,31 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.stream.Stream;
 
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApplicationTests {
+@Rollback
+public class ApplicationTests extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
-    private YbPasswordEncoder ybPasswordEncoder;
+    private YbPasswordEncodeService ybPasswordEncodeService;
 
     @Autowired
     private AdministratorRepository administratorRepository;
@@ -46,6 +55,8 @@ public class ApplicationTests {
 
     @Test
     public void administratorRepositoryTest() throws Exception {
+
+        administratorRepository.deleteAll();
 
         // 创建2条记录
         administratorRepository.save(new Administrator("AAA", "xxx"));
@@ -69,13 +80,17 @@ public class ApplicationTests {
 
     @Test
     public void administratorServiceTest() throws Exception{
+
+        administratorRepository.deleteAll();
+
         Administrator ultimate = new Administrator();
         ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+        SecurityContextHolder.getContext().setAuthentication(ultimate);
         Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(new HashSet<>()), ultimate);
         Administrator admin2 = administratorService.registerNewAdministrator(new AdministratorDto().setName("BBB").setPassword("CCC").setAuthorities(new HashSet<>()), admin1);
 
-        Assert.assertTrue(ybPasswordEncoder.matches("BBB", admin1.getPassword()));
-        Assert.assertTrue(ybPasswordEncoder.matches("CCC", administratorService.loadUserByUsername("BBB").getPassword()));
+        Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
+        Assert.assertTrue(ybPasswordEncodeService.matches("CCC", administratorService.loadUserByUsername("BBB").getPassword()));
 
         Assert.assertNotEquals(admin1.getId(),admin2.getId());
 
@@ -83,6 +98,21 @@ public class ApplicationTests {
         administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(new HashSet<>()), ultimate);
     }
 
+    @Test
+    public void administratorService2Test() throws Exception{
+
+        administratorRepository.deleteAll();
+
+        Administrator ultimate = new Administrator();
+        ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+        SecurityContextHolder.getContext().setAuthentication(ultimate);
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("DDD").setPassword("BBB").setAuthorities(new HashSet<>()), ultimate);
+        Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(null);
+        exception.expect(AuthenticationCredentialsNotFoundException.class);
+        administratorService.registerNewAdministrator(new AdministratorDto().setName("EEE").setPassword("BBB").setAuthorities(new HashSet<>()), ultimate);
+    }
 
     @Test
     public void reviewRepositoryTest() throws Exception {
