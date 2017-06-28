@@ -17,16 +17,13 @@ public class Tutor implements UserDetails {
 
     @Id
     @GeneratedValue
-    @Column(name = "TutorId", updatable = false, nullable = false)
+    @Column(name = "TutorId", unique = true, updatable = false, nullable = false)
     private int id;
 
     @Column(name = "TutorPassword", nullable = false)
     private String password;
 
-    @Column(name = "TutorSalt", nullable = false)
-    private String salt;
-
-    @Column(name = "TutorName", nullable = false)
+    @Column(name = "TutorName", unique = true, nullable = false)
     private String name;
 
     @Column(name = "TutorPhone")
@@ -38,9 +35,8 @@ public class Tutor implements UserDetails {
     public Tutor() {
     }
 
-    public Tutor(String password, String salt, String name) {
+    public Tutor(String password, String name) {
         this.password = password;
-        this.salt = salt;
         this.name = name;
     }
 
@@ -57,15 +53,6 @@ public class Tutor implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Contract(pure = true)
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
     }
 
     @Contract(pure = true)
