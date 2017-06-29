@@ -1,19 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login page</title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <title>YeahBuddy主页</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/dist/css/bootstrap.min.css">
+    <script src="/webjars/jquery/dist/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
+
 <body>
-<h1>Login page</h1>
-<p data-th-if="${loginError}" class="error">Wrong name or password</p>
-<form data-th-action="@{/login}" method="post">
-    <label for="username">Username</label>:
-    <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
-    <label for="password">Password</label>:
-    <input type="password" id="password" name="password" /> <br />
-    <input type="submit" value="Log in" />
-</form>
-<p><a data-th-href="@{/admin}">Back to home page</a></p>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="row clearfix">
+                <div class="col-md-4 offset-md-4 column">
+                    <form class="form-horizontal" data-th-action="@{/login}" method="post" role="form">
+                        <div class="form-group row">
+                            <label for="username" class="col-sm-3 form-control-label">用户名</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="username" name="username"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="password" class="col-sm-3 form-control-label">密码</label>
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control" id="password" name="password"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="optionsRadios3" class="col-sm-3 form-control-label">身份</label>
+                            <label class="checkbox-inline col-sm-4 offset-sm-1">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios3" value="option1" checked>团队
+                            </label>
+                            <label class="checkbox-inline col-sm-4">
+                                <input type="radio" name="optionsRadiosinline" id="optionsRadios4" value="option2">管理员
+                            </label>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary btn-block">登录</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-2 column">
+        </div>
+        <div class="col-md-8 column">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">关于我们</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#">意见反馈</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#">帮助中心</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#">联系我们</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    All rights reserved
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-2 column">
+        </div>
+    </div>
+</div>
 </body>
 </html>

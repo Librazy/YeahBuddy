@@ -44,7 +44,7 @@ public class MainController {
         return "team/login";
     }
 
-    @RequestMapping("/team/")
+    @RequestMapping("/team")
     public String team(
             Model model) {
         String name = ((Team) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
