@@ -7,6 +7,8 @@ import java.util.Collection;
 
 public class AdministratorNoPermissionException extends AuthenticationException {
 
+    private static final long serialVersionUID = 8261406667809198946L;
+
     public Collection<AdministratorPermission> getLackedPermission() {
         return lacks;
     }

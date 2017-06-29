@@ -8,6 +8,8 @@ import java.util.Collection;
 
 public class AdministratorDto implements Serializable {
 
+    private static final long serialVersionUID = -4242984414905004337L;
+
     @NotNull
     @NotEmpty
     private String password;

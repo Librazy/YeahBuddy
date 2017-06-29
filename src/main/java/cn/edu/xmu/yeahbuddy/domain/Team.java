@@ -1,6 +1,9 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,13 +12,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Entity
 public class Team implements UserDetails {
+
+    @NonNls
+    private static final String ROLE_TEAM = "ROLE_TEAM";
+
+    private static final long serialVersionUID = -7619090069297505818L;
 
     @Id
     @GeneratedValue
@@ -25,6 +31,8 @@ public class Team implements UserDetails {
     @Column(name = "TeamPassword", nullable = false)
     private String password;
 
+    @NonNls
+    @NaturalId
     @Column(name = "TeamName", unique = true, nullable = false)
     private String name;
 
@@ -98,7 +106,7 @@ public class Team implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_TEAM"));
+        return Collections.singletonList(new SimpleGrantedAuthority(ROLE_TEAM));
     }
 
     @Override
@@ -129,6 +137,14 @@ public class Team implements UserDetails {
     @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object rhs) {
-        return id != Integer.MIN_VALUE && rhs instanceof Team && id == ((Team) rhs).id;
+        return rhs instanceof Team && name.equals(((Team) rhs).getName());
+    }
+
+    @Contract(pure = true)
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).
+                                                  append(name).
+                                                  toHashCode();
     }
 }

@@ -2,13 +2,11 @@ package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.Team;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class MainController {

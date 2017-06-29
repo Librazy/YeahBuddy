@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
@@ -42,7 +41,7 @@ public class Application {
                                 .setPassword("admin")
                                 .setAuthorities(
                                         Arrays.stream(AdministratorPermission.values())
-                                              .map(Enum::name)
+                                              .map(AdministratorPermission::name)
                                               .collect(Collectors.toSet())),
                         ultimate);
                 SecurityContextHolder.getContext().setAuthentication(null);

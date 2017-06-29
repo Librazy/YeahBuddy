@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 public class ReviewKey implements Serializable {
 
+    private static final long serialVersionUID = -6903775283127675781L;
+
     private int teamId;
     private int stage;
     private int viewer;

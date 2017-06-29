@@ -9,6 +9,8 @@ import java.io.Serializable;
 @Embeddable
 public class TeamStage implements Serializable {
 
+    private static final long serialVersionUID = -9005675776332115962L;
+
     @Column(name = "TeamId", nullable = false)
     private int teamId;
 

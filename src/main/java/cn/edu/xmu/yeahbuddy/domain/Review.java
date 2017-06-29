@@ -2,7 +2,10 @@ package cn.edu.xmu.yeahbuddy.domain;
 
 import org.jetbrains.annotations.Contract;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 
 @Entity

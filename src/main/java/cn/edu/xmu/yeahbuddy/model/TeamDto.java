@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 public class TeamDto implements Serializable {
 
+    private static final long serialVersionUID = -9091761778673434209L;
+
     @NotNull
     @NotEmpty
     private String password;

@@ -1,17 +1,19 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.security.auth.Subject;
 import java.util.Collection;
 
 @Entity
 public final class Administrator implements UserDetails, Authentication {
+
+    private static final long serialVersionUID = 6445115560332842675L;
 
     @Id
     @GeneratedValue
@@ -21,6 +23,8 @@ public final class Administrator implements UserDetails, Authentication {
     @Column(name = "AdministratorPassword", nullable = false)
     private String password;
 
+    @NonNls
+    @NaturalId
     @Column(name = "AdministratorName", unique = true, nullable = false)
     private String name;
 
@@ -107,7 +111,15 @@ public final class Administrator implements UserDetails, Authentication {
     @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object rhs) {
-        return id != Integer.MIN_VALUE && rhs instanceof Administrator && id == ((Administrator) rhs).id;
+        return rhs instanceof Administrator && name.equals(((Administrator) rhs).getName());
+    }
+
+    @Contract(pure = true)
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).
+                                                  append(name).
+                                                  toHashCode();
     }
 
     @Contract(pure = true)
@@ -136,7 +148,7 @@ public final class Administrator implements UserDetails, Authentication {
     @Contract("false -> fail")
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        if(!isAuthenticated){
+        if (!isAuthenticated) {
             throw new IllegalArgumentException();
         }
     }

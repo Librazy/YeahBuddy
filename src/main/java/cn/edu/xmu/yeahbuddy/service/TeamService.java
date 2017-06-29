@@ -1,15 +1,10 @@
 package cn.edu.xmu.yeahbuddy.service;
 
-import cn.edu.xmu.yeahbuddy.domain.Administrator;
-import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.repo.TeamRepository;
-import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
-import cn.edu.xmu.yeahbuddy.utils.AdministratorNoPermissionException;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

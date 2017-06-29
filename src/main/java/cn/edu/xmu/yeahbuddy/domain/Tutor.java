@@ -1,6 +1,9 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +18,11 @@ import java.util.Collections;
 @Entity
 public class Tutor implements UserDetails {
 
+    private static final long serialVersionUID = -3232545785012376249L;
+
+    @NonNls
+    private static final String ROLE_TUTOR = "ROLE_TUTOR";
+
     @Id
     @GeneratedValue
     @Column(name = "TutorId", unique = true, updatable = false, nullable = false)
@@ -23,6 +31,8 @@ public class Tutor implements UserDetails {
     @Column(name = "TutorPassword", nullable = false)
     private String password;
 
+    @NonNls
+    @NaturalId
     @Column(name = "TutorName", unique = true, nullable = false)
     private String name;
 
@@ -85,7 +95,7 @@ public class Tutor implements UserDetails {
     @Override
     @Contract(pure = true)
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_TUTOR"));
+        return Collections.singletonList(new SimpleGrantedAuthority(ROLE_TUTOR));
     }
 
     @Override
@@ -121,6 +131,14 @@ public class Tutor implements UserDetails {
     @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object rhs) {
-        return rhs instanceof Tutor && id == ((Tutor) rhs).id;
+        return rhs instanceof Tutor && name.equals(((Tutor) rhs).getName());
+    }
+
+    @Contract(pure = true)
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).
+                                                  append(name).
+                                                  toHashCode();
     }
 }
