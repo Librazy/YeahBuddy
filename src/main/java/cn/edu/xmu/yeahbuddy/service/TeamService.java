@@ -47,7 +47,9 @@ public class TeamService implements UserDetailsService {
         }
 
         Team team = new Team(dto.getName(), ybPasswordEncodeService.encode(dto.getPassword()));
-
+        team.setEmail(dto.getEmail());
+        team.setPhone(dto.getPhone());
+        team.setProjectName(dto.getProjectName());
         return teamRepository.saveAndFlush(team);
     }
 }

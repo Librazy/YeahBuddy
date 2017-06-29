@@ -40,7 +40,7 @@ public class Team implements UserDetails {
     public Team() {
     }
 
-    public Team(String password, String name) {
+    public Team(String name, String password) {
         this.password = password;
         this.name = name;
     }

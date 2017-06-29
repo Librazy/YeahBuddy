@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login page</title>
+    <title>Team Login page</title>
     <meta charset="utf-8" />
 </head>
 <body>
 <h1>Login page</h1>
 <p data-th-if="${loginError}" class="error">Wrong name or password</p>
-<form data-th-action="@{/login}" method="post">
+<form data-th-action="@{/team/login}" method="post">
     <label for="username">Username</label>:
     <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
     <label for="password">Password</label>:
     <input type="password" id="password" name="password" /> <br />
     <input type="submit" value="Log in" />
 </form>
-<p><a data-th-href="@{/admin}">Back to home page</a></p>
+<p><a data-th-href="@{/team/}">Back to home page</a></p>
 </body>
 </html>
