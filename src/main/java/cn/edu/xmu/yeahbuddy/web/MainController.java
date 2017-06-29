@@ -15,8 +15,7 @@ public class MainController {
 
     @PreAuthorize("hasAuthority('ViewReport')")
     @RequestMapping("/admin")
-    public String admin(
-            Model model) {
+    public String admin(Model model) {
         String name = ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName();
         model.addAttribute("name", name);
         return "admin";
@@ -45,8 +44,7 @@ public class MainController {
     }
 
     @RequestMapping("/team")
-    public String team(
-            Model model) {
+    public String team(Model model) {
         String name = ((Team) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         model.addAttribute("name", name);
         return "team/index";

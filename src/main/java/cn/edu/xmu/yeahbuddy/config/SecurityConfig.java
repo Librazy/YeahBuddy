@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,24 +30,33 @@ public class SecurityConfig {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.authorizeRequests().antMatchers("/webjars/**").permitAll();
             http
                     .authorizeRequests()
-                    .anyRequest()
-                    .authenticated()
+                        .antMatchers("/webjars/**")
+                            .permitAll();
+            http
+                    .authorizeRequests()
+                        .anyRequest()
+                            .authenticated().and()
                     // log in
-                    .and()
                     .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-                    .failureUrl("/login-error")
-                    .defaultSuccessUrl("/admin")
+                        .loginPage("/login")
+                            .permitAll()
+                        .failureUrl("/login-error")
+                        .defaultSuccessUrl("/admin").and()
                     // logout
-                    .and().logout().logoutUrl("/**/logout")
-                    .permitAll()
-                    .logoutSuccessUrl("/login").deleteCookies("JSESSIONID").and()
+                    .logout()
+                        .logoutUrl("/**/logout")
+                            .permitAll()
+                        .logoutSuccessUrl("/login")
+                            .deleteCookies("JSESSIONID").and()
                     .csrf()
-                    .disable();
+                        .disable();
+        }
+
+        @Bean
+        public AuthenticationManager authenticationManagerBean() throws Exception {
+            return super.authenticationManagerBean();
         }
 
         @Override
@@ -72,22 +80,28 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .antMatcher("/team/**")
-                    .authorizeRequests()
-                    .anyRequest()
-                    .authenticated()
+                        .authorizeRequests()
+                            .anyRequest()
+                            .authenticated().and()
                     // log in
-                    .and()
-                    .formLogin()
-                    .loginPage("/team/login")
-                    .permitAll()
-                    .failureUrl("/team/login-error")
-                    .defaultSuccessUrl("/team")
+                        .formLogin()
+                            .loginPage("/team/login")
+                                .permitAll()
+                            .failureUrl("/team/login-error")
+                            .defaultSuccessUrl("/team").and()
                     // logout
-                    .and().logout().logoutUrl("/team/**/logout")
-                    .permitAll()
-                    .logoutSuccessUrl("/team/login").deleteCookies("JSESSIONID").and()
-                    .csrf()
-                    .disable();
+                        .logout()
+                            .logoutUrl("/team/**/logout")
+                                .permitAll()
+                            .logoutSuccessUrl("/team/login")
+                                .deleteCookies("JSESSIONID").and()
+                        .csrf()
+                            .disable();
+        }
+
+        @Bean
+        public AuthenticationManager authenticationManagerBean() throws Exception {
+            return super.authenticationManagerBean();
         }
 
         @Override
