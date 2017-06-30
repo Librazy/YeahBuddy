@@ -45,7 +45,7 @@ public class Tutor implements UserDetails {
     public Tutor() {
     }
 
-    public Tutor(String password, String name) {
+    public Tutor(String name, String password) {
         this.password = password;
         this.name = name;
     }
@@ -107,19 +107,19 @@ public class Tutor implements UserDetails {
     @Override
     @Contract(pure = true)
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     @Contract(pure = true)
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     @Contract(pure = true)
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override

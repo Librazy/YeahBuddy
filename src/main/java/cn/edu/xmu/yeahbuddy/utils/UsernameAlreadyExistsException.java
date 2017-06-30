@@ -10,7 +10,6 @@ public class UsernameAlreadyExistsException extends AuthenticationException {
         super(msg);
     }
 
-
     public UsernameAlreadyExistsException(String msg, Throwable t) {
         super(msg, t);
     }

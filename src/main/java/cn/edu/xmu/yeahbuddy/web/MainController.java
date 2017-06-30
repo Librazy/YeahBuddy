@@ -2,10 +2,12 @@ package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.Team;
+import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -20,31 +22,40 @@ public class MainController {
     }
 
     @RequestMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @RequestMapping("/login-error")
-    public String loginError(Model model) {
-        model.addAttribute("loginError", true);
+    public String login(@RequestAttribute(required = false) String error, Model model) {
+        if(error != null){
+            model.addAttribute("loginError", true);
+        }
         return "login";
     }
 
     @RequestMapping("/team/login")
-    public String teamLogin() {
+    public String teamLogin(@RequestAttribute(required = false) String error, Model model) {
+        if(error != null){
+            model.addAttribute("loginError", true);
+        }
         return "team/login";
     }
 
-    @RequestMapping("/team/login-error")
-    public String teamLoginError(Model model) {
-        model.addAttribute("loginError", true);
-        return "team/login";
-    }
-
-    @RequestMapping("/team")
+    @RequestMapping({"/team", "/team/"})
     public String team(Model model) {
         String name = ((Team) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         model.addAttribute("name", name);
         return "team/index";
+    }
+
+    @RequestMapping("/tutor/login")
+    public String tutorLogin(@RequestAttribute(required = false) String error, Model model) {
+        if(error != null){
+            model.addAttribute("loginError", true);
+        }
+        return "tutor/login";
+    }
+
+    @RequestMapping({"/tutor", "/tutor/"})
+    public String tutor(Model model) {
+        String name = ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getPhone();
+        model.addAttribute("name", name);
+        return "tutor/index";
     }
 }

@@ -11,7 +11,8 @@ public enum AdministratorPermission implements GrantedAuthority {
     ViewReview,
     FinalReview,
     RegisterAdministrator,
-    RegisterTeam;
+    RegisterTeam,
+    RegisterTutor;
 
     @Override
     public String getAuthority() {

@@ -6,13 +6,18 @@ import cn.edu.xmu.yeahbuddy.model.TutorDto;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
-public class TutorService implements UserDetailsService {
+public class TutorService implements UserDetailsService, AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
     private final YbPasswordEncodeService ybPasswordEncodeService;
 
@@ -34,15 +39,30 @@ public class TutorService implements UserDetailsService {
         return tutor;
     }
 
+    @Transactional(readOnly = true)
+    public Tutor loadTutorById(int id) throws UsernameNotFoundException {
+        Optional<Tutor> tutor = tutorRepository.findById(id);
+        if (!tutor.isPresent()) {
+            throw new UsernameNotFoundException(Integer.toString(id));
+        }
+        return tutor.get();
+    }
+
     @Transactional
-    @PreAuthorize("hasAuthority('RegisterAdministrator')")
-    public Tutor registerNewTeam(TutorDto dto) throws UsernameAlreadyExistsException {
+    @PreAuthorize("hasAuthority('RegisterTutor')")
+    public Tutor registerNewTutor(TutorDto dto) throws UsernameAlreadyExistsException {
         if(tutorRepository.findByName(dto.getName()) != null){
             throw new UsernameAlreadyExistsException("administrator.name.exist");
         }
 
         Tutor tutor = new Tutor(dto.getName(), ybPasswordEncodeService.encode(dto.getPassword()));
-
+        tutor.setEmail(dto.getEmail());
+        tutor.setPhone(dto.getPhone());
         return tutorRepository.saveAndFlush(tutor);
+    }
+
+    @Override
+    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
+        return (Tutor) token.getPrincipal();
     }
 }

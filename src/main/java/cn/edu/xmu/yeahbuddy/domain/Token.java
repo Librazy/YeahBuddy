@@ -29,12 +29,12 @@ public class Token {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TokenTeamIds")
-    private Collection<String> teamIds;
+    private Collection<Integer> teamIds;
 
     public Token() {
     }
 
-    public Token(String tokenValue, int tutorId, int stage, Collection<String> teamIds) {
+    public Token(String tokenValue, int tutorId, int stage, Collection<Integer> teamIds) {
         this.tokenValue = tokenValue;
         this.tutorId = tutorId;
         this.stage = stage;
@@ -60,7 +60,7 @@ public class Token {
         return stage;
     }
 
-    public void setTime(int stage) {
+    public void setStage(int stage) {
         this.stage = stage;
     }
 
@@ -79,11 +79,11 @@ public class Token {
     }
 
     @Contract(pure = true)
-    public Collection<String> getTeamIds() {
+    public Collection<Integer> getTeamIds() {
         return teamIds;
     }
 
-    public void setTeamIds(Collection<String> teamIds) {
+    public void setTeamIds(Collection<Integer> teamIds) {
         this.teamIds = teamIds;
     }
 }
