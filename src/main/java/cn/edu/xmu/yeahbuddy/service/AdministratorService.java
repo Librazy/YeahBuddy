@@ -39,6 +39,11 @@ public class AdministratorService implements UserDetailsService {
         return admin;
     }
 
+    @Transactional(readOnly = true)
+    public Administrator findByName(String name){
+        return administratorRepository.findByName(name);
+    }
+
     @Transactional
     @PreAuthorize("hasAuthority('RegisterAdministrator')")
     public Administrator registerNewAdministrator(AdministratorDto dto, Administrator actor) throws UsernameAlreadyExistsException, AdministratorNoPermissionException {

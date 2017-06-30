@@ -15,6 +15,7 @@ import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.service.TokenService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.TestOnly;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,18 +34,15 @@ public class Application {
     }
 
     @Bean
-    CommandLineRunner init(final AdministratorRepository administratorRepository,
-                           final AdministratorService administratorService,
-                           final TeamRepository teamRepository,
+    @TestOnly
+    CommandLineRunner init(final AdministratorService administratorService,
                            final TeamService teamService,
-                           final TutorRepository tutorRepository,
                            final TutorService tutorService,
                            final TokenService tokenService) {
         return args -> {
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
-            if(administratorRepository.findByName("admin") == null){
-
+            if(administratorService.findByName("admin") == null){
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 administratorService.registerNewAdministrator(
                         new AdministratorDto()
@@ -58,7 +56,7 @@ public class Application {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
             int teamId = 0;
-            if(teamRepository.findByName("team") == null){
+            if(teamService.findByName("team") == null){
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 Team team = teamService.registerNewTeam(
                         new TeamDto()
@@ -71,7 +69,7 @@ public class Application {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
 
-            if(tutorRepository.findByName("tutor") == null){
+            if(tutorService.findByName("tutor") == null){
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 Tutor tutor = tutorService.registerNewTutor(
                         new TutorDto()

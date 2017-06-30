@@ -34,6 +34,11 @@ public class TeamService implements UserDetailsService {
         return team;
     }
 
+    @Transactional(readOnly = true)
+    public Team findByName(String name){
+        return teamRepository.findByName(name);
+    }
+
     @Transactional
     @PreAuthorize("hasAuthority('RegisterTeam')")
     public Team registerNewTeam(TeamDto dto) throws UsernameAlreadyExistsException {

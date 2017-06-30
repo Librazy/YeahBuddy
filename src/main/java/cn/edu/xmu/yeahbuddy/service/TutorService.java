@@ -48,6 +48,11 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         return tutor.get();
     }
 
+    @Transactional(readOnly = true)
+    public Tutor findByName(String name){
+        return tutorRepository.findByName(name);
+    }
+
     @Transactional
     @PreAuthorize("hasAuthority('RegisterTutor')")
     public Tutor registerNewTutor(TutorDto dto) throws UsernameAlreadyExistsException {
