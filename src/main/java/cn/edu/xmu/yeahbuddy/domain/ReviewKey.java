@@ -2,15 +2,25 @@ package cn.edu.xmu.yeahbuddy.domain;
 
 import org.jetbrains.annotations.Contract;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+@Embeddable
 public class ReviewKey implements Serializable {
 
     private static final long serialVersionUID = -6903775283127675781L;
 
+    @Column(name = "ReviewTeamId", nullable = false)
     private int teamId;
+
+    @Column(name = "ReviewStage", nullable = false)
     private int stage;
+
+    @Column(name = "ReviewViewer", nullable = false)
     private int viewer;
+
+    @Column(name = "ReviewViewerIsAdmin", nullable = false)
     private boolean viewerIsAdmin;
 
     public ReviewKey() {

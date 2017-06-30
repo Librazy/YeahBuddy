@@ -47,6 +47,7 @@ public class TokenService {
         }
     }
 
+    @Transactional
     @PreAuthorize("hasAuthority('RegisterTutor')")
     public String createToken(Tutor tutor, int stage, Collection<Integer> teamIds){
         String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));

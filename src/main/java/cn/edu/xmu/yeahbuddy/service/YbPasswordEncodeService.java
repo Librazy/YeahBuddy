@@ -14,7 +14,7 @@ public class YbPasswordEncodeService implements PasswordEncoder {
         byte[] salt = PasswordUtils.generateSalt();
         byte[] hash = PasswordUtils.hash(rawPassword.toString().toCharArray(), salt);
         Base64.Encoder base64e = Base64.getEncoder();
-        return base64e.encodeToString(salt) + "$" + base64e.encodeToString(hash);
+        return String.format("%s$%s", base64e.encodeToString(salt), base64e.encodeToString(hash));
     }
 
     @Override
