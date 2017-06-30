@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Rollback
@@ -133,8 +133,6 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
         Assert.assertTrue(review2.isPresent());
 
         Assert.assertEquals("test text", review2.get().getText());
-
-        Assert.assertEquals(2, reviewRepository.findAll(Example.of(new Review(0, 201702, 0, false), ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("teamId", "viewer", "viewerIsAdmin", "rank", "submitted"))).size());
     }
 
     @Test

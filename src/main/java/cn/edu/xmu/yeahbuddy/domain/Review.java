@@ -29,6 +29,10 @@ public class Review {
         this.reviewKey = reviewKey;
     }
 
+    public Review(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
+        this.reviewKey = new ReviewKey(teamId, stage, viewer, viewerIsAdmin);
+    }
+
     @Contract(pure = true)
     public ReviewKey getReviewKey() {
         return reviewKey;

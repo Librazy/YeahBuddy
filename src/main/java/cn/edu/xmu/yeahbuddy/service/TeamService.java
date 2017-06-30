@@ -43,7 +43,7 @@ public class TeamService implements UserDetailsService {
     @PreAuthorize("hasAuthority('RegisterTeam')")
     public Team registerNewTeam(TeamDto dto) throws UsernameAlreadyExistsException {
         if (teamRepository.findByName(dto.getName()) != null) {
-            throw new UsernameAlreadyExistsException("administrator.name.exist");
+            throw new UsernameAlreadyExistsException("team.name.exist");
         }
 
         Team team = new Team(dto.getName(), ybPasswordEncodeService.encode(dto.getPassword()));
