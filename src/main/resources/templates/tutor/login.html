@@ -2,17 +2,17 @@
 <html>
 <head>
     <title>Tutor Login page</title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
 </head>
 <body>
 <h1>Login page</h1>
 <p data-th-if="${loginError}" class="error">Wrong name or password</p>
 <form data-th-action="@{/tutor/login}" method="post">
     <label for="username">Username</label>:
-    <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
+    <input type="text" id="username" name="username" autofocus="autofocus"/> <br/>
     <label for="password">Password</label>:
-    <input type="password" id="password" name="password" /> <br />
-    <input type="submit" value="Log in" />
+    <input type="password" id="password" name="password"/> <br/>
+    <input type="submit" value="Log in"/>
 </form>
 <p><a data-th-href="@{/tutor/}">Back to home page</a></p>
 </body>

@@ -51,7 +51,7 @@ public class TeamStage implements Serializable {
 
     @Contract(pure = true)
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return (teamId << 16) + stage;
     }
 }

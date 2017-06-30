@@ -4,9 +4,6 @@ import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
-import cn.edu.xmu.yeahbuddy.domain.repo.AdministratorRepository;
-import cn.edu.xmu.yeahbuddy.domain.repo.TeamRepository;
-import cn.edu.xmu.yeahbuddy.domain.repo.TutorRepository;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
@@ -42,7 +39,7 @@ public class Application {
         return args -> {
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
-            if(administratorService.findByName("admin") == null){
+            if (administratorService.findByName("admin") == null) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 administratorService.registerNewAdministrator(
                         new AdministratorDto()
@@ -56,7 +53,7 @@ public class Application {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
             int teamId = 0;
-            if(teamService.findByName("team") == null){
+            if (teamService.findByName("team") == null) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 Team team = teamService.registerNewTeam(
                         new TeamDto()
@@ -69,7 +66,7 @@ public class Application {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
 
-            if(tutorService.findByName("tutor") == null){
+            if (tutorService.findByName("tutor") == null) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 Tutor tutor = tutorService.registerNewTutor(
                         new TutorDto()

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class MainController {
@@ -21,17 +22,17 @@ public class MainController {
         return "admin";
     }
 
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(@RequestAttribute(required = false) String error, Model model) {
-        if(error != null){
+        if (error != null) {
             model.addAttribute("loginError", true);
         }
         return "login";
     }
 
-    @RequestMapping("/team/login")
+    @RequestMapping(value = "/team/login", method = RequestMethod.GET)
     public String teamLogin(@RequestAttribute(required = false) String error, Model model) {
-        if(error != null){
+        if (error != null) {
             model.addAttribute("loginError", true);
         }
         return "team/login";
@@ -45,9 +46,9 @@ public class MainController {
         return "team/index";
     }
 
-    @RequestMapping("/tutor/login")
+    @RequestMapping(value = "/tutor/login", method = RequestMethod.GET)
     public String tutorLogin(@RequestAttribute(required = false) String error, Model model) {
-        if(error != null){
+        if (error != null) {
             model.addAttribute("loginError", true);
         }
         return "tutor/login";

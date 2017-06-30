@@ -49,14 +49,14 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     }
 
     @Transactional(readOnly = true)
-    public Tutor findByName(String name){
+    public Tutor findByName(String name) {
         return tutorRepository.findByName(name);
     }
 
     @Transactional
     @PreAuthorize("hasAuthority('RegisterTutor')")
     public Tutor registerNewTutor(TutorDto dto) throws UsernameAlreadyExistsException {
-        if(tutorRepository.findByName(dto.getName()) != null){
+        if (tutorRepository.findByName(dto.getName()) != null) {
             throw new UsernameAlreadyExistsException("administrator.name.exist");
         }
 

@@ -40,14 +40,14 @@ public class AdministratorService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public Administrator findByName(String name){
+    public Administrator findByName(String name) {
         return administratorRepository.findByName(name);
     }
 
     @Transactional
     @PreAuthorize("hasAuthority('RegisterAdministrator')")
     public Administrator registerNewAdministrator(AdministratorDto dto, Administrator actor) throws UsernameAlreadyExistsException, AdministratorNoPermissionException {
-        if(administratorRepository.findByName(dto.getName()) != null){
+        if (administratorRepository.findByName(dto.getName()) != null) {
             throw new UsernameAlreadyExistsException("administrator.name.exist");
         }
         Administrator admin = new Administrator(dto.getName(), ybPasswordEncodeService.encode(dto.getPassword()));
@@ -56,7 +56,7 @@ public class AdministratorService implements UserDetailsService {
 
         final Set<AdministratorPermission> actorLacks = admin.getAuthorities().stream().filter(p -> !actor.getAuthorities().contains(p)).collect(Collectors.toSet());
 
-        if(!actorLacks.isEmpty()){
+        if (!actorLacks.isEmpty()) {
             throw new AdministratorNoPermissionException("administrator.permission.lacks", actorLacks);
         }
 
@@ -64,7 +64,7 @@ public class AdministratorService implements UserDetailsService {
     }
 
     @Transactional
-    public void deleteAdministrator(int id){
+    public void deleteAdministrator(int id) {
         administratorRepository.deleteById(id);
     }
 }

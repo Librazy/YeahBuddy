@@ -20,14 +20,14 @@ public final class PasswordUtils {
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
 
-    private PasswordUtils(){
+    private PasswordUtils() {
     }
 
     public static byte[] generateSalt() {
         return generateSalt(15);
     }
 
-    public static byte[] generateSalt(int length){
+    public static byte[] generateSalt(int length) {
         byte[] salt = new byte[length];
         random.nextBytes(salt);
         return salt;

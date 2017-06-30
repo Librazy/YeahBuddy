@@ -8,11 +8,6 @@ import java.util.Collection;
 public class AdministratorNoPermissionException extends AuthenticationException {
 
     private static final long serialVersionUID = 8261406667809198946L;
-
-    public Collection<AdministratorPermission> getLackedPermission() {
-        return lacks;
-    }
-
     private final Collection<AdministratorPermission> lacks;
 
     public AdministratorNoPermissionException(String msg, Collection<AdministratorPermission> lacks) {
@@ -20,9 +15,12 @@ public class AdministratorNoPermissionException extends AuthenticationException 
         this.lacks = lacks;
     }
 
-
     public AdministratorNoPermissionException(String msg, Throwable t, Collection<AdministratorPermission> lacks) {
         super(msg, t);
         this.lacks = lacks;
+    }
+
+    public Collection<AdministratorPermission> getLackedPermission() {
+        return lacks;
     }
 }

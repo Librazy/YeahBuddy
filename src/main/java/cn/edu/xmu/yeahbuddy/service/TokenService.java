@@ -37,19 +37,19 @@ public class TokenService {
         }
         try {
             Token token = tok.get();
-            if(token.isRevoked()){
+            if (token.isRevoked()) {
                 throw new BadCredentialsException(tokenStr);
             }
             Tutor tutor = tutorService.loadTutorById(token.getTutorId());
             return Pair.of(tutor, token);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new UsernameNotFoundException(tokenStr, e);
         }
     }
 
     @Transactional
     @PreAuthorize("hasAuthority('RegisterTutor')")
-    public String createToken(Tutor tutor, int stage, Collection<Integer> teamIds){
+    public String createToken(Tutor tutor, int stage, Collection<Integer> teamIds) {
         String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         tokenRepository.saveAndFlush(new Token(tokenValue, tutor.getId(), stage, teamIds));
         return tokenValue;

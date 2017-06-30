@@ -24,9 +24,9 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
         super(defaultFilterProcessesUrl);
         super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(defaultFilterProcessesUrl));
         setAuthenticationManager(authenticationManager);
-        setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler(defaultTargetUrl){
+        setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler(defaultTargetUrl) {
             @Override
-            public boolean isAlwaysUseDefaultTargetUrl(){
+            public boolean isAlwaysUseDefaultTargetUrl() {
                 return true;
             }
         });
@@ -34,7 +34,7 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        Map<String,String[]> params = request.getParameterMap();
+        Map<String, String[]> params = request.getParameterMap();
         if (!params.isEmpty() && params.containsKey("auth_token")) {
             String token = params.get("auth_token")[0];
             if (token != null) {
@@ -82,7 +82,7 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
         @Contract("true -> fail")
         @Override
         public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-            if(isAuthenticated){
+            if (isAuthenticated) {
                 throw new IllegalArgumentException();
             }
         }

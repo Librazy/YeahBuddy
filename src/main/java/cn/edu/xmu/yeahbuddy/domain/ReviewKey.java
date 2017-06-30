@@ -75,7 +75,7 @@ public class ReviewKey implements Serializable {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return (isViewerIsAdmin() ? Integer.MIN_VALUE : 0) + (teamId << 20) + (stage << 10) + viewer;
     }
 
