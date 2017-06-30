@@ -23,8 +23,12 @@ public final class PasswordUtils {
     private PasswordUtils(){
     }
 
-    public static byte[] generateSalt(){
-        byte[] salt = new byte[16];
+    public static byte[] generateSalt() {
+        return generateSalt(15);
+    }
+
+    public static byte[] generateSalt(int length){
+        byte[] salt = new byte[length];
         random.nextBytes(salt);
         return salt;
     }
@@ -37,7 +41,7 @@ public final class PasswordUtils {
             SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
             return skf.generateSecret(spec).getEncoded();
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new AssertionError("Error while hashing a password: " + e.getMessage(), e);
+            throw new AssertionError("Error while hashing a password", e);
         } finally {
             spec.clearPassword();
         }

@@ -38,6 +38,7 @@ public class MainController {
     }
 
     @RequestMapping({"/team", "/team/"})
+    @PreAuthorize("authenticated")
     public String team(Model model) {
         String name = ((Team) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         model.addAttribute("name", name);
@@ -53,6 +54,7 @@ public class MainController {
     }
 
     @RequestMapping({"/tutor", "/tutor/"})
+    @PreAuthorize("authenticated")
     public String tutor(Model model) {
         String name = ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getPhone();
         model.addAttribute("name", name);

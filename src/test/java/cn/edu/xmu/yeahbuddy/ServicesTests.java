@@ -1,6 +1,9 @@
 package cn.edu.xmu.yeahbuddy;
 
-import cn.edu.xmu.yeahbuddy.domain.*;
+import cn.edu.xmu.yeahbuddy.domain.Administrator;
+import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
+import cn.edu.xmu.yeahbuddy.domain.Review;
+import cn.edu.xmu.yeahbuddy.domain.ReviewKey;
 import cn.edu.xmu.yeahbuddy.domain.repo.AdministratorRepository;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
@@ -15,18 +18,14 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -36,22 +35,18 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Rollback
-public class ApplicationTests extends AbstractTransactionalJUnit4SpringContextTests {
-
-    @Autowired
-    private YbPasswordEncodeService ybPasswordEncodeService;
-
-    @Autowired
-    private AdministratorRepository administratorRepository;
-
-    @Autowired
-    private AdministratorService administratorService;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
+public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+    @Autowired
+    private YbPasswordEncodeService ybPasswordEncodeService;
+    @Autowired
+    private AdministratorRepository administratorRepository;
+    @Autowired
+    private AdministratorService administratorService;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Test
     public void administratorRepositoryTest() throws Exception {
@@ -79,7 +74,7 @@ public class ApplicationTests extends AbstractTransactionalJUnit4SpringContextTe
     }
 
     @Test
-    public void administratorServiceTest() throws Exception{
+    public void administratorServiceTest1() throws Exception {
 
         administratorRepository.deleteAll();
 
@@ -92,14 +87,14 @@ public class ApplicationTests extends AbstractTransactionalJUnit4SpringContextTe
         Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
         Assert.assertTrue(ybPasswordEncodeService.matches("CCC", administratorService.loadUserByUsername("BBB").getPassword()));
 
-        Assert.assertNotEquals(admin1.getId(),admin2.getId());
+        Assert.assertNotEquals(admin1.getId(), admin2.getId());
 
         exception.expect(UsernameAlreadyExistsException.class);
         administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(new HashSet<>()), ultimate);
     }
 
     @Test
-    public void administratorService2Test() throws Exception{
+    public void administratorServiceTest2() throws Exception {
 
         administratorRepository.deleteAll();
 
@@ -118,35 +113,35 @@ public class ApplicationTests extends AbstractTransactionalJUnit4SpringContextTe
     public void reviewRepositoryTest() throws Exception {
 
         // 创建9条记录
-        Review review1 = new Review(1 ,201701 ,1 ,false);
+        Review review1 = new Review(1, 201701, 1, false);
         review1.setText("test text");
         reviewRepository.save(review1);
-        reviewRepository.save(new Review(1 ,201701 ,2 , false));
-        reviewRepository.save(new Review(1 ,201701 ,3 , false));
-        reviewRepository.save(new Review(2 ,201701 ,1 , false));
-        reviewRepository.save(new Review(2 ,201701 ,2 , false));
-        reviewRepository.save(new Review(2 ,201701 ,3 , false));
-        reviewRepository.save(new Review(2 ,201701 ,1 , true));
-        reviewRepository.save(new Review(2 ,201702 ,2 , false));
-        reviewRepository.save(new Review(2 ,201702 ,3 , false));
+        reviewRepository.save(new Review(1, 201701, 2, false));
+        reviewRepository.save(new Review(1, 201701, 3, false));
+        reviewRepository.save(new Review(2, 201701, 1, false));
+        reviewRepository.save(new Review(2, 201701, 2, false));
+        reviewRepository.save(new Review(2, 201701, 3, false));
+        reviewRepository.save(new Review(2, 201701, 1, true));
+        reviewRepository.save(new Review(2, 201702, 2, false));
+        reviewRepository.save(new Review(2, 201702, 3, false));
 
         // 测试findAll, 查询所有记录
         Assert.assertEquals(9, reviewRepository.findAll().size());
 
-        Optional<Review> review2 = reviewRepository.findById(new ReviewKey(1 ,201701 ,1 ,false));
+        Optional<Review> review2 = reviewRepository.findById(new ReviewKey(1, 201701, 1, false));
 
         Assert.assertTrue(review2.isPresent());
 
         Assert.assertEquals("test text", review2.get().getText());
 
-        Assert.assertEquals(2, reviewRepository.findAll(Example.of(new Review(0 ,201702 ,0 , false), ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("teamId", "viewer", "viewerIsAdmin", "rank", "submitted"))).size());
+        Assert.assertEquals(2, reviewRepository.findAll(Example.of(new Review(0, 201702, 0, false), ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("teamId", "viewer", "viewerIsAdmin", "rank", "submitted"))).size());
     }
 
     @Test
     public void passwordUtilsTest() throws Exception {
         byte[] salt = PasswordUtils.generateSalt();
 
-        Assert.assertEquals(16, salt.length);
+        Assert.assertEquals(15, salt.length);
 
         byte[] hash = PasswordUtils.hash("password".toCharArray(), salt);
 

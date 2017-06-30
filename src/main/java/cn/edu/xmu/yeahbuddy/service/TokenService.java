@@ -6,6 +6,7 @@ import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -46,8 +47,9 @@ public class TokenService {
         }
     }
 
+    @PreAuthorize("hasAuthority('RegisterTutor')")
     public String createToken(Tutor tutor, int stage, Collection<Integer> teamIds){
-        String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt());
+        String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         tokenRepository.saveAndFlush(new Token(tokenValue, tutor.getId(), stage, teamIds));
         return tokenValue;
     }

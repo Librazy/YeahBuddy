@@ -79,9 +79,10 @@ public class Application {
                                 .setPassword("tutor")
                                 .setEmail("c@b.com")
                                 .setPhone("13988888888"));
+                @NonNls String token = tokenService.createToken(tutor, 1, Collections.singletonList(teamId));
+
                 SecurityContextHolder.getContext().setAuthentication(null);
 
-                @NonNls String token = tokenService.createToken(tutor, 1, Collections.singletonList(teamId));
                 System.out.println("Token created: " + token);
             }
         };

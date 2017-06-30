@@ -57,4 +57,9 @@ public class AdministratorService implements UserDetailsService {
 
         return administratorRepository.saveAndFlush(admin);
     }
+
+    @Transactional
+    public void deleteAdministrator(int id){
+        administratorRepository.deleteById(id);
+    }
 }
