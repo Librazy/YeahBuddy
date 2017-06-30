@@ -50,6 +50,6 @@ public class TeamService implements UserDetailsService {
         team.setEmail(dto.getEmail());
         team.setPhone(dto.getPhone());
         team.setProjectName(dto.getProjectName());
-        return teamRepository.saveAndFlush(team);
+        return teamRepository.save(team);
     }
 }

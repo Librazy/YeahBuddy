@@ -63,7 +63,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         Tutor tutor = new Tutor(dto.getName(), ybPasswordEncodeService.encode(dto.getPassword()));
         tutor.setEmail(dto.getEmail());
         tutor.setPhone(dto.getPhone());
-        return tutorRepository.saveAndFlush(tutor);
+        return tutorRepository.save(tutor);
     }
 
     @Override

@@ -60,7 +60,7 @@ public class AdministratorService implements UserDetailsService {
             throw new AdministratorNoPermissionException("administrator.permission.lacks", actorLacks);
         }
 
-        return administratorRepository.saveAndFlush(admin);
+        return administratorRepository.save(admin);
     }
 
     @Transactional
