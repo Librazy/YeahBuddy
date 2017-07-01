@@ -118,8 +118,8 @@ public final class Administrator implements UserDetails, Authentication {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
-                                                  append(name).
-                                                  toHashCode();
+                append(name).
+                toHashCode();
     }
 
     @Contract(pure = true)

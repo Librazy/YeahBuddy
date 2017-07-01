@@ -41,6 +41,7 @@ public class AdministratorDto implements Serializable {
         this.name = name;
         return this;
     }
+
     public Collection<AdministratorPermission> getAuthorities() {
         return authorities;
     }

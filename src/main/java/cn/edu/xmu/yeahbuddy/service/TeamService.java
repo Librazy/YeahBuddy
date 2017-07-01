@@ -24,7 +24,7 @@ public class TeamService implements UserDetailsService {
     private final TeamRepository teamRepository;
 
     /**
-     * @param teamRepository Autowired
+     * @param teamRepository          Autowired
      * @param ybPasswordEncodeService Autowired
      */
     @Autowired
@@ -35,6 +35,7 @@ public class TeamService implements UserDetailsService {
 
     /**
      * 查找团队 提供{@link UserDetailsService#loadUserByUsername(String)}
+     *
      * @param username 查找的团队用户名
      * @return 团队
      * @throws UsernameNotFoundException 找不到团队
@@ -54,6 +55,7 @@ public class TeamService implements UserDetailsService {
 
     /**
      * 查找团队 代理{@link TeamRepository#findByName(String)}
+     *
      * @param name 查找的团队用户名
      * @return 团队或null
      */
@@ -66,6 +68,7 @@ public class TeamService implements UserDetailsService {
 
     /**
      * 注册团队
+     *
      * @param dto 团队DTO
      * @return 新注册的团队
      * @throws UsernameAlreadyExistsException 用户名已存在

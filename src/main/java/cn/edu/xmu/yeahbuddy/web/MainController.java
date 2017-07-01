@@ -22,7 +22,7 @@ public class MainController {
     @RequestMapping("/admin")
     public String admin(Model model) {
         String name = ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName();
-        log.debug("Administrator "+ name +" viewed /admin");
+        log.debug("Administrator " + name + " viewed /admin");
         model.addAttribute("name", name);
         return "admin";
     }

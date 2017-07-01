@@ -32,7 +32,7 @@ public class TokenService {
 
     /**
      * @param tokenRepository Autowired
-     * @param tutorService Autowired
+     * @param tutorService    Autowired
      */
     @Autowired
     public TokenService(TokenRepository tokenRepository, TutorService tutorService) {
@@ -43,6 +43,7 @@ public class TokenService {
 
     /**
      * 按登录Token值查找导师与Token
+     *
      * @param tokenStr 查找的登录Token值
      * @return 导师与Token
      * @throws UsernameNotFoundException 找不到Token
@@ -73,8 +74,9 @@ public class TokenService {
 
     /**
      * 创建Token
-     * @param tutor 导师
-     * @param stage 阶段
+     *
+     * @param tutor   导师
+     * @param stage   阶段
      * @param teamIds 待评价的团队ID
      * @return Token值
      */

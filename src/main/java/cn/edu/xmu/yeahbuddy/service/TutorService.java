@@ -29,7 +29,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     private final TutorRepository tutorRepository;
 
     /**
-     * @param tutorRepository Autowired
+     * @param tutorRepository         Autowired
      * @param ybPasswordEncodeService Autowired
      */
     @Autowired
@@ -40,6 +40,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
     /**
      * 查找导师 提供{@link UserDetailsService#loadUserByUsername(String)}
+     *
      * @param username 查找的导师用户名
      * @return 导师
      * @throws UsernameNotFoundException 找不到导师
@@ -59,6 +60,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
     /**
      * 按ID查找导师
+     *
      * @param id 查找的导师id
      * @return 导师
      * @throws UsernameNotFoundException 找不到导师
@@ -77,6 +79,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
     /**
      * 查找导师 代理{@link TutorRepository#findByName(String)}
+     *
      * @param name 查找的导师 用户名
      * @return 导师 或null
      */
@@ -88,6 +91,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
     /**
      * 注册导师
+     *
      * @param dto 导师DTO
      * @return 新注册的导师
      * @throws UsernameAlreadyExistsException 用户名已存在
@@ -112,6 +116,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     /**
      * 从PreAuthenticatedAuthenticationToken查找导师
      * 提供 {@link AuthenticationUserDetailsService#loadUserDetails(Authentication)}
+     *
      * @param token {@link cn.edu.xmu.yeahbuddy.config.AuthTokenAuthenticationProvider#authenticate(Authentication)}
      * @return 导师
      */

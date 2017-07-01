@@ -144,7 +144,7 @@ public class Team implements UserDetails {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
-                                                  append(name).
-                                                  toHashCode();
+                append(name).
+                toHashCode();
     }
 }

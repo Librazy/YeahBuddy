@@ -52,8 +52,8 @@ public class Application {
                                 .setPassword("admin")
                                 .setAuthorities(
                                         Arrays.stream(AdministratorPermission.values())
-                                              .map(AdministratorPermission::name)
-                                              .collect(Collectors.toSet())));
+                                                .map(AdministratorPermission::name)
+                                                .collect(Collectors.toSet())));
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
             int teamId = 0;
