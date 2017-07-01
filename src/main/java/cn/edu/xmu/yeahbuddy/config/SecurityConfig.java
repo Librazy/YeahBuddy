@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -26,11 +27,15 @@ public class SecurityConfig {
     @Order(3)
     @Configuration
     public static class AdministratorSecurityConfig extends WebSecurityConfigurerAdapter {
+
         private final AdministratorService administratorService;
 
+        private Environment environment;
+
         @Autowired
-        public AdministratorSecurityConfig(AdministratorService administratorService) {
+        public AdministratorSecurityConfig(AdministratorService administratorService, Environment environment) {
             this.administratorService = administratorService;
+            this.environment = environment;
         }
 
         @Override
@@ -39,6 +44,21 @@ public class SecurityConfig {
                     .authorizeRequests()
                         .antMatchers("/webjars/**")
                             .permitAll();
+
+            String activeDb = environment.getProperty("spring.datasource.driver-class-name");
+
+            if(activeDb != null && activeDb.contains("org.h2")) {
+                http
+                        .authorizeRequests()
+                            .antMatchers("/h2-console/**")
+                                .permitAll();
+
+                http
+                        .headers()
+                            .frameOptions()
+                                .sameOrigin();
+            }
+
             http
                     .authorizeRequests()
                         .anyRequest()
