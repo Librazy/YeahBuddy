@@ -31,6 +31,11 @@ repositories {
     }
 }
 
+configurations {
+    webjars
+    compile.extendsFrom(webjars)
+}
+
 dependencies {
     compile "org.springframework.boot:spring-boot-starter:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
@@ -40,7 +45,7 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-devtools:$springBootVersion"
 
-    compile 'org.webjars.npm:bootstrap:4.0.0-alpha.6'
+    webjars 'org.webjars.npm:bootstrap:4.0.0-alpha.6'
     compile 'org.webjars:webjars-locator:0.32-1'
 
     compile 'com.h2database:h2:1.4.196'
@@ -57,4 +62,30 @@ dependencies {
 
 compileJava {
     options.compilerArgs += ["-Xlint:all"]
+}
+
+task('webjarsExtraction') {
+    doLast {
+        configurations.webjars.each { jar ->
+            println jar.absolutePath
+            def config = configurations.webjars.resolvedConfiguration
+            def artifact = config.resolvedArtifacts.find {
+                it.file.toString() == jar.absolutePath
+            }
+
+            def upStreamVersion = "${artifact.moduleVersion.id.version}"
+            upStreamVersion = upStreamVersion.replaceAll(/(-[\d.-]+)/, '')
+
+            copy {
+                from zipTree(jar)
+                into file("${buildDir}/webjars-content/${artifact.name}")
+            }
+            copy {
+                from "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${upStreamVersion}",
+                        "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${artifact.moduleVersion.id.version}"
+
+                into "/src/main/resources/webjars/${artifact.name}"
+            }
+        }
+    }
 }

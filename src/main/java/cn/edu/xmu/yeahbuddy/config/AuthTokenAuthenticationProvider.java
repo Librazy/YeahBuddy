@@ -5,6 +5,7 @@ import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.service.TokenService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthTokenAuthenticationProvider implements AuthenticationProvider {
 
+    @NonNls
     private static Log log = LogFactory.getLog(PreAuthenticatedAuthenticationProvider.class);
 
     private final TokenService tokenService;

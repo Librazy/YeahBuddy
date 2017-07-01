@@ -3,6 +3,7 @@ package cn.edu.xmu.yeahbuddy.config;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
+    @NonNls
     private static Log log = LogFactory.getLog(AuthTokenFilter.class);
 
     /**

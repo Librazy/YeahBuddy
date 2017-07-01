@@ -6,6 +6,7 @@ import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,7 +50,7 @@ public class TokenService {
      * @throws UsernameNotFoundException 找不到Token
      */
     @Transactional(readOnly = true)
-    public Pair<Tutor, Token> loadToken(String tokenStr) throws UsernameNotFoundException {
+    public Pair<Tutor, Token> loadToken(@NonNls String tokenStr) throws UsernameNotFoundException {
         log.debug("Trying to load Token " + tokenStr);
         Optional<Token> tok = tokenRepository.findById(tokenStr);
         if (!tok.isPresent()) {
