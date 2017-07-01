@@ -39,6 +39,12 @@ public class SecurityConfig {
         }
 
         @Override
+        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(administratorService).passwordEncoder(new YbPasswordEncodeService());
+        }
+
+        @Override
+        // @formatter:off
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
@@ -78,15 +84,11 @@ public class SecurityConfig {
                     .csrf()
                         .disable();
         }
+        // @formatter:on
 
         @Bean
         public AuthenticationManager authenticationManagerBean() throws Exception {
             return super.authenticationManagerBean();
-        }
-
-        @Override
-        public void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(administratorService).passwordEncoder(new YbPasswordEncodeService());
         }
     }
 
@@ -102,6 +104,7 @@ public class SecurityConfig {
         }
 
         @Override
+        // @formatter:off
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .antMatcher("/team/**")
@@ -123,6 +126,7 @@ public class SecurityConfig {
                         .csrf()
                             .disable();
         }
+        // @formatter:on
 
         @Bean
         public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -150,6 +154,7 @@ public class SecurityConfig {
         }
 
         @Override
+        // @formatter:off
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .addFilterBefore(
@@ -179,6 +184,7 @@ public class SecurityConfig {
                     .csrf()
                         .disable();
         }
+        // @formatter:on
 
         @Bean
         public AuthenticationManager authenticationManagerBean() throws Exception {
