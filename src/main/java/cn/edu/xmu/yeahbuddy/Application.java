@@ -11,6 +11,9 @@ import cn.edu.xmu.yeahbuddy.service.AdministratorService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.service.TokenService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
+import cn.edu.xmu.yeahbuddy.web.MainController;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.TestOnly;
 import org.springframework.boot.CommandLineRunner;
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class Application {
+
+    private static Log log = LogFactory.getLog(MainController.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -78,7 +83,7 @@ public class Application {
 
                 SecurityContextHolder.getContext().setAuthentication(null);
 
-                System.out.println("Token created: " + token);
+                log.info("Token created: " + token);
             }
         };
 

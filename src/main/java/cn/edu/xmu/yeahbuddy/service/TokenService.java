@@ -4,6 +4,8 @@ import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +21,8 @@ import java.util.Optional;
 @Service
 public class TokenService {
 
+    private static Log log = LogFactory.getLog(TokenService.class);
+
     private final TokenRepository tokenRepository;
 
     private final TutorService tutorService;
@@ -31,18 +35,23 @@ public class TokenService {
 
     @Transactional(readOnly = true)
     public Pair<Tutor, Token> loadToken(String tokenStr) throws UsernameNotFoundException {
+        log.debug("Trying to load Token " + tokenStr);
         Optional<Token> tok = tokenRepository.findById(tokenStr);
         if (!tok.isPresent()) {
+            log.info("Failed to load Token " + tokenStr + ": not found");
             throw new UsernameNotFoundException(tokenStr);
         }
         try {
             Token token = tok.get();
             if (token.isRevoked()) {
+                log.info("Failed to load Token " + tokenStr + ": revoked");
                 throw new BadCredentialsException(tokenStr);
             }
+            log.info("Loaded Token " + tokenStr + ", loading Tutor " + token.getTutorId());
             Tutor tutor = tutorService.loadTutorById(token.getTutorId());
             return Pair.of(tutor, token);
         } catch (Exception e) {
+            log.info("Failed to load Token " + tokenStr + ": " + e.getMessage(), e);
             throw new UsernameNotFoundException(tokenStr, e);
         }
     }

@@ -4,6 +4,8 @@ import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.repo.TeamRepository;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TeamService implements UserDetailsService {
+
+    private static Log log = LogFactory.getLog(TeamService.class);
 
     private final YbPasswordEncodeService ybPasswordEncodeService;
 
@@ -27,10 +31,13 @@ public class TeamService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public Team loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.debug("Trying to load Team " + username);
         Team team = teamRepository.findByName(username);
         if (team == null) {
+            log.info("Failed to load Team " + username + ": not found");
             throw new UsernameNotFoundException(username);
         }
+        log.debug("Loaded Team " + username);
         return team;
     }
 
@@ -42,7 +49,9 @@ public class TeamService implements UserDetailsService {
     @Transactional
     @PreAuthorize("hasAuthority('RegisterTeam')")
     public Team registerNewTeam(TeamDto dto) throws UsernameAlreadyExistsException {
+        log.debug("Trying to register new Team " + dto.getName());
         if (teamRepository.findByName(dto.getName()) != null) {
+            log.info("Failed to register Team " + dto.getName() + ": name already exist");
             throw new UsernameAlreadyExistsException("team.name.exist");
         }
 
@@ -50,6 +59,8 @@ public class TeamService implements UserDetailsService {
         team.setEmail(dto.getEmail());
         team.setPhone(dto.getPhone());
         team.setProjectName(dto.getProjectName());
-        return teamRepository.save(team);
+        Team result = teamRepository.save(team);
+        log.debug("Registered new Team " + result.toString());
+        return result;
     }
 }

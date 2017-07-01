@@ -1,5 +1,7 @@
 package cn.edu.xmu.yeahbuddy.config;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -8,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.ServletException;
@@ -20,7 +23,9 @@ import java.util.Map;
 
 public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
-    public AuthTokenFilter(String defaultFilterProcessesUrl, String defaultTargetUrl, AuthenticationManager authenticationManager) {
+    private static Log log = LogFactory.getLog(AuthTokenFilter.class);
+
+    AuthTokenFilter(String defaultFilterProcessesUrl, String defaultTargetUrl, AuthenticationManager authenticationManager) {
         super(defaultFilterProcessesUrl);
         super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(defaultFilterProcessesUrl));
         setAuthenticationManager(authenticationManager);
@@ -35,12 +40,15 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         Map<String, String[]> params = request.getParameterMap();
+        log.debug("Authentication recevied at " + request.getRequestURI());
         if (!params.isEmpty() && params.containsKey("auth_token")) {
             String token = params.get("auth_token")[0];
             if (token != null) {
+                log.debug("Authenticating token " + token);
                 return getAuthenticationManager().authenticate(new TokenAuthentication(token));
             }
         }
+        log.info("No auth_token found on " + request.toString());
         throw new BadCredentialsException("auth_token");
     }
 
