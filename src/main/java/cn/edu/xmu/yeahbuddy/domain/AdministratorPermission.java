@@ -1,5 +1,6 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.jetbrains.annotations.Contract;
 import org.springframework.security.core.GrantedAuthority;
 
 public enum AdministratorPermission implements GrantedAuthority {
@@ -14,6 +15,7 @@ public enum AdministratorPermission implements GrantedAuthority {
     RegisterTeam,
     RegisterTutor;
 
+    @Contract(pure = true)
     @Override
     public String getAuthority() {
         return name();

@@ -20,10 +20,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * Token认证过滤器
+ */
 public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     private static Log log = LogFactory.getLog(AuthTokenFilter.class);
 
+    /**
+     * @param defaultFilterProcessesUrl Token登录URL
+     * @param defaultTargetUrl 目标跳转URL
+     * @param authenticationManager 认证管理器
+     */
     AuthTokenFilter(String defaultFilterProcessesUrl, String defaultTargetUrl, AuthenticationManager authenticationManager) {
         super(defaultFilterProcessesUrl);
         super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(defaultFilterProcessesUrl));
@@ -36,8 +44,15 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
         });
     }
 
+    /**
+     * 尝试认证当前登陆请求
+     * @param request http请求
+     * @param response http响应
+     * @return 成功登录的认证
+     * @throws AuthenticationException 认证失败
+     */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         Map<String, String[]> params = request.getParameterMap();
         log.debug("Authentication recevied at " + request.getRequestURI());
         if (!params.isEmpty() && params.containsKey("auth_token")) {
@@ -51,6 +66,9 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
         throw new BadCredentialsException("auth_token");
     }
 
+    /**
+     * Token值的封装
+     */
     class TokenAuthentication implements Authentication {
 
         private static final long serialVersionUID = 443170173055281706L;

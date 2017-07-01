@@ -2,6 +2,7 @@ package cn.edu.xmu.yeahbuddy.model;
 
 import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jetbrains.annotations.Contract;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -33,6 +34,7 @@ public class AdministratorDto implements Serializable {
         return this;
     }
 
+    @Contract(pure = true)
     public String getName() {
         return name;
     }
@@ -42,6 +44,7 @@ public class AdministratorDto implements Serializable {
         return this;
     }
 
+    @Contract(pure = true)
     public Collection<AdministratorPermission> getAuthorities() {
         return authorities;
     }

@@ -1,6 +1,7 @@
 package cn.edu.xmu.yeahbuddy.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jetbrains.annotations.Contract;
 
 import javax.validation.constraints.NotNull;
 
@@ -22,6 +23,7 @@ public class TutorDto {
     @NotEmpty
     private String email;
 
+    @Contract(pure = true)
     public String getPassword() {
         return password;
     }
@@ -31,6 +33,7 @@ public class TutorDto {
         return this;
     }
 
+    @Contract(pure = true)
     public String getName() {
         return name;
     }
@@ -40,6 +43,7 @@ public class TutorDto {
         return this;
     }
 
+    @Contract(pure = true)
     public String getPhone() {
         return phone;
     }
@@ -49,6 +53,7 @@ public class TutorDto {
         return this;
     }
 
+    @Contract(pure = true)
     public String getEmail() {
         return email;
     }

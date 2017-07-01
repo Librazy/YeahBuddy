@@ -23,10 +23,12 @@ public final class PasswordUtils {
     private PasswordUtils() {
     }
 
+    @Contract(pure = true)
     public static byte[] generateSalt() {
         return generateSalt(15);
     }
 
+    @Contract(pure = true)
     public static byte[] generateSalt(int length) {
         byte[] salt = new byte[length];
         random.nextBytes(salt);

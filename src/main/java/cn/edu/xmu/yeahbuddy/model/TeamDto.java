@@ -1,6 +1,7 @@
 package cn.edu.xmu.yeahbuddy.model;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jetbrains.annotations.Contract;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class TeamDto implements Serializable {
     @NotEmpty
     private String email;
 
+    @Contract(pure = true)
     public String getPassword() {
         return password;
     }
@@ -38,6 +40,7 @@ public class TeamDto implements Serializable {
         return this;
     }
 
+    @Contract(pure = true)
     public String getName() {
         return name;
     }
@@ -47,6 +50,7 @@ public class TeamDto implements Serializable {
         return this;
     }
 
+    @Contract(pure = true)
     public String getProjectName() {
         return projectName;
     }
@@ -56,6 +60,7 @@ public class TeamDto implements Serializable {
         return this;
     }
 
+    @Contract(pure = true)
     public String getPhone() {
         return phone;
     }
@@ -65,6 +70,7 @@ public class TeamDto implements Serializable {
         return this;
     }
 
+    @Contract(pure = true)
     public String getEmail() {
         return email;
     }
