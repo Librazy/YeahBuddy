@@ -34,6 +34,7 @@ public class AuthTokenAuthenticationProvider implements AuthenticationProvider {
 
     /**
      * 尝试认证当前Token
+     *
      * @param authentication 待认证的令牌
      * @return 导师与登陆Token
      * @throws AuthenticationException 认证失败
@@ -48,6 +49,7 @@ public class AuthTokenAuthenticationProvider implements AuthenticationProvider {
 
     /**
      * 仅支持{@link AuthTokenFilter.TokenAuthentication}
+     *
      * @param authentication 待测试class
      * @return 是否为{@link AuthTokenFilter.TokenAuthentication}或派生
      */

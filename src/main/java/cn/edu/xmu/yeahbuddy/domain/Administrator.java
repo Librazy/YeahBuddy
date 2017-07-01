@@ -49,6 +49,12 @@ public final class Administrator implements UserDetails, Authentication {
 
     @Override
     @Contract(pure = true)
+    public Collection<AdministratorPermission> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    @Contract(pure = true)
     public String getPassword() {
         return password;
     }
@@ -56,27 +62,6 @@ public final class Administrator implements UserDetails, Authentication {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    @Override
-    @Contract(pure = true)
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    @Contract(pure = true)
-    public Collection<AdministratorPermission> getAuthorities() {
-        return authorities;
-    }
-
-    public void setAuthorities(Collection<AdministratorPermission> authorities) {
-        this.authorities = authorities;
-    }
-
 
     @Contract(pure = true)
     @Override
@@ -108,10 +93,18 @@ public final class Administrator implements UserDetails, Authentication {
         return true;
     }
 
-    @Contract(value = "null -> false", pure = true)
     @Override
-    public boolean equals(Object rhs) {
-        return rhs instanceof Administrator && name.equals(((Administrator) rhs).getName());
+    @Contract(pure = true)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAuthorities(Collection<AdministratorPermission> authorities) {
+        this.authorities = authorities;
     }
 
     @Contract(pure = true)
@@ -120,6 +113,12 @@ public final class Administrator implements UserDetails, Authentication {
         return new HashCodeBuilder(17, 37).
                 append(name).
                 toHashCode();
+    }
+
+    @Contract(value = "null -> false", pure = true)
+    @Override
+    public boolean equals(Object rhs) {
+        return rhs instanceof Administrator && name.equals(((Administrator) rhs).getName());
     }
 
     @Contract(pure = true)

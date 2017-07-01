@@ -33,6 +33,16 @@ public class ReviewKey implements Serializable {
         this.viewerIsAdmin = viewerIsAdmin;
     }
 
+    @Override
+    public int hashCode() {
+        return (isViewerIsAdmin() ? Integer.MIN_VALUE : 0) + (teamId << 20) + (stage << 10) + viewer;
+    }
+
+    @Override
+    public boolean equals(Object t) {
+        return t instanceof ReviewKey && ((ReviewKey) t).getTeamId() == this.getTeamId() && ((ReviewKey) t).getStage() == this.getStage() && ((ReviewKey) t).getViewer() == this.getViewer() && ((ReviewKey) t).isViewerIsAdmin() == this.isViewerIsAdmin();
+    }
+
     @Contract(pure = true)
     public int getTeamId() {
         return teamId;
@@ -67,16 +77,6 @@ public class ReviewKey implements Serializable {
 
     public void setViewerIsAdmin(boolean viewerIsAdmin) {
         this.viewerIsAdmin = viewerIsAdmin;
-    }
-
-    @Override
-    public boolean equals(Object t) {
-        return t instanceof ReviewKey && ((ReviewKey) t).getTeamId() == this.getTeamId() && ((ReviewKey) t).getStage() == this.getStage() && ((ReviewKey) t).getViewer() == this.getViewer() && ((ReviewKey) t).isViewerIsAdmin() == this.isViewerIsAdmin();
-    }
-
-    @Override
-    public int hashCode() {
-        return (isViewerIsAdmin() ? Integer.MIN_VALUE : 0) + (teamId << 20) + (stage << 10) + viewer;
     }
 
 }

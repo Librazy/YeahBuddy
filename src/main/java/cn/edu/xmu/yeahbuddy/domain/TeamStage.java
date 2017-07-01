@@ -26,6 +26,18 @@ public class TeamStage implements Serializable {
     }
 
     @Contract(pure = true)
+    @Override
+    public int hashCode() {
+        return (teamId << 16) + stage;
+    }
+
+    @Contract(pure = true)
+    @Override
+    public boolean equals(Object t) {
+        return t instanceof TeamStage && ((TeamStage) t).getTeamId() == this.getTeamId() && ((TeamStage) t).getStage() == this.getStage();
+    }
+
+    @Contract(pure = true)
     public int getTeamId() {
         return teamId;
     }
@@ -41,17 +53,5 @@ public class TeamStage implements Serializable {
 
     public void setStage(int stage) {
         this.stage = stage;
-    }
-
-    @Contract(pure = true)
-    @Override
-    public boolean equals(Object t) {
-        return t instanceof TeamStage && ((TeamStage) t).getTeamId() == this.getTeamId() && ((TeamStage) t).getStage() == this.getStage();
-    }
-
-    @Contract(pure = true)
-    @Override
-    public int hashCode() {
-        return (teamId << 16) + stage;
     }
 }

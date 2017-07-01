@@ -55,25 +55,6 @@ public class Tutor implements UserDetails {
         return id;
     }
 
-    @Override
-    @Contract(pure = true)
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Contract(pure = true)
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Contract(pure = true)
     public String getPhone() {
         return phone;
@@ -96,6 +77,16 @@ public class Tutor implements UserDetails {
     @Contract(pure = true)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(ROLE_TUTOR));
+    }
+
+    @Override
+    @Contract(pure = true)
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -128,10 +119,13 @@ public class Tutor implements UserDetails {
         return true;
     }
 
-    @Contract(value = "null -> false", pure = true)
-    @Override
-    public boolean equals(Object rhs) {
-        return rhs instanceof Tutor && name.equals(((Tutor) rhs).getName());
+    @Contract(pure = true)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Contract(pure = true)
@@ -140,5 +134,11 @@ public class Tutor implements UserDetails {
         return new HashCodeBuilder(17, 37).
                 append(name).
                 toHashCode();
+    }
+
+    @Contract(value = "null -> false", pure = true)
+    @Override
+    public boolean equals(Object rhs) {
+        return rhs instanceof Tutor && name.equals(((Tutor) rhs).getName());
     }
 }

@@ -58,25 +58,6 @@ public class Team implements UserDetails {
         return id;
     }
 
-    @Override
-    @Contract(pure = true)
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Contract(pure = true)
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Contract(pure = true)
     public String getProjectName() {
         return projectName;
@@ -110,6 +91,16 @@ public class Team implements UserDetails {
     }
 
     @Override
+    @Contract(pure = true)
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
     public String getUsername() {
         return getName();
     }
@@ -134,10 +125,13 @@ public class Team implements UserDetails {
         return true;
     }
 
-    @Contract(value = "null -> false", pure = true)
-    @Override
-    public boolean equals(Object rhs) {
-        return rhs instanceof Team && name.equals(((Team) rhs).getName());
+    @Contract(pure = true)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Contract(pure = true)
@@ -146,5 +140,11 @@ public class Team implements UserDetails {
         return new HashCodeBuilder(17, 37).
                 append(name).
                 toHashCode();
+    }
+
+    @Contract(value = "null -> false", pure = true)
+    @Override
+    public boolean equals(Object rhs) {
+        return rhs instanceof Team && name.equals(((Team) rhs).getName());
     }
 }

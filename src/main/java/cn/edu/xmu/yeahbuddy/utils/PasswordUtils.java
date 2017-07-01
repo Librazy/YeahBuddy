@@ -36,6 +36,13 @@ public final class PasswordUtils {
     }
 
     @Contract(pure = true)
+    public static boolean isExpectedPassword(char[] password, byte[] salt, byte[] expectedHash) {
+        byte[] pwdHash = hash(password, salt);
+        Arrays.fill(password, Character.MIN_VALUE);
+        return MessageDigest.isEqual(pwdHash, expectedHash);
+    }
+
+    @Contract(pure = true)
     public static byte[] hash(char[] password, byte[] salt) {
         PBEKeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, KEY_LENGTH);
         Arrays.fill(password, Character.MIN_VALUE);
@@ -47,12 +54,5 @@ public final class PasswordUtils {
         } finally {
             spec.clearPassword();
         }
-    }
-
-    @Contract(pure = true)
-    public static boolean isExpectedPassword(char[] password, byte[] salt, byte[] expectedHash) {
-        byte[] pwdHash = hash(password, salt);
-        Arrays.fill(password, Character.MIN_VALUE);
-        return MessageDigest.isEqual(pwdHash, expectedHash);
     }
 }

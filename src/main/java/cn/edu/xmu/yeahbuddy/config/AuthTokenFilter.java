@@ -12,10 +12,8 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -29,8 +27,8 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     /**
      * @param defaultFilterProcessesUrl Token登录URL
-     * @param defaultTargetUrl 目标跳转URL
-     * @param authenticationManager 认证管理器
+     * @param defaultTargetUrl          目标跳转URL
+     * @param authenticationManager     认证管理器
      */
     AuthTokenFilter(String defaultFilterProcessesUrl, String defaultTargetUrl, AuthenticationManager authenticationManager) {
         super(defaultFilterProcessesUrl);
@@ -46,7 +44,8 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     /**
      * 尝试认证当前登陆请求
-     * @param request http请求
+     *
+     * @param request  http请求
      * @param response http响应
      * @return 成功登录的认证
      * @throws AuthenticationException 认证失败
