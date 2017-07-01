@@ -46,6 +46,7 @@ dependencies {
 
     compile 'com.h2database:h2:1.4.196'
     compile 'mysql:mysql-connector-java:6.0.6'
+    compile 'com.google.code.findbugs:jsr305:3.0.2'
     compile group: 'org.jetbrains', name: 'annotations', version: '15.0'
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat:2.0.0.M2'

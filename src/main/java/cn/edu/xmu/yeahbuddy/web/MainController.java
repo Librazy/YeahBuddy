@@ -3,7 +3,6 @@ package cn.edu.xmu.yeahbuddy.web;
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
-import cn.edu.xmu.yeahbuddy.service.AdministratorService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.access.prepost.PreAuthorize;

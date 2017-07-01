@@ -7,6 +7,7 @@ import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,12 +23,22 @@ public class TeamService implements UserDetailsService {
 
     private final TeamRepository teamRepository;
 
+    /**
+     * @param teamRepository Autowired
+     * @param ybPasswordEncodeService Autowired
+     */
     @Autowired
     public TeamService(TeamRepository teamRepository, YbPasswordEncodeService ybPasswordEncodeService) {
         this.teamRepository = teamRepository;
         this.ybPasswordEncodeService = ybPasswordEncodeService;
     }
 
+    /**
+     * 查找团队 提供{@link UserDetailsService#loadUserByUsername(String)}
+     * @param username 查找的团队用户名
+     * @return 团队
+     * @throws UsernameNotFoundException 找不到团队
+     */
     @Override
     @Transactional(readOnly = true)
     public Team loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,11 +52,24 @@ public class TeamService implements UserDetailsService {
         return team;
     }
 
+    /**
+     * 查找团队 代理{@link TeamRepository#findByName(String)}
+     * @param name 查找的团队用户名
+     * @return 团队或null
+     */
+    @Nullable
     @Transactional(readOnly = true)
     public Team findByName(String name) {
+        log.debug("Finding Team " + name);
         return teamRepository.findByName(name);
     }
 
+    /**
+     * 注册团队
+     * @param dto 团队DTO
+     * @return 新注册的团队
+     * @throws UsernameAlreadyExistsException 用户名已存在
+     */
     @Transactional
     @PreAuthorize("hasAuthority('RegisterTeam')")
     public Team registerNewTeam(TeamDto dto) throws UsernameAlreadyExistsException {

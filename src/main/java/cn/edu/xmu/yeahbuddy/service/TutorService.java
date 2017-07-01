@@ -1,6 +1,5 @@
 package cn.edu.xmu.yeahbuddy.service;
 
-import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TutorRepository;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
@@ -8,9 +7,10 @@ import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -28,12 +28,22 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
     private final TutorRepository tutorRepository;
 
+    /**
+     * @param tutorRepository Autowired
+     * @param ybPasswordEncodeService Autowired
+     */
     @Autowired
     public TutorService(TutorRepository tutorRepository, YbPasswordEncodeService ybPasswordEncodeService) {
         this.tutorRepository = tutorRepository;
         this.ybPasswordEncodeService = ybPasswordEncodeService;
     }
 
+    /**
+     * 查找导师 提供{@link UserDetailsService#loadUserByUsername(String)}
+     * @param username 查找的导师用户名
+     * @return 导师
+     * @throws UsernameNotFoundException 找不到导师
+     */
     @Override
     @Transactional(readOnly = true)
     public Tutor loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -47,6 +57,12 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         return tutor;
     }
 
+    /**
+     * 按ID查找导师
+     * @param id 查找的导师id
+     * @return 导师
+     * @throws UsernameNotFoundException 找不到导师
+     */
     @Transactional(readOnly = true)
     public Tutor loadTutorById(int id) throws UsernameNotFoundException {
         log.debug("Trying to load Tutor id " + id);
@@ -59,11 +75,23 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         return tutor.get();
     }
 
+    /**
+     * 查找导师 代理{@link TutorRepository#findByName(String)}
+     * @param name 查找的导师 用户名
+     * @return 导师 或null
+     */
+    @Nullable
     @Transactional(readOnly = true)
     public Tutor findByName(String name) {
         return tutorRepository.findByName(name);
     }
 
+    /**
+     * 注册导师
+     * @param dto 导师DTO
+     * @return 新注册的导师
+     * @throws UsernameAlreadyExistsException 用户名已存在
+     */
     @Transactional
     @PreAuthorize("hasAuthority('RegisterTutor')")
     public Tutor registerNewTutor(TutorDto dto) throws UsernameAlreadyExistsException {
@@ -81,8 +109,14 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         return result;
     }
 
+    /**
+     * 从PreAuthenticatedAuthenticationToken查找导师
+     * 提供 {@link AuthenticationUserDetailsService#loadUserDetails(Authentication)}
+     * @param token {@link cn.edu.xmu.yeahbuddy.config.AuthTokenAuthenticationProvider#authenticate(Authentication)}
+     * @return 导师
+     */
     @Override
-    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
+    public Tutor loadUserDetails(PreAuthenticatedAuthenticationToken token) {
         log.debug("Trying to load Tutor PreAuthenticatedAuthenticationToken " + token);
         return (Tutor) token.getPrincipal();
     }

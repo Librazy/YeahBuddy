@@ -56,14 +56,12 @@ public class AuthenticationTests extends AbstractTransactionalJUnit4SpringContex
                             .setAuthorities(
                                     Stream.of(AdministratorPermission.values())
                                           .map(AdministratorPermission::name)
-                                          .collect(Collectors.toSet())),
-                    ultimate);
+                                          .collect(Collectors.toSet())));
             administratorService.registerNewAdministrator(
                     new AdministratorDto()
                             .setName("other")
                             .setPassword("one")
-                            .setAuthorities(new ArrayList<>(0)),
-                    ultimate);
+                            .setAuthorities(new ArrayList<>(0)));
             SecurityContextHolder.getContext().setAuthentication(null);
 
             return null;
@@ -82,7 +80,6 @@ public class AuthenticationTests extends AbstractTransactionalJUnit4SpringContex
     @Test
     @WithUserDetails(value = "some", userDetailsServiceBeanName = "administratorService")
     public void registerNewAdministratorTest() {
-        Administrator admin = administratorService.loadUserByUsername("some");
         administratorService.registerNewAdministrator(
                 new AdministratorDto()
                         .setName("admin2")
@@ -90,8 +87,7 @@ public class AuthenticationTests extends AbstractTransactionalJUnit4SpringContex
                         .setAuthorities(
                                 Stream.of(AdministratorPermission.ViewReport)
                                       .map(AdministratorPermission::name)
-                                      .collect(Collectors.toSet())),
-                admin);
+                                      .collect(Collectors.toSet())));
     }
 
     @Test
@@ -105,8 +101,7 @@ public class AuthenticationTests extends AbstractTransactionalJUnit4SpringContex
                         .setAuthorities(
                                 Stream.of(AdministratorPermission.ViewReport)
                                       .map(AdministratorPermission::name)
-                                      .collect(Collectors.toSet())),
-                (Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+                                      .collect(Collectors.toSet())));
     }
 
 }

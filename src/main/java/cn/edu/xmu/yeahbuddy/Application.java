@@ -53,8 +53,7 @@ public class Application {
                                 .setAuthorities(
                                         Arrays.stream(AdministratorPermission.values())
                                               .map(AdministratorPermission::name)
-                                              .collect(Collectors.toSet())),
-                        ultimate);
+                                              .collect(Collectors.toSet())));
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
             int teamId = 0;

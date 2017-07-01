@@ -18,6 +18,9 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * 导师登录Token服务
+ */
 @Service
 public class TokenService {
 
@@ -27,12 +30,23 @@ public class TokenService {
 
     private final TutorService tutorService;
 
+    /**
+     * @param tokenRepository Autowired
+     * @param tutorService Autowired
+     */
     @Autowired
     public TokenService(TokenRepository tokenRepository, TutorService tutorService) {
         this.tokenRepository = tokenRepository;
         this.tutorService = tutorService;
     }
 
+
+    /**
+     * 按登录Token值查找导师与Token
+     * @param tokenStr 查找的登录Token值
+     * @return 导师与Token
+     * @throws UsernameNotFoundException 找不到Token
+     */
     @Transactional(readOnly = true)
     public Pair<Tutor, Token> loadToken(String tokenStr) throws UsernameNotFoundException {
         log.debug("Trying to load Token " + tokenStr);
@@ -56,6 +70,14 @@ public class TokenService {
         }
     }
 
+
+    /**
+     * 创建Token
+     * @param tutor 导师
+     * @param stage 阶段
+     * @param teamIds 待评价的团队ID
+     * @return Token值
+     */
     @Transactional
     @PreAuthorize("hasAuthority('RegisterTutor')")
     public String createToken(Tutor tutor, int stage, Collection<Integer> teamIds) {

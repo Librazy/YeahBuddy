@@ -1,10 +1,12 @@
 package cn.edu.xmu.yeahbuddy.model;
 
+import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class AdministratorDto implements Serializable {
 
@@ -20,7 +22,7 @@ public class AdministratorDto implements Serializable {
 
     @NotNull
     @NotEmpty
-    private Collection<String> authorities;
+    private Collection<AdministratorPermission> authorities;
 
     public String getPassword() {
         return password;
@@ -39,13 +41,12 @@ public class AdministratorDto implements Serializable {
         this.name = name;
         return this;
     }
-
-    public Collection<String> getAuthorities() {
+    public Collection<AdministratorPermission> getAuthorities() {
         return authorities;
     }
 
     public AdministratorDto setAuthorities(Collection<String> authorities) {
-        this.authorities = authorities;
+        this.authorities = authorities.stream().map(AdministratorPermission::valueOf).collect(Collectors.toSet());
         return this;
     }
 }
