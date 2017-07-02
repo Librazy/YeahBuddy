@@ -1,36 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html data-th-lang="${#locale.language}">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title data-th-text="#{login.title}">YeahBuddy主页</title>
-    <link rel="stylesheet" href="/webjars/bootstrap/dist/css/bootstrap.min.css">
-    <script src="/webjars/jquery/dist/jquery.min.js"></script>
-    <script src="/webjars/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css">
+    <style>
+        #bg {
+            background: #348cb2 url("/static/image/xmu2.jpg") no-repeat bottom right;
+            height: 100%;
+            right: 0;
+            opacity: 1;
+            position: fixed;
+            top: 0;
+            background-size: cover;
+            width: 736px;
+            filter: blur(3px)
+        }
+
+        @media screen and (min-width: 736px) {
+            @keyframes bg {
+                0% {
+                    transform: translate3d(0, 0, 0);
+                }
+                50% {
+                    transform: translate3d(calc(100vw - 3 * 100vh), 0, 0);
+                }
+                100% {
+                    transform: translate3d(0, 0, 0);
+                }
+            }
+
+            #bg {
+                animation: bg 60s ease-in-out infinite;
+                backface-visibility: hidden;
+                background: #348cb2 url("/static/image/xmu.jpg") no-repeat bottom left;
+                height: 100%;
+                left: 0;
+                opacity: 1;
+                position: fixed;
+                top: 0;
+                background-size: contain;
+                width: 3000px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-<div class="container">
+<div id="bg"></div>
+<div class="container" style="margin-top: 10%">
     <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="row clearfix">
-                <div class="col-md-4 offset-md-4 column">
+                <img class="col-lg-2 offset-lg-2 hidden-md-down" src="/static/image/favicon.svg">
+                <div class="col-lg-5 offset-lg-1 col-md-6 offset-md-3 column col-sm-10 offset-sm-1">
                     <form class="form-horizontal" data-th-action="@{/login}" method="post" role="form">
-                        <div class="form-group row">
-                            <label for="username" class="col-sm-3 form-control-label">用户名</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="username" name="username"/>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="password" class="col-sm-3 form-control-label">密码</label>
-                            <div class="col-sm-9">
-                                <input type="password" class="form-control" id="password" name="password"/>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-primary btn-block">登录</button>
-                            </div>
+                        <fieldset class="form-group">
+                            <label for="username" class="bmd-label-floating">用户名</label>
+                            <input type="text" class="form-control" id="username" name="username"/>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="password" class="bmd-label-floating">密码</label>
+                            <input type="password" class="form-control" id="password" name="password"/>
+                        </fieldset>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block">登录</button>
                         </div>
                     </form>
                 </div>
@@ -38,9 +73,7 @@
         </div>
     </div>
     <div class="row clearfix">
-        <div class="col-md-2 column">
-        </div>
-        <div class="col-md-8 column">
+        <div class="col-md-8 offset-md-2 column">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="#">关于我们</a>
@@ -59,9 +92,13 @@
                 </li>
             </ul>
         </div>
-        <div class="col-md-2 column">
-        </div>
     </div>
 </div>
+<script src="/webjars/jquery/dist/jquery.min.js"></script>
+<script src="/webjars/tether/dist/js/tether.min.js"></script>
+<script src="/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"></script>
+<script>
+    $('body').bootstrapMaterialDesign();
+</script>
 </body>
 </html>

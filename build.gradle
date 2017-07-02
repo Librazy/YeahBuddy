@@ -45,7 +45,8 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-devtools:$springBootVersion"
 
-    webjars 'org.webjars.npm:bootstrap:4.0.0-alpha.6'
+    webjars 'org.webjars.bower:bootstrap-material-design:4.0.2'
+    webjars 'org.webjars.bower:bootstrap:4.0.0-alpha.6'
     compile 'org.webjars:webjars-locator:0.32-1'
 
     compile 'com.h2database:h2:1.4.196'
@@ -88,4 +89,8 @@ task('webjarsExtraction') {
             }
         }
     }
+}
+
+processResources {
+    exclude('/webjars/**')
 }
