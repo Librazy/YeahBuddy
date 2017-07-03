@@ -118,6 +118,8 @@ public class TeamService implements UserDetailsService {
             if (teamRepository.findByName(dto.getName()) != null) {
                 log.info("Failed to update Team " + team.getName() + ": name already exist");
                 throw new UsernameAlreadyExistsException("team.name.exist");
+            }else{
+                team.setName(dto.getName());
             }
         }
         return teamRepository.save(team);

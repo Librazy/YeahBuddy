@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -126,5 +127,53 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     public Tutor loadUserDetails(PreAuthenticatedAuthenticationToken token) {
         log.debug("Trying to load Tutor PreAuthenticatedAuthenticationToken " + token);
         return (Tutor) token.getPrincipal();
+    }
+
+    /**
+     * 修改导师信息
+     *
+     * @param id 导师iD
+     * @param dto 导师DTO
+     * @return 修改后的导师
+     * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
+     */
+    @Transactional
+    public Tutor updateTutor(int id,TutorDto dto){
+        Tutor tutor=tutorRepository.getOne(id);
+        if(dto.getEmail()!=null){
+            tutor.setEmail(dto.getEmail());
+        }
+        if(dto.getPhone()!=null){
+            tutor.setPhone(dto.getPhone());
+        }
+        if(dto.getName()!=null){
+            if(tutorRepository.findByName(dto.getName())!=null){
+                log.info("Fail to update Tutor "+tutor.getName()+": name already exist");
+                throw new UsernameAlreadyExistsException("tutor.name.exist");
+            }else{
+                tutor.setName(dto.getName());
+            }
+        }
+        return tutorRepository.save(tutor);
+    }
+
+    /**
+     * 修改导师信息
+     *
+     * @param id 导师iD
+     * @param oldPassword 原密码
+     * @param newPassword 新密码
+     * @return 修改后的导师
+     * @throws BadCredentialsException 原密码不正确
+     */
+    @Transactional
+    public Tutor updateTutorPassword(int id,CharSequence oldPassword,String newPassword)throws BadCredentialsException{
+        Tutor tutor=tutorRepository.getOne(id);
+        if(ybPasswordEncodeService.matches(oldPassword,tutor.getPassword())){
+            tutor.setPassword(ybPasswordEncodeService.encode(newPassword));
+            return tutorRepository.save(tutor);
+        }else{
+            throw new BadCredentialsException("tutor.update.password");
+        }
     }
 }

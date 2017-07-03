@@ -106,4 +106,29 @@ public class AdministratorService implements UserDetailsService {
         log.debug("Deleting Administrator " + id);
         administratorRepository.deleteById(id);
     }
+
+    /**
+     * 修改管理员信息
+     *
+     * @param id 管理员iD
+     * @param dto 管理员DTO
+     * @return 修改后的管理员
+     * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
+     */
+    @Transactional
+    public Administrator updateAdminstrator(int id,AdministratorDto dto){
+        Administrator administrator=administratorRepository.getOne(id);
+        if(!dto.getAuthorities().isEmpty()){
+            administrator.setAuthorities(dto.getAuthorities());
+        }
+        if(dto.getName()!=null){
+            if(administratorRepository.findByName(dto.getName())!=null){
+                log.info("Fail to update Administrator "+administrator.getName()+": name already exist");
+                throw new UsernameAlreadyExistsException("Administrator.name.exist");
+            }else{
+                administrator.setName(dto.getName());
+            }
+        }
+        return administratorRepository.save(administrator);
+    }
 }
