@@ -25,6 +25,7 @@ import java.util.Optional;
 @Service
 public class TokenService {
 
+    @NonNls
     private static Log log = LogFactory.getLog(TokenService.class);
 
     private final TokenRepository tokenRepository;

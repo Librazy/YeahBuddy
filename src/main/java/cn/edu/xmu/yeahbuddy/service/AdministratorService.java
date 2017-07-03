@@ -6,6 +6,7 @@ import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AdministratorService implements UserDetailsService {
 
+    @NonNls
     private static Log log = LogFactory.getLog(AdministratorService.class);
 
     private final YbPasswordEncodeService ybPasswordEncodeService;

@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 public class Application {
 
+    @NonNls
     private static Log log = LogFactory.getLog(MainController.class);
 
     public static void main(String[] args) {
@@ -78,7 +79,7 @@ public class Application {
                                 .setPassword("tutor")
                                 .setEmail("c@b.com")
                                 .setPhone("13988888888"));
-                @NonNls String token = tokenService.createToken(tutor, 1, Collections.singletonList(teamId));
+                String token = tokenService.createToken(tutor, 1, Collections.singletonList(teamId));
 
                 SecurityContextHolder.getContext().setAuthentication(null);
 

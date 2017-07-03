@@ -6,6 +6,7 @@ import cn.edu.xmu.yeahbuddy.model.TutorDto;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @Service
 public class TutorService implements UserDetailsService, AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
+    @NonNls
     private static Log log = LogFactory.getLog(TutorService.class);
 
     private final YbPasswordEncodeService ybPasswordEncodeService;
