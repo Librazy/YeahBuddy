@@ -1,0 +1,38 @@
+#bg {
+    background: #348cb2 url("/static/image/xmu2.jpg") no-repeat bottom right;
+    height: 100%;
+    right: 0;
+    opacity: 1;
+    position: fixed;
+    top: 0;
+    background-size: cover;
+    width: 736px;
+    filter: blur(3px)
+}
+
+@media screen and (min-width: 736px) {
+    @keyframes bg {
+        0% {
+            transform: translate3d(0, 0, 0);
+        }
+        50% {
+            transform: translate3d(calc(100vw - 3 * 100vh), 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    #bg {
+        animation: bg 60s ease-in-out infinite;
+        backface-visibility: hidden;
+        background: #348cb2 url("/static/image/xmu.jpg") no-repeat bottom left;
+        height: 100%;
+        left: 0;
+        opacity: 1;
+        position: fixed;
+        top: 0;
+        background-size: contain;
+        width: 3000px;
+    }
+}

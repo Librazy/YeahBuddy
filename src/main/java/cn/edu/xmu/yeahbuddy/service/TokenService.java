@@ -85,6 +85,9 @@ public class TokenService {
     @PreAuthorize("hasAuthority('RegisterTutor')")
     public String createToken(Tutor tutor, int stage, Collection<Integer> teamIds) {
         String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
+        while(!tokenValue.matches("[a-zA-Z0-9]+")){
+            tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
+        }
         tokenRepository.save(new Token(tokenValue, tutor.getId(), stage, teamIds));
         return tokenValue;
     }

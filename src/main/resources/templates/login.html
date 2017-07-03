@@ -3,48 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title data-th-text="#{login.title}">YeahBuddy主页</title>
+    <title data-th-text="#{admin.login.title}">管理员登录</title>
     <link rel="stylesheet" href="/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css">
-    <style>
-        #bg {
-            background: #348cb2 url("/static/image/xmu2.jpg") no-repeat bottom right;
-            height: 100%;
-            right: 0;
-            opacity: 1;
-            position: fixed;
-            top: 0;
-            background-size: cover;
-            width: 736px;
-            filter: blur(3px)
-        }
-
-        @media screen and (min-width: 736px) {
-            @keyframes bg {
-                0% {
-                    transform: translate3d(0, 0, 0);
-                }
-                50% {
-                    transform: translate3d(calc(100vw - 3 * 100vh), 0, 0);
-                }
-                100% {
-                    transform: translate3d(0, 0, 0);
-                }
-            }
-
-            #bg {
-                animation: bg 60s ease-in-out infinite;
-                backface-visibility: hidden;
-                background: #348cb2 url("/static/image/xmu.jpg") no-repeat bottom left;
-                height: 100%;
-                left: 0;
-                opacity: 1;
-                position: fixed;
-                top: 0;
-                background-size: contain;
-                width: 3000px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/bg.css">
 </head>
 
 <body>
@@ -55,44 +16,47 @@
             <div class="row clearfix">
                 <img class="col-lg-2 offset-lg-2 hidden-md-down" src="/static/image/favicon.svg">
                 <div class="col-lg-5 offset-lg-1 col-md-6 offset-md-3 column col-sm-10 offset-sm-1">
+                    <h1 data-th-text="#{admin.login.title}" style="text-align: center;">
+                        管理员登录
+                    </h1>
                     <form class="form-horizontal" data-th-action="@{/login}" method="post" role="form">
                         <fieldset class="form-group">
-                            <label for="username" class="bmd-label-floating">用户名</label>
+                            <label for="username" class="bmd-label-floating" data-th-text="#{username}">用户名</label>
                             <input type="text" class="form-control" id="username" name="username"/>
                         </fieldset>
                         <fieldset class="form-group">
-                            <label for="password" class="bmd-label-floating">密码</label>
+                            <label for="password" class="bmd-label-floating" data-th-text="#{password}">密码</label>
                             <input type="password" class="form-control" id="password" name="password"/>
                         </fieldset>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block">登录</button>
+                            <button type="submit" class="btn btn-primary btn-block" data-th-text="#{login}">登录</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row clearfix">
+    <footer class="row clearfix">
         <div class="col-md-8 offset-md-2 column">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="#">关于我们</a>
+                    <a href="#" data-th-text="#{footer.about}">关于我们</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="#">意见反馈</a>
+                    <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="#">帮助中心</a>
+                    <a href="#" data-th-text="#{footer.help}">帮助中心</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="#">联系我们</a>
+                    <a href="#" data-th-text="#{footer.us}">联系我们</a>
                 </li>
                 <li class="breadcrumb-item active">
                     All rights reserved
                 </li>
             </ul>
         </div>
-    </div>
+    </footer>
 </div>
 <script src="/webjars/jquery/dist/jquery.min.js"></script>
 <script src="/webjars/tether/dist/js/tether.min.js"></script>

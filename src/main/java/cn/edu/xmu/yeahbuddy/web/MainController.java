@@ -64,6 +64,6 @@ public class MainController {
     public String tutor(Model model) {
         String phone = ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getPhone();
         model.addAttribute("name", phone);
-        return "tutor/index";
+        return "tutor/report";
     }
 }

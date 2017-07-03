@@ -1,19 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html data-th-lang="${#locale.language}">
 <head>
-    <title>Tutor Login page</title>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title data-th-text="#{tutor.login.title}">导师登录</title>
+    <link rel="stylesheet" href="/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="/static/css/bg.css">
 </head>
+
 <body>
-<h1>Login page</h1>
-<p data-th-if="${loginError}" class="error">Wrong name or password</p>
-<form data-th-action="@{/tutor/login}" method="post">
-    <label for="username">Username</label>:
-    <input type="text" id="username" name="username" autofocus="autofocus"/> <br/>
-    <label for="password">Password</label>:
-    <input type="password" id="password" name="password"/> <br/>
-    <input type="submit" value="Log in"/>
-</form>
-<p><a data-th-href="@{/tutor/}">Back to home page</a></p>
+<div id="bg"></div>
+<div class="container" style="margin-top: 10%">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="row clearfix">
+                <img class="col-lg-2 offset-lg-2 hidden-md-down" src="/static/image/favicon.svg">
+                <div class="col-lg-5 offset-lg-1 col-md-6 offset-md-3 column col-sm-10 offset-sm-1">
+                    <h1 data-th-text="#{tutor.login.title}" style="text-align: center;">
+                        导师登录
+                    </h1>
+                    <form class="form-horizontal" data-th-action="@{team/login}" method="post" role="form">
+                        <fieldset class="form-group">
+                            <label for="username" class="bmd-label-floating" data-th-text="#{username}">用户名</label>
+                            <input type="text" class="form-control" id="username" name="username"/>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="password" class="bmd-label-floating" data-th-text="#{password}">密码</label>
+                            <input type="password" class="form-control" id="password" name="password"/>
+                        </fieldset>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block" data-th-text="#{login}">登录</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="row clearfix">
+        <div class="col-md-8 offset-md-2 column">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.about}">关于我们</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.help}">帮助中心</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.us}">联系我们</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    All rights reserved
+                </li>
+            </ul>
+        </div>
+    </footer>
+</div>
+<script src="/webjars/jquery/dist/jquery.min.js"></script>
+<script src="/webjars/tether/dist/js/tether.min.js"></script>
+<script src="/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"></script>
+<script>
+    $('body').bootstrapMaterialDesign();
+</script>
 </body>
 </html>

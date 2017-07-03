@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>导师项目评审</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="/static/css/bg.css">
+    <style type="text/css">
+        @media screen and (min-width:768px) {
+            #main-table {
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div id="bg"></div>
+<nav class="navbar navbar-toggleable-md fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">项目管理系统</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-3 offset-md-1">
+            <div class="page-header">
+                <h1>LOGO</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 offset-md-1 pr-md-0">
+            <div class="list-group pt-md-0">
+                <a href="#" class="list-group-item active">
+                    我的菜单
+                </a>
+                <a href="#" class="list-group-item">基本信息</a>
+                <a href="#" class="list-group-item">项目报告</a>
+            </div>
+        </div>
+        <div class="col-md-7 pl-md-0">
+            <table class="table table-responsive table-striped" id="main-table">
+                <thead>
+                <tr>
+                    <th>项目报告</th>
+                </tr>
+                </thead>
+
+                <thead>
+                <tr>
+                    <th>
+                        项目报告名称
+                    </th>
+                    <th>
+                        截止时间
+                    </th>
+                    <th>
+                        是否已提交
+                    </th>
+                    <th>
+                        考核结果
+                    </th>
+                    <th>
+                        评审结果
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        期末项目报告2
+                    </td>
+                    <td>
+                        2017年9月1日
+                    </td>
+                    <td>
+                        是
+                    </td>
+                    <td>
+                        优秀
+                    </td>
+                    <td>
+                        查看结果
+                    </td>
+                </tr>
+                <tr class="success">
+                    <td>
+                        期末项目报告1
+                    </td>
+                    <td>
+                        2017年9月1日
+                    </td>
+                    <td>
+                        否
+                    </td>
+                    <td>
+                        未评审
+                    </td>
+                    <td>
+                        未评审
+                    </td>
+                </tr>
+                <tr class="error">
+                    <td>
+                        期中项目报告3
+                    </td>
+                    <td>
+                        2017年7月1日
+                    </td>
+                    <td>
+                        是
+                    </td>
+                    <td>
+                        优秀
+                    </td>
+                    <td>
+                        查看结果
+                    </td>
+                </tr>
+                <tr class="warning">
+                    <td>
+                        期中项目报告2
+                    </td>
+                    <td>
+                        2017年7月1日
+                    </td>
+                    <td>
+                        否
+                    </td>
+                    <td>
+                        未评审
+                    </td>
+                    <td>
+                        未评审
+                    </td>
+                </tr>
+                <tr class="info">
+                    <td>
+                        期中项目报告1
+                    </td>
+                    <td>
+                        2017年7月1日
+                    </td>
+                    <td>
+                        否
+                    </td>
+                    <td>
+                        未评审
+                    </td>
+                    <td>
+                        未评审
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-md-7 offset-md-5">
+                    <nav>
+                        <ul class="pagination pagination-centered">
+                            <li class="page-item"><a href="#">上一页</a></li>
+                            <li class="page-item"><a href="#">1</a></li>
+                            <li class="page-item"><a href="#">2</a></li>
+                            <li class="page-item"><a href="#">3</a></li>
+                            <li class="page-item"><a href="#">4</a></li>
+                            <li class="page-item"><a href="#">5</a></li>
+                            <li class="page-item"><a href="#">下一页</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="row clearfix">
+        <div class="col-md-10 offset-md-1 column">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.about}">关于我们</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.help}">帮助中心</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.us}">联系我们</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    All rights reserved
+                </li>
+            </ul>
+        </div>
+    </footer>
+</div>
+<script src="/webjars/jquery/dist/jquery.min.js"></script>
+<script src="/webjars/tether/dist/js/tether.min.js"></script>
+<script src="/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"></script>
+<script>
+    $('body').bootstrapMaterialDesign();
+</script>
+</body>
+</html>
