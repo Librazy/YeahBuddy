@@ -13,16 +13,10 @@ public class AdministratorDto implements Serializable {
 
     private static final long serialVersionUID = -4242984414905004337L;
 
-    @NotNull
-    @NotEmpty
     private String password;
 
-    @NotNull
-    @NotEmpty
     private String name;
 
-    @NotNull
-    @NotEmpty
     private Collection<AdministratorPermission> authorities;
 
     public String getPassword() {

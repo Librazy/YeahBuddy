@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -91,5 +92,54 @@ public class TeamService implements UserDetailsService {
         Team result = teamRepository.save(team);
         log.debug("Registered new Team " + result.toString());
         return result;
+    }
+
+    /**
+     * 修改团队信息
+     *
+     * @param id 团队iD
+     * @param dto 团队DTO
+     * @return 修改后的团队
+     * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
+     */
+    @Transactional
+    public Team updateTeam(int id, TeamDto dto) {
+        Team team = teamRepository.getOne(id);
+        if(dto.getEmail() != null){
+            team.setEmail(dto.getEmail());
+        }
+        if(dto.getPhone() != null){
+            team.setPhone(dto.getPhone());
+        }
+        if(dto.getProjectName() != null){
+            team.setProjectName(dto.getProjectName());
+        }
+        if(dto.getName() != null){
+            if (teamRepository.findByName(dto.getName()) != null) {
+                log.info("Failed to update Team " + team.getName() + ": name already exist");
+                throw new UsernameAlreadyExistsException("team.name.exist");
+            }
+        }
+        return teamRepository.save(team);
+    }
+
+    /**
+     * 修改团队信息
+     *
+     * @param id 团队iD
+     * @param oldPassword 原密码
+     * @param newPassword 新密码
+     * @return 修改后的团队
+     * @throws BadCredentialsException 原密码不正确
+     */
+    @Transactional
+    public Team updateTeamPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException{
+        Team team = teamRepository.getOne(id);
+        if(ybPasswordEncodeService.matches(oldPassword, team.getPassword())){
+            team.setPassword(ybPasswordEncodeService.encode(newPassword));
+            return teamRepository.save(team);
+        } else {
+            throw new BadCredentialsException("team.update.password");
+        }
     }
 }

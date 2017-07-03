@@ -7,20 +7,12 @@ import javax.validation.constraints.NotNull;
 
 public class TutorDto {
 
-    @NotNull
-    @NotEmpty
     private String password;
 
-    @NotNull
-    @NotEmpty
     private String name;
 
-    @NotNull
-    @NotEmpty
     private String phone;
 
-    @NotNull
-    @NotEmpty
     private String email;
 
     @Contract(pure = true)

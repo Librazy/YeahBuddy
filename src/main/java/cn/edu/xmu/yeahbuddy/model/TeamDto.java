@@ -10,24 +10,14 @@ public class TeamDto implements Serializable {
 
     private static final long serialVersionUID = -9091761778673434209L;
 
-    @NotNull
-    @NotEmpty
     private String password;
 
-    @NotNull
-    @NotEmpty
     private String name;
 
-    @NotNull
-    @NotEmpty
     private String projectName;
 
-    @NotNull
-    @NotEmpty
     private String phone;
 
-    @NotNull
-    @NotEmpty
     private String email;
 
     @Contract(pure = true)
