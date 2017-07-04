@@ -31,6 +31,7 @@
 
 # IntelliJ
 /out/
+*.iml
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -82,3 +83,4 @@ gradle-app.setting
 .idea/
 !/gradle/wrapper/gradle-wrapper.properties
 /src/main/resources/webjars/
+/classes/
