@@ -85,7 +85,7 @@ task('webjarsExtraction') {
                 from "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${upStreamVersion}",
                         "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${artifact.moduleVersion.id.version}"
 
-                into "/src/main/resources/webjars/${artifact.name}"
+                into "src/main/resources/webjars/${artifact.name}"
             }
         }
     }
