@@ -64,7 +64,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     @Transactional(readOnly = true)
     public Tutor loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Trying to load Tutor " + username);
-        Tutor tutor = tutorRepository.findByName(username);
+        Tutor tutor = tutorRepository.findByUsername(username);
         if (tutor == null) {
             log.info("Failed to load Tutor " + username + ": not found");
             throw new UsernameNotFoundException(username);
@@ -93,15 +93,16 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     }
 
     /**
-     * 查找导师 代理{@link TutorRepository#findByName(String)}
+     * 查找导师 代理{@link TutorRepository#findByUsername(String)}
      *
-     * @param name 查找的导师 用户名
+     * @param username 查找的导师 用户名
      * @return 导师 或null
      */
     @Nullable
     @Transactional(readOnly = true)
-    public Tutor findByName(String name) {
-        return tutorRepository.findByName(name);
+    public Tutor findByUsername(String username) {
+        log.debug("Finding Tutor " + username);
+        return tutorRepository.findByUsername(username);
     }
 
     /**
@@ -110,19 +111,28 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
      * @param dto 导师DTO
      * @return 新注册的导师
      * @throws UsernameAlreadyExistsException 用户名已存在
+     * @throws IllegalArgumentException DTO中未填满所需信息
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor')")
     public Tutor registerNewTutor(TutorDto dto) throws UsernameAlreadyExistsException {
-        log.debug("Trying to register new Tutor " + dto.getName());
-        if (tutorRepository.findByName(dto.getName()) != null) {
-            log.info("Failed to register Tutor " + dto.getName() + ": name already exist");
-            throw new UsernameAlreadyExistsException("administrator.name.exist");
+        log.debug("Trying to register new Tutor " + dto.getUsername());
+
+        if(!dto.ready()){
+            log.info("Failed to register Tutor " + dto.getUsername() + ": data not ready yet");
+            throw new IllegalArgumentException("tutor.register.not_ready");
         }
 
-        Tutor tutor = new Tutor(dto.getName(), ybPasswordEncodeService.encode(dto.getPassword()));
+        if (tutorRepository.findByUsername(dto.getUsername()) != null) {
+            log.info("Failed to register Tutor " + dto.getUsername() + ": name already exist");
+            throw new UsernameAlreadyExistsException("tutor.name.exist");
+        }
+
+        Tutor tutor = new Tutor(dto.getUsername(), ybPasswordEncodeService.encode(dto.getPassword()));
         tutor.setEmail(dto.getEmail());
         tutor.setPhone(dto.getPhone());
+        tutor.setDisplayName(dto.getDisplayName());
+
         Tutor result = tutorRepository.save(tutor);
         log.debug("Registered new Tutor " + result.toString());
         return result;
@@ -143,6 +153,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
     /**
      * 修改导师信息
+     * 需要当前主体有ManageTutor权限或当前主体即为被修改用户
      *
      * @param id  导师ID
      * @param dto 导师DTO
@@ -153,19 +164,33 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     @PreAuthorize("hasAuthority('ManageTutor') " +
                           "|| (T(cn.edu.xmu.yeahbuddy.service.TutorService).isTutor(principal) && T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id == #id)")
     public Tutor updateTutor(int id, TutorDto dto) {
+        log.debug("Trying to update Tutor " + id);
         Tutor tutor = tutorRepository.getOne(id);
+
+        if(dto.getDisplayName() != null ){
+            log.trace("Updated display name for Tutor " + id + ":" + tutor.getDisplayName() +
+                              " -> " + dto.getDisplayName());
+            tutor.setDisplayName(dto.getDisplayName());
+        }
+
         if (dto.getEmail() != null) {
+            log.trace("Updated email for Tutor " + id + ":" + tutor.getEmail() +
+                              " -> " + dto.getEmail());
             tutor.setEmail(dto.getEmail());
         }
         if (dto.getPhone() != null) {
+            log.trace("Updated phone for Tutor " + id + ":" + tutor.getPhone() +
+                              " -> " + dto.getPhone());
             tutor.setPhone(dto.getPhone());
         }
-        if (dto.getName() != null) {
-            if (tutorRepository.findByName(dto.getName()) != null) {
-                log.info("Fail to update Tutor " + tutor.getName() + ": name already exist");
-                throw new UsernameAlreadyExistsException("tutor.name.exist");
+        if (dto.getUsername() != null) {
+            if (tutorRepository.findByUsername(dto.getUsername()) != null) {
+                log.info("Fail to update username for Tutor " + tutor.getUsername() + ": username already exist");
+                throw new UsernameAlreadyExistsException("tutor.username.exist");
             } else {
-                tutor.setName(dto.getName());
+                log.trace("Updated username for Tutor " + id + ":" + tutor.getUsername() +
+                                  " -> " + dto.getUsername());
+                tutor.setUsername(dto.getUsername());
             }
         }
         return tutorRepository.save(tutor);
@@ -173,6 +198,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
     /**
      * 修改导师密码
+     * 需要当前主体有ManageTutor权限或当前主体即为被修改用户
      *
      * @param id          导师ID
      * @param oldPassword 原密码
@@ -184,12 +210,32 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     @PreAuthorize("hasAuthority('ManageTutor') " +
                           "|| (T(cn.edu.xmu.yeahbuddy.service.TutorService).isTutor(principal) && T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id == #id)")
     public Tutor updateTutorPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException {
+        log.info("Trying to update password for Tutor " + id);
         Tutor tutor = tutorRepository.getOne(id);
         if (ybPasswordEncodeService.matches(oldPassword, tutor.getPassword())) {
             tutor.setPassword(ybPasswordEncodeService.encode(newPassword));
+            log.info("Updated password for Tutor " + id);
             return tutorRepository.save(tutor);
         } else {
+            log.warn("Failed to update password for Tutor " + id + ": old password doesn't match");
             throw new BadCredentialsException("tutor.update.password");
         }
+    }
+
+    /**
+     * 重置导师密码
+     * 需要当前主体有ManageTutor权限与ResetPassword权限
+     *
+     * @param id          导师ID
+     * @param newPassword 新密码
+     * @return 修改后的导师
+     */
+    @Transactional
+    @PreAuthorize("hasAuthority('ResetPassword') && hasAuthority('ManageTutor')")
+    public Tutor resetTutorPassword(int id, String newPassword) {
+        Tutor tutor = tutorRepository.getOne(id);
+        log.info("Reset password for Tutor " + id);
+        tutor.setPassword(ybPasswordEncodeService.encode(newPassword));
+        return tutorRepository.save(tutor);
     }
 }

@@ -54,8 +54,9 @@ public abstract class ApplicationTests extends AbstractTransactionalJUnit4Spring
         SecurityContextHolder.getContext().setAuthentication(ultimate);
         Team team = teamService.registerNewTeam(
                 new TeamDto()
-                        .setName("testteam")
+                        .setUsername("testteam")
                         .setPassword("testteam")
+                        .setDisplayName("testteam")
                         .setEmail("a@b.com")
                         .setPhone("18988888888")
                         .setProjectName("yeahbuddy"));
@@ -63,8 +64,9 @@ public abstract class ApplicationTests extends AbstractTransactionalJUnit4Spring
 
         Tutor tutor = tutorService.registerNewTutor(
                 new TutorDto()
-                        .setName("testtutor")
+                        .setUsername("testtutor")
                         .setPassword("testtutor")
+                        .setDisplayName("testtutor")
                         .setEmail("c@b.com")
                         .setPhone("13988888888"));
         token = tokenService.createToken(tutor, 2017, Collections.singletonList(teamId));

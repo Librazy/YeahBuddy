@@ -33,8 +33,11 @@ public class Tutor implements UserDetails {
 
     @NonNls
     @NaturalId(mutable = true)
-    @Column(name = "TutorName", unique = true, nullable = false)
-    private String name;
+    @Column(name = "TutorUsername", unique = true, nullable = false)
+    private String username;
+
+    @Column(name = "TutorDisplayName", nullable = false)
+    private String displayName;
 
     @Column(name = "TutorPhone")
     private String phone;
@@ -45,14 +48,24 @@ public class Tutor implements UserDetails {
     public Tutor() {
     }
 
-    public Tutor(String name, String password) {
+    public Tutor(String username, String password) {
         this.password = password;
-        this.name = name;
+        this.username = username;
+        this.displayName = username;
     }
 
     @Contract(pure = true)
     public int getId() {
         return id;
+    }
+
+    @Contract(pure = true)
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @Contract(pure = true)
@@ -92,7 +105,11 @@ public class Tutor implements UserDetails {
     @Override
     @Contract(pure = true)
     public String getUsername() {
-        return getName();
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -119,26 +136,23 @@ public class Tutor implements UserDetails {
         return true;
     }
 
+    @Override
     @Contract(pure = true)
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return username;
     }
 
     @Contract(pure = true)
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
-                                                  append(name).
-                                                                      toHashCode();
+                                                  append(username).
+                                                                          toHashCode();
     }
 
     @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object rhs) {
-        return rhs instanceof Tutor && name.equals(((Tutor) rhs).getName());
+        return rhs instanceof Tutor && username.equals(((Tutor) rhs).getUsername());
     }
 }

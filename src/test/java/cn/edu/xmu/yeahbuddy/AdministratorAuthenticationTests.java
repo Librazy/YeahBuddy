@@ -51,16 +51,18 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             administratorService.registerNewAdministrator(
                     new AdministratorDto()
-                            .setName("some")
+                            .setUsername("some")
                             .setPassword("one")
+                            .setDisplayName("some")
                             .setAuthorities(
                                     Stream.of(AdministratorPermission.values())
                                           .map(AdministratorPermission::name)
                                           .collect(Collectors.toSet())));
             administratorService.registerNewAdministrator(
                     new AdministratorDto()
-                            .setName("other")
+                            .setUsername("other")
                             .setPassword("one")
+                            .setDisplayName("other")
                             .setAuthorities(new ArrayList<>(0)));
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;
@@ -85,8 +87,9 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
     public void registerNewAdministratorTest() {
         administratorService.registerNewAdministrator(
                 new AdministratorDto()
-                        .setName("admin2")
+                        .setUsername("admin2")
                         .setPassword("admin2")
+                        .setDisplayName("admin2")
                         .setAuthorities(
                                 Stream.of(AdministratorPermission.ViewReport)
                                       .map(AdministratorPermission::name)
@@ -99,7 +102,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
         exception.expect(AccessDeniedException.class);
         administratorService.registerNewAdministrator(
                 new AdministratorDto()
-                        .setName("admin3")
+                        .setUsername("admin3")
                         .setPassword("admin3")
                         .setAuthorities(
                                 Stream.of(AdministratorPermission.ViewReport)

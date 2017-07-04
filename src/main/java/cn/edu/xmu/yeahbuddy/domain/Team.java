@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
-@SuppressWarnings({"SpringElInspection", "ELValidationInJSP"})
 public class Team implements UserDetails {
 
     @NonNls
@@ -34,8 +33,11 @@ public class Team implements UserDetails {
 
     @NonNls
     @NaturalId(mutable = true)
-    @Column(name = "TeamName", unique = true, nullable = false)
-    private String name;
+    @Column(name = "TeamUsername", unique = true, nullable = false)
+    private String username;
+
+    @Column(name = "TeamDisplayName", nullable = false)
+    private String displayName;
 
     @Column(name = "TeamProjectName", nullable = false)
     private String projectName;
@@ -49,14 +51,25 @@ public class Team implements UserDetails {
     public Team() {
     }
 
-    public Team(String name, String password) {
+    public Team(String username, String password) {
         this.password = password;
-        this.name = name;
+        this.username = username;
+        this.displayName = username;
+        this.projectName = "";
     }
 
     @Contract(pure = true)
     public int getId() {
         return id;
+    }
+
+    @Contract(pure = true)
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @Contract(pure = true)
@@ -102,50 +115,55 @@ public class Team implements UserDetails {
     }
 
     @Override
+    @Contract(pure = true)
     public String getUsername() {
-        return getName();
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
+    @Contract(pure = true)
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @Contract(pure = true)
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @Contract(pure = true)
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @Contract(pure = true)
     public boolean isEnabled() {
         return true;
     }
 
     @Contract(pure = true)
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return username;
     }
 
     @Contract(pure = true)
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
-                                                  append(name).
-                                                                      toHashCode();
+                                                  append(username).
+                                                                          toHashCode();
     }
 
     @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object rhs) {
-        return rhs instanceof Team && name.equals(((Team) rhs).getName());
+        return rhs instanceof Team && username.equals(((Team) rhs).getUsername());
     }
 }

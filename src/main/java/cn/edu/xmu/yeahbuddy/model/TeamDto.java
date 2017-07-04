@@ -3,6 +3,8 @@ package cn.edu.xmu.yeahbuddy.model;
 import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class TeamDto implements Serializable {
 
@@ -10,13 +12,24 @@ public class TeamDto implements Serializable {
 
     private String password;
 
-    private String name;
+    private String username;
+
+    private String displayName;
 
     private String projectName;
 
     private String phone;
 
     private String email;
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public TeamDto setDisplayName(String displayName) {
+        this.displayName = displayName;
+        return this;
+    }
 
     @Contract(pure = true)
     public String getPassword() {
@@ -29,12 +42,12 @@ public class TeamDto implements Serializable {
     }
 
     @Contract(pure = true)
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public TeamDto setName(String name) {
-        this.name = name;
+    public TeamDto setUsername(String username) {
+        this.username = username;
         return this;
     }
 
@@ -66,5 +79,10 @@ public class TeamDto implements Serializable {
     public TeamDto setEmail(String email) {
         this.email = email;
         return this;
+    }
+
+    public boolean ready(){
+        return Stream.of(password, username, displayName, projectName)
+                     .allMatch(Objects::nonNull);
     }
 }

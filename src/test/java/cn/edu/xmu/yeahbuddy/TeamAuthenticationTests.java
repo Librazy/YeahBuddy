@@ -50,15 +50,17 @@ public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringCo
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             teamService.registerNewTeam(
                     new TeamDto()
-                            .setName("someteam")
+                            .setUsername("someteam")
                             .setPassword("some")
+                            .setDisplayName("someteam")
                             .setEmail("c@f.com")
                             .setPhone("18888888888")
                             .setProjectName("buddy"));
             teamService.registerNewTeam(
                     new TeamDto()
-                            .setName("otherteam")
+                            .setUsername("otherteam")
                             .setPassword("one")
+                            .setDisplayName("otherteam")
                             .setEmail("d@f.com")
                             .setPhone("17788888888")
                             .setProjectName("yeah"));

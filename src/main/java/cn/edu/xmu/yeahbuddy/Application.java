@@ -45,12 +45,13 @@ public class Application {
         return args -> {
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
-            if (administratorService.findByName("admin") == null) {
+            if (administratorService.findByUsername("admin") == null) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 administratorService.registerNewAdministrator(
                         new AdministratorDto()
-                                .setName("admin")
+                                .setUsername("admin")
                                 .setPassword("admin")
+                                .setDisplayName("Admin 1")
                                 .setAuthorities(
                                         Arrays.stream(AdministratorPermission.values())
                                               .map(AdministratorPermission::name)
@@ -58,12 +59,13 @@ public class Application {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
             int teamId = 0;
-            if (teamService.findByName("team") == null) {
+            if (teamService.findByUsername("team") == null) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 Team team = teamService.registerNewTeam(
                         new TeamDto()
-                                .setName("team")
+                                .setUsername("team")
                                 .setPassword("team")
+                                .setDisplayName("Team 1")
                                 .setEmail("a@b.com")
                                 .setPhone("18988888888")
                                 .setProjectName("yeahbuddy"));
@@ -71,12 +73,13 @@ public class Application {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
 
-            if (tutorService.findByName("tutor") == null) {
+            if (tutorService.findByUsername("tutor") == null) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 Tutor tutor = tutorService.registerNewTutor(
                         new TutorDto()
-                                .setName("tutor")
+                                .setUsername("tutor")
                                 .setPassword("tutor")
+                                .setDisplayName("Tutor 1")
                                 .setEmail("c@b.com")
                                 .setPhone("13988888888"));
                 String token = tokenService.createToken(tutor, 1, Collections.singletonList(teamId));

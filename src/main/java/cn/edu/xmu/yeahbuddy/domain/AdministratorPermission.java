@@ -11,6 +11,7 @@ public enum AdministratorPermission implements GrantedAuthority {
     ViewReport,
     ViewReview,
     FinalReview,
+    ResetPassword,
     ManageAdministrator,
     ManageTeam,
     ManageTutor;

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 
 @Entity
 public final class Administrator implements UserDetails, Authentication {
@@ -25,8 +26,11 @@ public final class Administrator implements UserDetails, Authentication {
 
     @NonNls
     @NaturalId(mutable = true)
-    @Column(name = "AdministratorName", unique = true, nullable = false)
-    private String name;
+    @Column(name = "AdministratorUsername", unique = true, nullable = false)
+    private String username;
+
+    @Column(name = "AdministratorDisplayName", nullable = false)
+    private String displayName;
 
     @ElementCollection(targetClass = AdministratorPermission.class, fetch = FetchType.EAGER)
     @JoinTable(name = "AdministratorPermissions", joinColumns = @JoinColumn(name = "AdministratorId"))
@@ -37,14 +41,25 @@ public final class Administrator implements UserDetails, Authentication {
     public Administrator() {
     }
 
-    public Administrator(String name, String password) {
-        this.name = name;
+    public Administrator(String username, String password) {
+        this.username = username;
         this.password = password;
+        this.displayName = username;
+        this.authorities = new HashSet<>();
     }
 
     @Contract(pure = true)
     public int getId() {
         return id;
+    }
+
+    @Contract(pure = true)
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override
@@ -65,12 +80,6 @@ public final class Administrator implements UserDetails, Authentication {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Contract(pure = true)
-    @Override
-    public String getUsername() {
-        return getName();
     }
 
     @Contract(pure = true)
@@ -100,25 +109,31 @@ public final class Administrator implements UserDetails, Authentication {
     @Override
     @Contract(pure = true)
     public String getName() {
-        return name;
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    @Contract(pure = true)
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Contract(pure = true)
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
-                                                  append(name).
-                                                                      toHashCode();
+                                                  append(username).
+                                                                          toHashCode();
     }
 
     @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(Object rhs) {
-        return rhs instanceof Administrator && name.equals(((Administrator) rhs).getName());
+        return rhs instanceof Administrator && username.equals(((Administrator) rhs).getUsername());
     }
 
     @Contract(pure = true)

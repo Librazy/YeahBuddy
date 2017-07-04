@@ -61,16 +61,16 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
         Assert.assertEquals(2, administratorRepository.findAll().size());
 
         // 测试findByName, 查询姓名为AAA的Administrator
-        Assert.assertEquals("xxx", administratorRepository.findByName("AAA").getPassword());
+        Assert.assertEquals("xxx", administratorRepository.findByUsername("AAA").getPassword());
 
         // 测试删除姓名为BBB的Administrator
-        administratorRepository.delete(administratorRepository.findByName("BBB"));
+        administratorRepository.delete(administratorRepository.findByUsername("BBB"));
 
         // 测试findAll, 查询所有记录, 验证上面的删除是否成功
         Assert.assertEquals(1, administratorRepository.findAll().size());
 
         // 测试删除姓名为AAA的Administrator
-        administratorRepository.delete(administratorRepository.findByName("AAA"));
+        administratorRepository.delete(administratorRepository.findByUsername("AAA"));
     }
 
     @Test
@@ -81,20 +81,20 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
         Administrator ultimate = new Administrator();
         ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
-        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(Collections.singleton(AdministratorPermission.ManageAdministrator.getAuthority())));
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("AAA").setPassword("BBB").setDisplayName("AAA").setAuthorities(Collections.singleton(AdministratorPermission.ManageAdministrator.getAuthority())));
         SecurityContextHolder.getContext().setAuthentication(admin1);
-        Administrator admin2 = administratorService.registerNewAdministrator(new AdministratorDto().setName("BBB").setPassword("CCC").setAuthorities(new HashSet<>()));
+        Administrator admin2 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("BBB").setPassword("CCC").setDisplayName("BBB").setAuthorities(new HashSet<>()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
         Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
         Assert.assertTrue(ybPasswordEncodeService.matches("CCC", administratorService.loadUserByUsername("BBB").getPassword()));
 
-        admin1 = administratorService.updateAdminstrator(admin1.getId(), new AdministratorDto().setName("DDD"));
+        admin1 = administratorService.updateAdministrator(admin1.getId(), new AdministratorDto().setUsername("DDD"));
 
         Assert.assertNotEquals(admin1.getId(), admin2.getId());
-        Assert.assertEquals("DDD", admin1.getName());
+        Assert.assertEquals("DDD", admin1.getUsername());
 
         exception.expect(UsernameAlreadyExistsException.class);
-        administratorService.registerNewAdministrator(new AdministratorDto().setName("BBB").setPassword("BBB").setAuthorities(new HashSet<>()));
+        administratorService.registerNewAdministrator(new AdministratorDto().setUsername("BBB").setPassword("BBB").setDisplayName("BBB").setAuthorities(new HashSet<>()));
     }
 
     @Test
@@ -105,12 +105,12 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
         Administrator ultimate = new Administrator();
         ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
-        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("DDD").setPassword("BBB").setAuthorities(new HashSet<>()));
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("DDD").setPassword("BBB").setDisplayName("DDD").setAuthorities(new HashSet<>()));
         Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(null);
         exception.expect(AuthenticationCredentialsNotFoundException.class);
-        administratorService.registerNewAdministrator(new AdministratorDto().setName("EEE").setPassword("BBB").setAuthorities(new HashSet<>()));
+        administratorService.registerNewAdministrator(new AdministratorDto().setUsername("EEE").setPassword("BBB").setDisplayName("DDD").setAuthorities(new HashSet<>()));
     }
 
     @Test
@@ -121,12 +121,12 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
         Administrator ultimate = new Administrator();
         ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
-        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("DDD").setPassword("BBB").setAuthorities(Collections.singleton(AdministratorPermission.ManageAdministrator.getAuthority())));
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("DDD").setPassword("BBB").setDisplayName("DDD").setAuthorities(Collections.singleton(AdministratorPermission.ManageAdministrator.getAuthority())));
         Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(admin1);
         exception.expect(AccessDeniedException.class);
-        administratorService.registerNewAdministrator(new AdministratorDto().setName("EEE").setPassword("BBB").setAuthorities(Arrays.asList(AdministratorPermission.CreateTask.getAuthority(), AdministratorPermission.ManageAdministrator.getAuthority())));
+        administratorService.registerNewAdministrator(new AdministratorDto().setUsername("EEE").setPassword("BBB").setDisplayName("EEE").setAuthorities(Arrays.asList(AdministratorPermission.CreateTask.getAuthority(), AdministratorPermission.ManageAdministrator.getAuthority())));
     }
 
     @Test

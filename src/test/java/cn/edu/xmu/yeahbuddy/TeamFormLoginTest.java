@@ -26,7 +26,7 @@ public class TeamFormLoginTest extends ApplicationTests {
         mvc.perform(formLogin("/team/login").user("testteam").password("testteam"))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/team"))
-           .andExpect(authenticated().withAuthenticationPrincipal(teamService.findByName("testteam")));
+           .andExpect(authenticated().withAuthenticationPrincipal(teamService.findByUsername("testteam")));
 
         mvc.perform(logout("/team/logout"))
            .andExpect(status().is3xxRedirection())
