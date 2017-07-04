@@ -10,9 +10,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class MainController {
@@ -30,7 +30,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(@RequestAttribute(required = false) String error, Model model) {
+    public String login(@RequestParam(required = false) String error, Model model) {
         if (error != null) {
             model.addAttribute("loginError", true);
         }
@@ -38,7 +38,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/team/login", method = RequestMethod.GET)
-    public String teamLogin(@RequestAttribute(required = false) String error, Model model) {
+    public String teamLogin(@RequestParam(required = false) String error, Model model) {
         if (error != null) {
             model.addAttribute("loginError", true);
         }
@@ -54,7 +54,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/tutor/login", method = RequestMethod.GET)
-    public String tutorLogin(@RequestAttribute(required = false) String error, Model model) {
+    public String tutorLogin(@RequestParam(required = false) String error, Model model) {
         if (error != null) {
             model.addAttribute("loginError", true);
         }

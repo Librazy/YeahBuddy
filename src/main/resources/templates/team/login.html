@@ -6,6 +6,25 @@
     <title data-th-text="#{team.login.title}">团队登录</title>
     <link rel="stylesheet" href="/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css">
     <link rel="stylesheet" href="/static/css/bg.css">
+    <style type="text/css">
+        #alert-incorrect {
+            text-align: center;
+            background: rgba(255, 87, 36, 0.67);
+        }
+
+        #login-submit {
+            background: rgba(0, 0, 0, .12);
+        }
+
+        #login-submit:hover {
+            background: rgba(0, 0, 128, .22);
+        }
+
+        .alert {
+            margin-bottom: 0;
+            margin-top: .5rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,6 +39,14 @@
                         团队登录
                     </h1>
                     <form class="form-horizontal" data-th-action="@{team/login}" method="post" role="form">
+                        <div data-th-if="${loginError}" class="alert alert-warning alert-dismissible show" role="alert"
+                             style="text-align: center;background:#ff5722AA;" id="alert-incorrect">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            用户名或密码错误
+                        </div>
+
                         <fieldset class="form-group">
                             <label for="username" class="bmd-label-floating" data-th-text="#{username}">用户名</label>
                             <input type="text" class="form-control" id="username" name="username"/>
@@ -29,7 +56,9 @@
                             <input type="password" class="form-control" id="password" name="password"/>
                         </fieldset>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block" data-th-text="#{login}">登录</button>
+                            <button type="submit" class="btn btn-primary btn-block" data-th-text="#{login}"
+                                    id="login-submit">登录
+                            </button>
                         </div>
                     </form>
                 </div>
