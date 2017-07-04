@@ -2,8 +2,10 @@ package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
-import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
-import cn.edu.xmu.yeahbuddy.service.AdministratorService;
+import cn.edu.xmu.yeahbuddy.domain.Team;
+import cn.edu.xmu.yeahbuddy.model.TeamDto;
+import cn.edu.xmu.yeahbuddy.service.TeamService;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,22 +26,19 @@ import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Rollback
 @TestExecutionListeners(listeners = {WithSecurityContextTestExecutionListener.class})
-public class AuthenticationTests extends AbstractTransactionalJUnit4SpringContextTests {
+public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
     @Autowired
-    private AdministratorService administratorService;
+    private TeamService teamService;
     @Autowired
     private PlatformTransactionManager transactionManager;
 
@@ -49,19 +48,20 @@ public class AuthenticationTests extends AbstractTransactionalJUnit4SpringContex
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
-            administratorService.registerNewAdministrator(
-                    new AdministratorDto()
-                            .setName("some")
+            teamService.registerNewTeam(
+                    new TeamDto()
+                            .setName("someteam")
+                            .setPassword("some")
+                            .setEmail("c@f.com")
+                            .setPhone("18888888888")
+                            .setProjectName("buddy"));
+            teamService.registerNewTeam(
+                    new TeamDto()
+                            .setName("otherteam")
                             .setPassword("one")
-                            .setAuthorities(
-                                    Stream.of(AdministratorPermission.values())
-                                          .map(AdministratorPermission::name)
-                                          .collect(Collectors.toSet())));
-            administratorService.registerNewAdministrator(
-                    new AdministratorDto()
-                            .setName("other")
-                            .setPassword("one")
-                            .setAuthorities(new ArrayList<>(0)));
+                            .setEmail("d@f.com")
+                            .setPhone("17788888888")
+                            .setProjectName("yeah"));
             SecurityContextHolder.getContext().setAuthentication(null);
 
             return null;
@@ -71,37 +71,30 @@ public class AuthenticationTests extends AbstractTransactionalJUnit4SpringContex
     @AfterTransaction
     public void tearDown() {
         new TransactionTemplate(transactionManager).execute(status -> {
-            administratorService.deleteAdministrator(administratorService.loadUserByUsername("some").getId());
-            administratorService.deleteAdministrator(administratorService.loadUserByUsername("other").getId());
+            Administrator ultimate = new Administrator();
+            ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+            SecurityContextHolder.getContext().setAuthentication(ultimate);
+            teamService.deleteTeam(teamService.loadUserByUsername("someteam").getId());
+            teamService.deleteTeam(teamService.loadUserByUsername("otherteam").getId());
+            SecurityContextHolder.getContext().setAuthentication(null);
             return null;
         });
     }
 
     @Test
-    @WithUserDetails(value = "some", userDetailsServiceBeanName = "administratorService")
-    public void registerNewAdministratorTest() {
-        administratorService.registerNewAdministrator(
-                new AdministratorDto()
-                        .setName("admin2")
-                        .setPassword("admin2")
-                        .setAuthorities(
-                                Stream.of(AdministratorPermission.ViewReport)
-                                      .map(AdministratorPermission::name)
-                                      .collect(Collectors.toSet())));
+    @WithUserDetails(value = "someteam", userDetailsServiceBeanName = "teamService")
+    public void updateTeamTest() {
+        Team team = teamService.loadUserByUsername("someteam");
+        Assert.assertEquals("buddy", team.getProjectName());
+        teamService.updateTeam(team.getId(), new TeamDto().setProjectName("bbudy"));
+        Assert.assertEquals("bbudy", team.getProjectName());
     }
 
     @Test
-    @WithUserDetails(value = "other", userDetailsServiceBeanName = "administratorService")
-    public void registerNewAdministratorWithoutAuthTest() {
+    @WithUserDetails(value = "otherteam", userDetailsServiceBeanName = "teamService")
+    public void updateTeamWithoutAuthTest() {
+        Team team = teamService.loadUserByUsername("someteam");
         exception.expect(AccessDeniedException.class);
-        administratorService.registerNewAdministrator(
-                new AdministratorDto()
-                        .setName("admin3")
-                        .setPassword("admin3")
-                        .setAuthorities(
-                                Stream.of(AdministratorPermission.ViewReport)
-                                      .map(AdministratorPermission::name)
-                                      .collect(Collectors.toSet())));
+        teamService.updateTeam(team.getId(), new TeamDto().setProjectName("bbudy"));
     }
-
 }

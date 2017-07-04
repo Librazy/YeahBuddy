@@ -11,9 +11,9 @@ public enum AdministratorPermission implements GrantedAuthority {
     ViewReport,
     ViewReview,
     FinalReview,
-    RegisterAdministrator,
-    RegisterTeam,
-    RegisterTutor;
+    ManageAdministrator,
+    ManageTeam,
+    ManageTutor;
 
     @Contract(pure = true)
     @Override

@@ -1,11 +1,13 @@
 package cn.edu.xmu.yeahbuddy.service;
 
+import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TutorRepository;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -41,6 +43,16 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         this.ybPasswordEncodeService = ybPasswordEncodeService;
     }
 
+    @Contract(pure = true)
+    public static Team asTutor(Object obj) {
+        return ((Team) obj);
+    }
+
+    @Contract(pure = true)
+    public static boolean isTutor(Object obj) {
+        return obj instanceof Team;
+    }
+
     /**
      * 查找导师 提供{@link UserDetailsService#loadUserByUsername(String)}
      *
@@ -69,7 +81,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
      * @throws UsernameNotFoundException 找不到导师
      */
     @Transactional(readOnly = true)
-    public Tutor loadTutorById(int id) throws UsernameNotFoundException {
+    Tutor loadTutorById(int id) throws UsernameNotFoundException {
         log.debug("Trying to load Tutor id " + id);
         Optional<Tutor> tutor = tutorRepository.findById(id);
         if (!tutor.isPresent()) {
@@ -100,7 +112,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
      * @throws UsernameAlreadyExistsException 用户名已存在
      */
     @Transactional
-    @PreAuthorize("hasAuthority('RegisterTutor')")
+    @PreAuthorize("hasAuthority('ManageTutor')")
     public Tutor registerNewTutor(TutorDto dto) throws UsernameAlreadyExistsException {
         log.debug("Trying to register new Tutor " + dto.getName());
         if (tutorRepository.findByName(dto.getName()) != null) {
@@ -132,25 +144,27 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     /**
      * 修改导师信息
      *
-     * @param id 导师iD
+     * @param id  导师ID
      * @param dto 导师DTO
      * @return 修改后的导师
      * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
      */
     @Transactional
-    public Tutor updateTutor(int id,TutorDto dto){
-        Tutor tutor=tutorRepository.getOne(id);
-        if(dto.getEmail()!=null){
+    @PreAuthorize("hasAuthority('ManageTutor') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TutorService).isTutor(principal) && T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id == #id)")
+    public Tutor updateTutor(int id, TutorDto dto) {
+        Tutor tutor = tutorRepository.getOne(id);
+        if (dto.getEmail() != null) {
             tutor.setEmail(dto.getEmail());
         }
-        if(dto.getPhone()!=null){
+        if (dto.getPhone() != null) {
             tutor.setPhone(dto.getPhone());
         }
-        if(dto.getName()!=null){
-            if(tutorRepository.findByName(dto.getName())!=null){
-                log.info("Fail to update Tutor "+tutor.getName()+": name already exist");
+        if (dto.getName() != null) {
+            if (tutorRepository.findByName(dto.getName()) != null) {
+                log.info("Fail to update Tutor " + tutor.getName() + ": name already exist");
                 throw new UsernameAlreadyExistsException("tutor.name.exist");
-            }else{
+            } else {
                 tutor.setName(dto.getName());
             }
         }
@@ -158,21 +172,23 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     }
 
     /**
-     * 修改导师信息
+     * 修改导师密码
      *
-     * @param id 导师iD
+     * @param id          导师ID
      * @param oldPassword 原密码
      * @param newPassword 新密码
      * @return 修改后的导师
      * @throws BadCredentialsException 原密码不正确
      */
     @Transactional
-    public Tutor updateTutorPassword(int id,CharSequence oldPassword,String newPassword)throws BadCredentialsException{
-        Tutor tutor=tutorRepository.getOne(id);
-        if(ybPasswordEncodeService.matches(oldPassword,tutor.getPassword())){
+    @PreAuthorize("hasAuthority('ManageTutor') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TutorService).isTutor(principal) && T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id == #id)")
+    public Tutor updateTutorPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException {
+        Tutor tutor = tutorRepository.getOne(id);
+        if (ybPasswordEncodeService.matches(oldPassword, tutor.getPassword())) {
             tutor.setPassword(ybPasswordEncodeService.encode(newPassword));
             return tutorRepository.save(tutor);
-        }else{
+        } else {
             throw new BadCredentialsException("tutor.update.password");
         }
     }

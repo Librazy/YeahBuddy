@@ -24,7 +24,7 @@ public final class Administrator implements UserDetails, Authentication {
     private String password;
 
     @NonNls
-    @NaturalId
+    @NaturalId(mutable = true)
     @Column(name = "AdministratorName", unique = true, nullable = false)
     private String name;
 
@@ -51,6 +51,10 @@ public final class Administrator implements UserDetails, Authentication {
     @Contract(pure = true)
     public Collection<AdministratorPermission> getAuthorities() {
         return authorities;
+    }
+
+    public void setAuthorities(Collection<AdministratorPermission> authorities) {
+        this.authorities = authorities;
     }
 
     @Override
@@ -103,16 +107,12 @@ public final class Administrator implements UserDetails, Authentication {
         this.name = name;
     }
 
-    public void setAuthorities(Collection<AdministratorPermission> authorities) {
-        this.authorities = authorities;
-    }
-
     @Contract(pure = true)
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
-                append(name).
-                toHashCode();
+                                                  append(name).
+                                                                      toHashCode();
     }
 
     @Contract(value = "null -> false", pure = true)
@@ -129,7 +129,7 @@ public final class Administrator implements UserDetails, Authentication {
 
     @Override
     public Object getDetails() {
-        return getName();
+        return getId();
     }
 
     @Contract(pure = true)

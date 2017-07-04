@@ -19,8 +19,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -83,17 +81,20 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
         Administrator ultimate = new Administrator();
         ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
-        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(Collections.singleton("RegisterAdministrator")));
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(Collections.singleton(AdministratorPermission.ManageAdministrator.getAuthority())));
         SecurityContextHolder.getContext().setAuthentication(admin1);
         Administrator admin2 = administratorService.registerNewAdministrator(new AdministratorDto().setName("BBB").setPassword("CCC").setAuthorities(new HashSet<>()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
         Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
         Assert.assertTrue(ybPasswordEncodeService.matches("CCC", administratorService.loadUserByUsername("BBB").getPassword()));
 
+        admin1 = administratorService.updateAdminstrator(admin1.getId(), new AdministratorDto().setName("DDD"));
+
         Assert.assertNotEquals(admin1.getId(), admin2.getId());
+        Assert.assertEquals("DDD", admin1.getName());
 
         exception.expect(UsernameAlreadyExistsException.class);
-        administratorService.registerNewAdministrator(new AdministratorDto().setName("AAA").setPassword("BBB").setAuthorities(new HashSet<>()));
+        administratorService.registerNewAdministrator(new AdministratorDto().setName("BBB").setPassword("BBB").setAuthorities(new HashSet<>()));
     }
 
     @Test
@@ -120,12 +121,12 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
         Administrator ultimate = new Administrator();
         ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
-        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("DDD").setPassword("BBB").setAuthorities(Collections.singleton("RegisterAdministrator")));
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setName("DDD").setPassword("BBB").setAuthorities(Collections.singleton(AdministratorPermission.ManageAdministrator.getAuthority())));
         Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(admin1);
         exception.expect(AccessDeniedException.class);
-        administratorService.registerNewAdministrator(new AdministratorDto().setName("EEE").setPassword("BBB").setAuthorities(Arrays.asList("CreateTask", "RegisterAdministrator")));
+        administratorService.registerNewAdministrator(new AdministratorDto().setName("EEE").setPassword("BBB").setAuthorities(Arrays.asList(AdministratorPermission.CreateTask.getAuthority(), AdministratorPermission.ManageAdministrator.getAuthority())));
     }
 
     @Test

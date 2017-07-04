@@ -6,10 +6,12 @@ import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,16 @@ public class AdministratorService implements UserDetailsService {
     public AdministratorService(AdministratorRepository administratorRepository, YbPasswordEncodeService ybPasswordEncodeService) {
         this.administratorRepository = administratorRepository;
         this.ybPasswordEncodeService = ybPasswordEncodeService;
+    }
+
+    @Contract(pure = true)
+    public static Administrator asAdministrator(Object obj) {
+        return ((Administrator) obj);
+    }
+
+    @Contract(pure = true)
+    public static boolean isAdministrator(Object obj) {
+        return obj instanceof Administrator;
     }
 
     /**
@@ -79,12 +91,12 @@ public class AdministratorService implements UserDetailsService {
      * @throws UsernameAlreadyExistsException 用户名已存在
      */
     @Transactional
-    @PreAuthorize("hasAuthority('RegisterAdministrator') and  authentication.authorities.containsAll(#dto.authorities)")
+    @PreAuthorize("hasAuthority('ManageAdministrator') and  authentication.authorities.containsAll(#dto.authorities)")
     public Administrator registerNewAdministrator(AdministratorDto dto) throws UsernameAlreadyExistsException {
         log.debug("Trying to register new Administrator " + dto.getName());
         if (administratorRepository.findByName(dto.getName()) != null) {
             log.info("Failed to register Administrator " + dto.getName() + ": name already exist");
-            throw new UsernameAlreadyExistsException("administrator.name.exist");
+            throw new UsernameAlreadyExistsException("admin.name.exist");
         }
 
         Administrator admin = new Administrator(dto.getName(), ybPasswordEncodeService.encode(dto.getPassword()));
@@ -102,6 +114,7 @@ public class AdministratorService implements UserDetailsService {
      * @param id 管理员ID
      */
     @Transactional
+    @PreAuthorize("hasAuthority('ManageAdministrator')")
     public void deleteAdministrator(int id) {
         log.debug("Deleting Administrator " + id);
         administratorRepository.deleteById(id);
@@ -110,25 +123,50 @@ public class AdministratorService implements UserDetailsService {
     /**
      * 修改管理员信息
      *
-     * @param id 管理员iD
+     * @param id  管理员ID
      * @param dto 管理员DTO
      * @return 修改后的管理员
      * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
      */
     @Transactional
-    public Administrator updateAdminstrator(int id,AdministratorDto dto){
-        Administrator administrator=administratorRepository.getOne(id);
-        if(!dto.getAuthorities().isEmpty()){
+    @PreAuthorize("(hasAuthority('ManageAdministrator') and authentication.authorities.containsAll(#dto.authorities)) " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.AdministratorService).isAdministrator(principal) && T(cn.edu.xmu.yeahbuddy.service.AdministratorService).asAdministrator(principal).id == #id)")
+    public Administrator updateAdminstrator(int id, AdministratorDto dto) {
+        Administrator administrator = administratorRepository.getOne(id);
+        if (!dto.getAuthorities().isEmpty()) {
             administrator.setAuthorities(dto.getAuthorities());
         }
-        if(dto.getName()!=null){
-            if(administratorRepository.findByName(dto.getName())!=null){
-                log.info("Fail to update Administrator "+administrator.getName()+": name already exist");
-                throw new UsernameAlreadyExistsException("Administrator.name.exist");
-            }else{
+        if (dto.getName() != null) {
+            if (administratorRepository.findByName(dto.getName()) != null) {
+                log.info("Fail to update Administrator " + administrator.getName() + ": name already exist");
+                throw new UsernameAlreadyExistsException("admin.name.exist");
+            } else {
                 administrator.setName(dto.getName());
             }
         }
         return administratorRepository.save(administrator);
+
+    }
+
+    /**
+     * 修改管理员密码
+     *
+     * @param id          管理员ID
+     * @param oldPassword 原密码
+     * @param newPassword 新密码
+     * @return 修改后的管理员
+     * @throws BadCredentialsException 原密码不正确
+     */
+    @Transactional
+    @PreAuthorize("hasAuthority('ManageAdministrator') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.AdministratorService).isAdministrator(principal) && T(cn.edu.xmu.yeahbuddy.service.AdministratorService).asAdministrator(principal).id == #id)")
+    public Administrator updateAdministratorPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException {
+        Administrator admin = administratorRepository.getOne(id);
+        if (ybPasswordEncodeService.matches(oldPassword, admin.getPassword())) {
+            admin.setPassword(ybPasswordEncodeService.encode(newPassword));
+            return administratorRepository.save(admin);
+        } else {
+            throw new BadCredentialsException("admin.update.password");
+        }
     }
 }

@@ -32,7 +32,7 @@ public class Tutor implements UserDetails {
     private String password;
 
     @NonNls
-    @NaturalId
+    @NaturalId(mutable = true)
     @Column(name = "TutorName", unique = true, nullable = false)
     private String name;
 
@@ -132,8 +132,8 @@ public class Tutor implements UserDetails {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
-                append(name).
-                toHashCode();
+                                                  append(name).
+                                                                      toHashCode();
     }
 
     @Contract(value = "null -> false", pure = true)

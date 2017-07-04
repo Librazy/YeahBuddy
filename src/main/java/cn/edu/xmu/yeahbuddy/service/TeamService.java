@@ -6,6 +6,7 @@ import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -34,6 +35,16 @@ public class TeamService implements UserDetailsService {
     public TeamService(TeamRepository teamRepository, YbPasswordEncodeService ybPasswordEncodeService) {
         this.teamRepository = teamRepository;
         this.ybPasswordEncodeService = ybPasswordEncodeService;
+    }
+
+    @Contract(pure = true)
+    public static Team asTeam(Object obj) {
+        return ((Team) obj);
+    }
+
+    @Contract(pure = true)
+    public static boolean isTeam(Object obj) {
+        return obj instanceof Team;
     }
 
     /**
@@ -77,7 +88,7 @@ public class TeamService implements UserDetailsService {
      * @throws UsernameAlreadyExistsException 用户名已存在
      */
     @Transactional
-    @PreAuthorize("hasAuthority('RegisterTeam')")
+    @PreAuthorize("hasAuthority('ManageTeam')")
     public Team registerNewTeam(TeamDto dto) throws UsernameAlreadyExistsException {
         log.debug("Trying to register new Team " + dto.getName());
         if (teamRepository.findByName(dto.getName()) != null) {
@@ -95,30 +106,44 @@ public class TeamService implements UserDetailsService {
     }
 
     /**
+     * 按ID删除管理员
+     *
+     * @param id 管理员ID
+     */
+    @Transactional
+    @PreAuthorize("hasAuthority('ManageTeam')")
+    public void deleteTeam(int id) {
+        log.debug("Deleting Team " + id);
+        teamRepository.deleteById(id);
+    }
+
+    /**
      * 修改团队信息
      *
-     * @param id 团队iD
+     * @param id  团队ID
      * @param dto 团队DTO
      * @return 修改后的团队
      * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
      */
     @Transactional
+    @PreAuthorize("hasAuthority('ManageTeam') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TeamService).isTeam(principal) && T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id == #id)")
     public Team updateTeam(int id, TeamDto dto) {
         Team team = teamRepository.getOne(id);
-        if(dto.getEmail() != null){
+        if (dto.getEmail() != null) {
             team.setEmail(dto.getEmail());
         }
-        if(dto.getPhone() != null){
+        if (dto.getPhone() != null) {
             team.setPhone(dto.getPhone());
         }
-        if(dto.getProjectName() != null){
+        if (dto.getProjectName() != null) {
             team.setProjectName(dto.getProjectName());
         }
-        if(dto.getName() != null){
+        if (dto.getName() != null) {
             if (teamRepository.findByName(dto.getName()) != null) {
                 log.info("Failed to update Team " + team.getName() + ": name already exist");
                 throw new UsernameAlreadyExistsException("team.name.exist");
-            }else{
+            } else {
                 team.setName(dto.getName());
             }
         }
@@ -126,18 +151,20 @@ public class TeamService implements UserDetailsService {
     }
 
     /**
-     * 修改团队信息
+     * 修改团队密码
      *
-     * @param id 团队iD
+     * @param id          团队ID
      * @param oldPassword 原密码
      * @param newPassword 新密码
      * @return 修改后的团队
      * @throws BadCredentialsException 原密码不正确
      */
     @Transactional
-    public Team updateTeamPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException{
+    @PreAuthorize("hasAuthority('ManageTeam') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TeamService).isTeam(principal) && T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id == #id)")
+    public Team updateTeamPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException {
         Team team = teamRepository.getOne(id);
-        if(ybPasswordEncodeService.matches(oldPassword, team.getPassword())){
+        if (ybPasswordEncodeService.matches(oldPassword, team.getPassword())) {
             team.setPassword(ybPasswordEncodeService.encode(newPassword));
             return teamRepository.save(team);
         } else {

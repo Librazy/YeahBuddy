@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
+@SuppressWarnings({"SpringElInspection", "ELValidationInJSP"})
 public class Team implements UserDetails {
 
     @NonNls
@@ -32,7 +33,7 @@ public class Team implements UserDetails {
     private String password;
 
     @NonNls
-    @NaturalId
+    @NaturalId(mutable = true)
     @Column(name = "TeamName", unique = true, nullable = false)
     private String name;
 
@@ -138,8 +139,8 @@ public class Team implements UserDetails {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
-                append(name).
-                toHashCode();
+                                                  append(name).
+                                                                      toHashCode();
     }
 
     @Contract(value = "null -> false", pure = true)

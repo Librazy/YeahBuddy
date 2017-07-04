@@ -1,9 +1,7 @@
 package cn.edu.xmu.yeahbuddy.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.jetbrains.annotations.Contract;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class TeamDto implements Serializable {
