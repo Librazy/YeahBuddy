@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 
 public class TeamReportDto implements Serializable {
 
@@ -12,11 +13,11 @@ public class TeamReportDto implements Serializable {
 
     private TeamStage teamStage;
 
-    private boolean submitted;
+    private Boolean submitted;
 
     private String title;
 
-    private String text;
+    private Map<Integer, String> content;
 
     private Collection<String> files;
 
@@ -31,11 +32,11 @@ public class TeamReportDto implements Serializable {
     }
 
     @Contract(pure = true)
-    public boolean getSubmitted() {
+    public Boolean getSubmitted() {
         return submitted;
     }
 
-    public TeamReportDto setSubmitted(boolean submitted) {
+    public TeamReportDto setSubmitted(Boolean submitted) {
         this.submitted = submitted;
         return this;
     }
@@ -51,12 +52,12 @@ public class TeamReportDto implements Serializable {
     }
 
     @Contract(pure = true)
-    public String getText() {
-        return text;
+    public Map<Integer, String> getContent(){
+        return content;
     }
 
-    public TeamReportDto setText(String text) {
-        this.text = text;
+    public TeamReportDto setContent(Map<Integer, String> content) {
+        this.content = content;
         return this;
     }
 

@@ -3,6 +3,7 @@ package cn.edu.xmu.yeahbuddy.service;
 import cn.edu.xmu.yeahbuddy.domain.TeamReport;
 import cn.edu.xmu.yeahbuddy.domain.TeamStage;
 import cn.edu.xmu.yeahbuddy.domain.repo.TeamReportRepository;
+import cn.edu.xmu.yeahbuddy.model.TeamReportDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,4 +79,37 @@ public class TeamReportService {
         teamReportRepository.deleteById(id);
     }
 
+    /**
+     * 修改团队项目报告
+     *
+     * @param id
+     * @param dto 团队项目报告的dto
+     * @return 团队项目报告
+     */
+    @Transactional
+    public TeamReport updateTeamReport(TeamStage id,TeamReportDto dto){
+        log.debug("Trying to update TeamReport "+id);
+        TeamReport teamReport=teamReportRepository.getOne(dto.getTeamStage());
+
+        if(dto.getTitle()!=null){
+            log.trace("Update title for TeamReport "+id+":"+teamReport.getTitle()+
+                        " -> "+dto.getTitle());
+            teamReport.setTitle(dto.getTitle());
+        }
+        if(dto.getContent()!=null){
+            log.trace("Update content for TeamReport "+id+":"+teamReport.getContent().toString()+
+                    " -> "+dto.getContent().toString());
+            teamReport.setContent(dto.getContent());
+        }
+        if(dto.getFiles()!=null){
+            log.trace("Update files for TeamReport "+id+":"+teamReport.getFiles().toString()+
+                    " -> "+dto.getFiles().toString());
+            teamReport.setFiles(dto.getFiles());
+        }
+        if(dto.getSubmitted()!=null) {
+            teamReport.setSubmitted(dto.getSubmitted());
+        }
+
+        return teamReportRepository.save(teamReport);
+    }
 }
