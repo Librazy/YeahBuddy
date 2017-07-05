@@ -43,7 +43,7 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        用户名或密码错误
+                        <span data-th-text="#{login.incorrect}">用户名或密码错误</span>
                     </div>
 
                     <form class="form-horizontal" data-th-action="@{/login}" method="post" role="form">
