@@ -136,12 +136,6 @@ public class Tutor implements UserDetails {
         return true;
     }
 
-    @Override
-    @Contract(pure = true)
-    public String getName() {
-        return username;
-    }
-
     @Contract(pure = true)
     @Override
     public int hashCode() {

@@ -149,11 +149,6 @@ public class Team implements UserDetails {
     }
 
     @Contract(pure = true)
-    public String getName() {
-        return username;
-    }
-
-    @Contract(pure = true)
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37).
