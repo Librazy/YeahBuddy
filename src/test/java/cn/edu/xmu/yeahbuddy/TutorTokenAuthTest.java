@@ -10,7 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Rollback
-public class TutorTokenAuthTest extends ApplicationTests {
+public class TutorTokenAuthTest extends ApplicationTestBase {
+    
     @Test
     @Transactional
     public void tutorTokenAuthTest() throws Exception {

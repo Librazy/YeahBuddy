@@ -37,8 +37,10 @@ public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringCo
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+
     @Autowired
     private TeamService teamService;
+
     @Autowired
     private PlatformTransactionManager transactionManager;
 

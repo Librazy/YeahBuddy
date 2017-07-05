@@ -38,8 +38,10 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+
     @Autowired
     private AdministratorService administratorService;
+
     @Autowired
     private PlatformTransactionManager transactionManager;
 

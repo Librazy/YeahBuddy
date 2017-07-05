@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Rollback
-public class TeamFormLoginTest extends ApplicationTests {
+public class TeamFormLoginTest extends ApplicationTestBase {
 
     @Test
     @Transactional

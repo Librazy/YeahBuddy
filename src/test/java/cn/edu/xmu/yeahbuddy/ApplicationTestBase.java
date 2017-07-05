@@ -30,7 +30,7 @@ import java.util.Collections;
 @SpringBootTest
 @Rollback
 @AutoConfigureMockMvc
-public abstract class ApplicationTests extends AbstractTransactionalJUnit4SpringContextTests {
+public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4SpringContextTests {
 
     @Autowired
     MockMvc mvc;
