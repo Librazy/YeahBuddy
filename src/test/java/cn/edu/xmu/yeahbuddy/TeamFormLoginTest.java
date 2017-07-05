@@ -35,7 +35,7 @@ public class TeamFormLoginTest extends ApplicationTests {
 
         mvc.perform(formLogin("/team/login").user("does").password("notcorrect"))
            .andExpect(status().is3xxRedirection())
-           .andExpect(redirectedUrl("/team/login?error=1"))
+           .andExpect(redirectedUrl("/team/login?error"))
            .andExpect(unauthenticated());
     }
 }
