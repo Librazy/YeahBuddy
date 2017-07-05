@@ -2,9 +2,8 @@ package cn.edu.xmu.yeahbuddy.domain;
 
 import org.jetbrains.annotations.Contract;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.Map;
 
 
 @Entity
@@ -16,8 +15,9 @@ public class Review {
     @Column(name = "ReviewRank", nullable = false)
     private int rank = -1;
 
-    @Column(name = "ReviewText")
-    private String text;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "ReviewContent")
+    private Map<Integer, String> content;
 
     @Column(name = "ReviewSubmitted", nullable = false)
     private boolean submitted;
@@ -48,12 +48,12 @@ public class Review {
     }
 
     @Contract(pure = true)
-    public String getText() {
-        return text;
+    public Map<Integer, String> getContent() {
+        return content;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setContent(Map<Integer, String> content) {
+        this.content = content;
     }
 
     @Contract(pure = true)
