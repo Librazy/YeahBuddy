@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Rollback
 public class TutorTokenAuthTest extends ApplicationTestBase {
-    
+
     @Test
     @Transactional
     public void tutorTokenAuthTest() throws Exception {

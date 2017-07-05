@@ -9,11 +9,11 @@ public class ReviewDto {
 
     private ReviewKey reviewKey;
 
-    private int rank;
+    private Integer rank;
 
     private Map<Integer, String> content;
 
-    private boolean submitted;
+    private Boolean submitted;
 
     @Contract(pure = true)
     public ReviewKey getReviewKey() {
@@ -26,11 +26,11 @@ public class ReviewDto {
     }
 
     @Contract(pure = true)
-    public int getRank() {
+    public Integer getRank() {
         return rank;
     }
 
-    public ReviewDto setRank(int rank) {
+    public ReviewDto setRank(Integer rank) {
         this.rank = rank;
         return this;
     }
@@ -46,11 +46,11 @@ public class ReviewDto {
     }
 
     @Contract(pure = true)
-    public boolean getSubmitted() {
+    public Boolean getSubmitted() {
         return submitted;
     }
 
-    public ReviewDto setSubmitted(boolean submitted) {
+    public ReviewDto setSubmitted(Boolean submitted) {
         this.submitted = submitted;
         return this;
     }
