@@ -89,7 +89,8 @@ public class TokenService {
         while (!tokenValue.matches("[a-zA-Z0-9]+")) {
             tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         }
-        tokenRepository.save(new Token(tokenValue, tutor.getId(), stage, teamIds));
-        return tokenValue;
+        Token result = tokenRepository.save(new Token(tokenValue, tutor.getId(), stage, teamIds));
+        log.debug("Created Token " + result);
+        return result.getTokenValue();
     }
 }

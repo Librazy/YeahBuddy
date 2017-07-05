@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Contract;
 import javax.persistence.*;
 import java.sql.Time;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Entity
 public class Token {
@@ -85,5 +86,10 @@ public class Token {
 
     public void setTeamIds(Collection<Integer> teamIds) {
         this.teamIds = teamIds;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("tokenValue:%s tutorId:%d stage:%d revoked:%b teamIds:[%s]", tokenValue, tutorId, stage, revoked, teamIds.stream().map(Object::toString).collect(Collectors.joining(", ")));
     }
 }

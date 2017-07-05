@@ -1,5 +1,7 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.jetbrains.annotations.Contract;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,10 +35,12 @@ public class Stage {
         this.end = end;
     }
 
+    @Contract(pure = true)
     public int getId() {
         return id;
     }
 
+    @Contract(pure = true)
     public Time getStart() {
         return start;
     }
@@ -45,6 +49,7 @@ public class Stage {
         this.start = start;
     }
 
+    @Contract(pure = true)
     public Time getEnd() {
         return end;
     }
@@ -53,6 +58,7 @@ public class Stage {
         this.end = end;
     }
 
+    @Contract(pure = true)
     public String getDescription() {
         return description;
     }
@@ -61,6 +67,7 @@ public class Stage {
         this.description = description;
     }
 
+    @Contract(pure = true)
     public String getTitle() {
         return title;
     }

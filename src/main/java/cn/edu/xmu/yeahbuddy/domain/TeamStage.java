@@ -56,7 +56,7 @@ public class TeamStage implements Serializable {
     }
 
     @Override
-    public String toString(){
-        return "teamId:"+Integer.toString(teamId)+" stage:"+Integer.toString(stage);
+    public String toString() {
+        return String.format("teamId:%d stage:%d", teamId, stage);
     }
 }

@@ -1,5 +1,7 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.jetbrains.annotations.Contract;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -29,10 +31,12 @@ public class TeamReport {
         this.teamStage = teamStage;
     }
 
+    @Contract(pure = true)
     public TeamStage getTeamStage() {
         return teamStage;
     }
 
+    @Contract(pure = true)
     public boolean isSubmitted() {
         return submitted;
     }
@@ -41,6 +45,7 @@ public class TeamReport {
         this.submitted = submitted;
     }
 
+    @Contract(pure = true)
     public String getText() {
         return text;
     }
@@ -49,6 +54,7 @@ public class TeamReport {
         this.text = text;
     }
 
+    @Contract(pure = true)
     public Collection<String> getFiles() {
         return files;
     }
@@ -57,6 +63,7 @@ public class TeamReport {
         this.files = files;
     }
 
+    @Contract(pure = true)
     public String getTitle() {
         return title;
     }
