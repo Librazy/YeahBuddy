@@ -65,6 +65,10 @@ compileJava {
     options.compilerArgs += ["-Xlint:all"]
 }
 
+bootRun {
+    environment 'spring.profiles.active', 'dev'
+}
+
 task('webjarsExtraction') {
     doLast {
         configurations.webjars.each { jar ->
