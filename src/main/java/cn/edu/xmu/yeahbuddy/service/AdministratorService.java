@@ -3,7 +3,7 @@ package cn.edu.xmu.yeahbuddy.service;
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.repo.AdministratorRepository;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
-import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
@@ -88,12 +88,12 @@ public class AdministratorService implements UserDetailsService {
      *
      * @param dto 管理员DTO
      * @return 新注册的管理员
-     * @throws UsernameAlreadyExistsException 用户名已存在
+     * @throws IdentifierAlreadyExistsException 用户名已存在
      * @throws IllegalArgumentException DTO中未填满所需信息
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageAdministrator') and  authentication.authorities.containsAll(#dto.authorities)")
-    public Administrator registerNewAdministrator(AdministratorDto dto) throws UsernameAlreadyExistsException {
+    public Administrator registerNewAdministrator(AdministratorDto dto) throws IdentifierAlreadyExistsException {
         log.debug("Trying to register new Administrator " + dto.getUsername());
 
         if(!dto.ready()){
@@ -103,7 +103,7 @@ public class AdministratorService implements UserDetailsService {
 
         if (administratorRepository.findByUsername(dto.getUsername()) != null) {
             log.info("Failed to register Administrator " + dto.getUsername() + ": username already exist");
-            throw new UsernameAlreadyExistsException("admin.username.exist");
+            throw new IdentifierAlreadyExistsException("admin.username.exist");
         }
 
         Administrator admin = new Administrator(dto.getUsername(), ybPasswordEncodeService.encode(dto.getPassword()));
@@ -134,7 +134,7 @@ public class AdministratorService implements UserDetailsService {
      * @param id  管理员ID
      * @param dto 管理员DTO
      * @return 修改后的管理员
-     * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
+     * @throws IdentifierAlreadyExistsException 如果修改用户名，用户名已存在
      */
     @Transactional
     @PreAuthorize("(hasAuthority('ManageAdministrator') && ((#dto.authorities == null) || authentication.authorities.containsAll(#dto.authorities))) " +
@@ -158,7 +158,7 @@ public class AdministratorService implements UserDetailsService {
         if (dto.getUsername() != null) {
             if (administratorRepository.findByUsername(dto.getUsername()) != null) {
                 log.info("Fail to update username for Administrator " + administrator.getUsername() + ": name already exist");
-                throw new UsernameAlreadyExistsException("admin.name.exist");
+                throw new IdentifierAlreadyExistsException("admin.name.exist");
             } else {
                 log.trace("Updated username for Administrator " + id + ":" + administrator.getUsername() +
                                   " -> " + dto.getUsername());

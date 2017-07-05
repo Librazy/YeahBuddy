@@ -4,7 +4,7 @@ import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TutorRepository;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
-import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
@@ -110,12 +110,12 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
      *
      * @param dto 导师DTO
      * @return 新注册的导师
-     * @throws UsernameAlreadyExistsException 用户名已存在
+     * @throws IdentifierAlreadyExistsException 用户名已存在
      * @throws IllegalArgumentException DTO中未填满所需信息
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor')")
-    public Tutor registerNewTutor(TutorDto dto) throws UsernameAlreadyExistsException {
+    public Tutor registerNewTutor(TutorDto dto) throws IdentifierAlreadyExistsException {
         log.debug("Trying to register new Tutor " + dto.getUsername());
 
         if(!dto.ready()){
@@ -125,7 +125,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
         if (tutorRepository.findByUsername(dto.getUsername()) != null) {
             log.info("Failed to register Tutor " + dto.getUsername() + ": name already exist");
-            throw new UsernameAlreadyExistsException("tutor.name.exist");
+            throw new IdentifierAlreadyExistsException("tutor.name.exist");
         }
 
         Tutor tutor = new Tutor(dto.getUsername(), ybPasswordEncodeService.encode(dto.getPassword()));
@@ -158,7 +158,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
      * @param id  导师ID
      * @param dto 导师DTO
      * @return 修改后的导师
-     * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
+     * @throws IdentifierAlreadyExistsException 如果修改用户名，用户名已存在
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor') " +
@@ -186,7 +186,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         if (dto.getUsername() != null) {
             if (tutorRepository.findByUsername(dto.getUsername()) != null) {
                 log.info("Fail to update username for Tutor " + tutor.getUsername() + ": username already exist");
-                throw new UsernameAlreadyExistsException("tutor.username.exist");
+                throw new IdentifierAlreadyExistsException("tutor.username.exist");
             } else {
                 log.trace("Updated username for Tutor " + id + ":" + tutor.getUsername() +
                                   " -> " + dto.getUsername());

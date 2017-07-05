@@ -3,7 +3,7 @@ package cn.edu.xmu.yeahbuddy.service;
 import cn.edu.xmu.yeahbuddy.domain.TeamReport;
 import cn.edu.xmu.yeahbuddy.domain.TeamStage;
 import cn.edu.xmu.yeahbuddy.domain.repo.TeamReportRepository;
-import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
@@ -52,11 +52,11 @@ public class TeamReportService {
      * @return 新注册的团队项目报告
      */
     @Transactional
-    public TeamReport createTeamReport(TeamStage teamStage, String title) throws UsernameAlreadyExistsException {
+    public TeamReport createTeamReport(TeamStage teamStage, String title) throws IdentifierAlreadyExistsException {
         log.debug("Trying to create TeamReport with id " + teamStage);
         if (teamReportRepository.findById(teamStage).isPresent()) {
             log.info("Fail to create TeamReport with id " + teamStage + ": id already exist");
-            throw new UsernameAlreadyExistsException("team.id.exist");
+            throw new IdentifierAlreadyExistsException("team.id.exist");
         }
 
         TeamReport teamReport = new TeamReport(teamStage);

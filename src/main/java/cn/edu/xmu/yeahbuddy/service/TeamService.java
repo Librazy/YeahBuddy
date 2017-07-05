@@ -3,7 +3,7 @@ package cn.edu.xmu.yeahbuddy.service;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.repo.TeamRepository;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
-import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
@@ -85,12 +85,12 @@ public class TeamService implements UserDetailsService {
      *
      * @param dto 团队DTO
      * @return 新注册的团队
-     * @throws UsernameAlreadyExistsException 用户名已存在
+     * @throws IdentifierAlreadyExistsException 用户名已存在
      * @throws IllegalArgumentException DTO中未填满所需信息
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTeam')")
-    public Team registerNewTeam(TeamDto dto) throws UsernameAlreadyExistsException {
+    public Team registerNewTeam(TeamDto dto) throws IdentifierAlreadyExistsException {
         log.debug("Trying to register new Team " + dto.getUsername());
 
         if(!dto.ready()){
@@ -100,7 +100,7 @@ public class TeamService implements UserDetailsService {
 
         if (teamRepository.findByUsername(dto.getUsername()) != null) {
             log.info("Failed to register Team " + dto.getUsername() + ": username already exist");
-            throw new UsernameAlreadyExistsException("team.username.exist");
+            throw new IdentifierAlreadyExistsException("team.username.exist");
         }
 
         Team team = new Team(dto.getUsername(), ybPasswordEncodeService.encode(dto.getPassword()));
@@ -133,7 +133,7 @@ public class TeamService implements UserDetailsService {
      * @param id  团队ID
      * @param dto 团队DTO
      * @return 修改后的团队
-     * @throws UsernameAlreadyExistsException 如果修改用户名，用户名已存在
+     * @throws IdentifierAlreadyExistsException 如果修改用户名，用户名已存在
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTeam') " +
@@ -169,7 +169,7 @@ public class TeamService implements UserDetailsService {
         if (dto.getUsername() != null) {
             if (teamRepository.findByUsername(dto.getUsername()) != null) {
                 log.info("Failed to update username for Team " + team.getUsername() + ": username already exist");
-                throw new UsernameAlreadyExistsException("team.username.exist");
+                throw new IdentifierAlreadyExistsException("team.username.exist");
             } else {
                 log.trace("Updated username for Team " + id + ":" + team.getUsername() +
                                   " -> " + dto.getUsername());

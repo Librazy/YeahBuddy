@@ -10,7 +10,7 @@ import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
 import cn.edu.xmu.yeahbuddy.service.YbPasswordEncodeService;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
-import cn.edu.xmu.yeahbuddy.utils.UsernameAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -93,7 +93,7 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
         Assert.assertNotEquals(admin1.getId(), admin2.getId());
         Assert.assertEquals("DDD", admin1.getUsername());
 
-        exception.expect(UsernameAlreadyExistsException.class);
+        exception.expect(IdentifierAlreadyExistsException.class);
         administratorService.registerNewAdministrator(new AdministratorDto().setUsername("BBB").setPassword("BBB").setDisplayName("BBB").setAuthorities(new HashSet<>()));
     }
 
