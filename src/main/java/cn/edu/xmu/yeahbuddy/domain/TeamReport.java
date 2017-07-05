@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Map;
 
 @Entity
 public class TeamReport {
@@ -17,8 +18,9 @@ public class TeamReport {
     @Column(name = "TeamReportTitle", nullable = false)
     private String title;
 
-    @Column(name = "TeamReportText")
-    private String text;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "TeamReportContent")
+    private Map<Integer, String> content;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TeamReportFiles")
@@ -46,12 +48,12 @@ public class TeamReport {
     }
 
     @Contract(pure = true)
-    public String getText() {
-        return text;
+    public Map<Integer, String> getContent() {
+        return content;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setContent(Map<Integer, String> content) {
+        this.content = content;
     }
 
     @Contract(pure = true)
