@@ -14,7 +14,7 @@ public class Review {
     private ReviewKey reviewKey;
 
     @Column(name = "ReviewRank", nullable = false)
-    private int rank;
+    private int rank = -1;
 
     @Column(name = "ReviewText")
     private String text;
