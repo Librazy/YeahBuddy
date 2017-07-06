@@ -48,7 +48,7 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                        .antMatchers("/webjars/**", "/favicon.ico", "/static/image/**", "/static/css/**", "/login/**")
+                        .antMatchers("/webjars/**", "/favicon.ico", "/static/image/**", "/static/css/**", "/204")
                             .permitAll();
 
             String activeDb = environment.getProperty("spring.datasource.driver-class-name");
