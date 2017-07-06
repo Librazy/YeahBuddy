@@ -5,6 +5,7 @@ import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
+import cn.edu.xmu.yeahbuddy.service.YbPasswordEncodeService;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -37,6 +39,9 @@ public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringCo
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+
+    @Autowired
+    private YbPasswordEncodeService ybPasswordEncodeService;
 
     @Autowired
     private TeamService teamService;
@@ -92,6 +97,18 @@ public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringCo
         Assert.assertEquals("buddy", team.getProjectName());
         teamService.updateTeam(team.getId(), new TeamDto().setProjectName("bbudy"));
         Assert.assertEquals("bbudy", team.getProjectName());
+    }
+
+
+    @Test
+    @WithUserDetails(value = "someteam", userDetailsServiceBeanName = "teamService")
+    public void updateTeamPasswordTest() {
+        Team team = teamService.loadUserByUsername("someteam");
+        Assert.assertTrue(ybPasswordEncodeService.matches("some", team.getPassword()));
+        teamService.updateTeamPassword(team.getId(), "some", "someteampass");
+        Assert.assertTrue(ybPasswordEncodeService.matches("someteampass", team.getPassword()));
+        exception.expect(BadCredentialsException.class);
+        teamService.updateTeamPassword(team.getId(), "bad", "bad");
     }
 
     @Test

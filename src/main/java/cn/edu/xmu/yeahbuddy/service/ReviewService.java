@@ -3,6 +3,7 @@ package cn.edu.xmu.yeahbuddy.service;
 import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.ReviewKey;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
+import cn.edu.xmu.yeahbuddy.model.ReviewDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,5 +74,30 @@ public class ReviewService {
     public void deleteReview(ReviewKey id) {
         log.debug("Delete TeamReport with id" + id);
         reviewRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Review updateReview(ReviewKey id, ReviewDto dto) {
+        log.debug("Trying to update Review with id" + id);
+        Review review = reviewRepository.getOne(id);
+
+        if (dto.getSubmitted() != null) {
+            log.trace("Updated submitted for Review with id " + id + ":" + review.isSubmitted() +
+                              " -> " + dto.getSubmitted());
+            review.setSubmitted(dto.getSubmitted());
+        }
+
+        if (dto.getContent() != null) {
+            log.trace("Updated content for Review with id " + id);
+            review.setContent(dto.getContent());
+        }
+
+        if (dto.getRank() != null) {
+            log.trace("Updated submitted for Review with id " + id + ":" + review.getRank() +
+                              " -> " + dto.getRank());
+            review.setRank(dto.getRank());
+        }
+
+        return reviewRepository.save(review);
     }
 }
