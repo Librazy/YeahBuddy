@@ -97,6 +97,8 @@ public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringCo
         Assert.assertEquals("buddy", team.getProjectName());
         teamService.updateTeam(team.getId(), new TeamDto().setProjectName("bbudy"));
         Assert.assertEquals("bbudy", team.getProjectName());
+        team = teamService.updateTeam(team.getId(), new TeamDto().setUsername("some"));
+        Assert.assertEquals("some", team.getUsername());
     }
 
 
@@ -105,7 +107,7 @@ public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringCo
     public void updateTeamPasswordTest() {
         Team team = teamService.loadUserByUsername("someteam");
         Assert.assertTrue(ybPasswordEncodeService.matches("some", team.getPassword()));
-        teamService.updateTeamPassword(team.getId(), "some", "someteampass");
+        team = teamService.updateTeamPassword(team.getId(), "some", "someteampass");
         Assert.assertTrue(ybPasswordEncodeService.matches("someteampass", team.getPassword()));
         exception.expect(BadCredentialsException.class);
         teamService.updateTeamPassword(team.getId(), "bad", "bad");
