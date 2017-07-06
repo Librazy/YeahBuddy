@@ -76,7 +76,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/admin").and()
                     // logout
                     .logout()
-                        .logoutUrl("/**/logout")
+                        .logoutUrl("/logout")
                             .permitAll()
                         .logoutSuccessUrl("/login")
                             .deleteCookies("JSESSIONID").and()
@@ -117,7 +117,7 @@ public class SecurityConfig {
                             .defaultSuccessUrl("/team").and()
                     // logout
                         .logout()
-                            .logoutUrl("/team/**/logout")
+                            .logoutUrl("/team/logout")
                                 .permitAll()
                             .logoutSuccessUrl("/team/login")
                                 .deleteCookies("JSESSIONID").and()
@@ -174,7 +174,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/tutor").and()
                     // logout
                     .logout()
-                        .logoutUrl("/tutor/**/logout")
+                        .logoutUrl("/tutor/logout")
                             .permitAll()
                         .logoutSuccessUrl("/tutor/login")
                             .deleteCookies("JSESSIONID").and()
