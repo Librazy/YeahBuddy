@@ -205,7 +205,7 @@ public class AdministratorService implements UserDetailsService {
      * @return 修改后的管理员
      */
     @Transactional
-    @PreAuthorize("hasAuthority('ResetPassword') &&hasAuthority('ManageAdministrator') ")
+    @PreAuthorize("hasAuthority('ResetPassword') && hasAuthority('ManageAdministrator')")
     public Administrator resetAdministratorPassword(int id, String newPassword) {
         Administrator admin = administratorRepository.getOne(id);
         log.info("Reset password for Administrator " + id);

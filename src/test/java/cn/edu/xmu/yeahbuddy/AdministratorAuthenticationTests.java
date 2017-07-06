@@ -4,6 +4,8 @@ import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
+import cn.edu.xmu.yeahbuddy.service.YbPasswordEncodeService;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,6 +28,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,6 +42,9 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+
+    @Autowired
+    private YbPasswordEncodeService ybPasswordEncodeService;
 
     @Autowired
     private AdministratorService administratorService;
@@ -94,8 +101,25 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
                         .setDisplayName("admin2")
                         .setAuthorities(
                                 Stream.of(AdministratorPermission.ViewReport)
+                                      .map(AdministratorPermission::getAuthority)
+                                      .collect(Collectors.toSet())));
+    }
+
+    @Test
+    @WithUserDetails(value = "some", userDetailsServiceBeanName = "administratorService")
+    public void registerNewAdministratorAndResetPasswordTest() {
+        Administrator admin3 = administratorService.registerNewAdministrator(
+                new AdministratorDto()
+                        .setUsername("admin3")
+                        .setPassword("admin3")
+                        .setDisplayName("admin3")
+                        .setAuthorities(
+                                Stream.of(AdministratorPermission.ViewReport)
                                       .map(AdministratorPermission::name)
                                       .collect(Collectors.toSet())));
+        Assert.assertTrue(ybPasswordEncodeService.matches("admin3", admin3.getPassword()));
+        administratorService.resetAdministratorPassword(admin3.getId(), "admin");
+        Assert.assertTrue(ybPasswordEncodeService.matches("admin", admin3.getPassword()));
     }
 
     @Test
