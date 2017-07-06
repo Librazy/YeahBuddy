@@ -69,7 +69,7 @@ bootRun {
     environment 'spring.profiles.active', 'dev'
 }
 
-task('webjarsExtraction') {
+task('extractWebjars') {
     doLast {
         configurations.webjars.each { jar ->
             println jar.absolutePath
@@ -90,6 +90,32 @@ task('webjarsExtraction') {
                         "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${artifact.moduleVersion.id.version}"
 
                 into "src/main/resources/webjars/${artifact.name}"
+            }
+        }
+    }
+}
+
+task('deployWebjars') {
+    doLast {
+        configurations.webjars.each { jar ->
+            println jar.absolutePath
+            def config = configurations.webjars.resolvedConfiguration
+            def artifact = config.resolvedArtifacts.find {
+                it.file.toString() == jar.absolutePath
+            }
+
+            def upStreamVersion = "${artifact.moduleVersion.id.version}"
+            upStreamVersion = upStreamVersion.replaceAll(/(-[\d.-]+)/, '')
+
+            copy {
+                from zipTree(jar)
+                into file("${buildDir}/webjars-content/${artifact.name}")
+            }
+            copy {
+                from "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${upStreamVersion}",
+                        "${buildDir}/webjars-content/${artifact.name}/META-INF/resources/webjars/${artifact.name}/${artifact.moduleVersion.id.version}"
+
+                into "src/main/resources/webjars/${artifact.name}/${upStreamVersion}"
             }
         }
     }
