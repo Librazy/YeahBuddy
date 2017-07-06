@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title data-th-text="${error}">错误</title>
+    <title data-th-text="${status} + ' - ' + ${error}">错误</title>
     <link rel="stylesheet" href="/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css">
     <link rel="stylesheet" href="/static/css/bg.css">
     <style type="text/css">
@@ -27,7 +27,7 @@
             <div class="row clearfix" style="min-height: 11rem">
                 <img class="col-lg-2 offset-lg-2 hidden-md-down" src="/static/image/favicon.svg">
                 <div class="col-lg-5 offset-lg-1 col-md-6 offset-md-3 column col-sm-10 offset-sm-1">
-                    <h1 data-th-text="${status}" style="text-align: center;">
+                    <h1 data-th-text="${status} + ' - ' + ${error}" style="text-align: center;">
                         999
                     </h1>
                     <div class="alert alert-warning show" role="alert"

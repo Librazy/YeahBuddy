@@ -1,5 +1,8 @@
 package cn.edu.xmu.yeahbuddy.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorAttributes;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -11,6 +14,12 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
+
+    @Bean
+    @Autowired
+    public ErrorAttributes errorAttributes(MessageSource messageSource) {
+        return new LocalizedErrorAttributes(messageSource);
+    }
 
     @Bean
     public LocaleResolver localeResolver() {
