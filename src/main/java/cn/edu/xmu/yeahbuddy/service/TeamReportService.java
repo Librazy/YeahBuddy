@@ -70,7 +70,7 @@ public class TeamReportService {
         log.debug("Trying to create TeamReport with id " + teamStage);
         if (teamReportRepository.findById(teamStage).isPresent()) {
             log.info("Fail to create TeamReport with id " + teamStage + ": id already exist");
-            throw new IdentifierAlreadyExistsException("teamreport.id.exist");
+            throw new IdentifierAlreadyExistsException("teamreport.id.exist", teamStage);
         }
 
         TeamReport teamReport = new TeamReport(teamStage);

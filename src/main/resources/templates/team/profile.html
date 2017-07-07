@@ -26,6 +26,16 @@
         #submit:hover {
             background: rgba(0, 0, 128, .22);
         }
+
+        .alert-dismissible .close {
+            position: relative;
+            right: -1.25rem;
+            padding: .75rem 1.25rem;
+            color: inherit;
+        }
+        .alert strong{
+            margin-right: 1rem;
+        }
     </style>
 </head>
 
@@ -39,7 +49,6 @@
                      data-th-src="@{/static/image/favicon.svg}"
                      width="30" height="30" class="d-inline-block align-top">项目管理系统
             </a>
-
         </div>
     </div>
 </nav>
@@ -58,35 +67,36 @@
             <h1 data-th-text="#{team.profile.title}" style="text-align: center;">
                 团队信息管理
             </h1>
-            <form class="form-horizontal" data-th-action="@{/team/profile}" method="post" role="form">
+            <form id="profileForm" class="form-horizontal" data-th-action="${formAction}" method="POST" role="form">
+                <input type="hidden" name="_method" value="PUT"/><!--@see {@link HiddenHttpMethodFilter}-->
                 <div class="form-group row mt-2">
                     <fieldset class="input-group col-md-5">
                         <label for="username" class="input-group-addon" data-th-text="#{username}">用户名</label>
                         <input type="text" class="form-control" id="username" name="username" required
-                               data-th-text="#{team.username}"/>
+                               data-th-value="${team.username}"/>
                     </fieldset>
                     <fieldset class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
                         <label for="email" class="input-group-addon" data-th-text="#{email}">电子邮件</label>
                         <input type="email" class="form-control" id="email" name="email"
-                               data-th-text="#{team.email}"/>
+                               data-th-value="${team.email}"/>
                     </fieldset>
                 </div>
                 <div class="form-group row mt-3">
                     <fieldset class="input-group col-md-5">
                         <label for="displayName" class="input-group-addon" data-th-text="#{display-name}">姓名</label>
                         <input type="text" class="form-control" id="displayName" name="displayName" required
-                               data-th-text="#{team.displayName}"/>
+                               data-th-value="${team.displayName}"/>
                     </fieldset>
                     <fieldset class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
                         <label for="phone" class="input-group-addon" data-th-text="#{phone}">手机号码</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" data-th-text="#{team.phone}"/>
+                        <input type="tel" class="form-control" id="phone" name="phone" data-th-value="${team.phone}"/>
                     </fieldset>
                 </div>
                 <div class="form-group row mt-3">
                     <fieldset class="input-group col-md-12">
                         <label for="projectName" class="input-group-addon" data-th-text="#{project-name}">项目名</label>
                         <input type="text" class="form-control" id="projectName" name="projectName" required
-                               data-th-text="#{team.projectName}"/>
+                               data-th-value="${team.projectName}"/>
                     </fieldset>
                 </div>
                 <div class="form-group">
@@ -125,5 +135,45 @@
         data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
 <script src="../../webjars/bootstrap/dist/js/bootstrap.min.js"
         data-th-src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+<script>
+    //https://stackoverflow.com/questions/5221633/select-submit-only-changed-form-fields-with-jquery
+    function hashDiff(h1, h2) {
+        var d = {};
+        for (var k in h2) {
+            if (h1[k] !== h2[k]) d[k] = h2[k];
+        }
+        return d;
+    }
+
+    function convertSerializedArrayToHash(a) {
+        var r = {};
+        for (var i = 0; i < a.length; i++) {
+            r[a[i].name] = a[i].value;
+        }
+        return r;
+    }
+
+    $(function () {
+        var $form = $('#profileForm');
+        var startItems = convertSerializedArrayToHash($form.serializeArray());
+        $form.on("submit", function () {
+            var currentItems = convertSerializedArrayToHash($form.serializeArray());
+            var itemsToSubmit = hashDiff(startItems, currentItems);
+            $.ajax({
+                method: "PUT",
+                url: $form.attr('action'),
+                data: itemsToSubmit,
+                dataType: "json",
+                success: function (data) {
+                    $form.prepend('<div class="row"><div class="alert alert-success alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + data.status + '</strong>' + data.message + '</div></div>');
+                },
+                error: function (jqXHR) {
+                    $form.prepend('<div class="row"><div class="alert alert-warning alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + jqXHR.responseJSON.error + '</strong>' + jqXHR.responseJSON.message + '</div></div>');
+                }
+            });
+            return false;
+        });
+    });
+</script>
 </body>
 </html>

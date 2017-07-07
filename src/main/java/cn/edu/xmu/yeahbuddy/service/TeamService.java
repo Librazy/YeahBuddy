@@ -113,7 +113,7 @@ public class TeamService implements UserDetailsService {
 
         if (teamRepository.findByUsername(dto.getUsername()) != null) {
             log.info("Failed to register Team " + dto.getUsername() + ": username already exist");
-            throw new IdentifierAlreadyExistsException("team.username.exist");
+            throw new IdentifierAlreadyExistsException("team.username.exist", dto.getUsername());
         }
 
         Team team = new Team(dto.getUsername(), ybPasswordEncodeService.encode(dto.getPassword()));
@@ -179,10 +179,10 @@ public class TeamService implements UserDetailsService {
             team.setProjectName(dto.getProjectName());
         }
 
-        if (dto.getUsername() != null) {
+        if (dto.getUsername() != null && !dto.getUsername().equals(team.getUsername())) {
             if (teamRepository.findByUsername(dto.getUsername()) != null) {
                 log.info("Failed to update username for Team " + team.getUsername() + ": username already exist");
-                throw new IdentifierAlreadyExistsException("team.username.exist");
+                throw new IdentifierAlreadyExistsException("team.username.exist", dto.getUsername());
             } else {
                 log.trace("Updated username for Team " + id + ":" + team.getUsername() +
                                   " -> " + dto.getUsername());

@@ -56,7 +56,7 @@ public class ReviewService {
         log.debug("Trying to create Review with id " + reviewKey);
         if (reviewRepository.findById(reviewKey).isPresent()) {
             log.info("Fail to create Review with id " + reviewKey + ": id already exist");
-            throw new IdentifierAlreadyExistsException("review.id.exist");
+            throw new IdentifierAlreadyExistsException("review.id.exist", reviewKey);
         }
 
         Review review = new Review(reviewKey);

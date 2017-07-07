@@ -76,6 +76,14 @@ public class Application extends SpringBootServletInitializer {
                                 .setEmail("a@b.com")
                                 .setPhone("18988888888")
                                 .setProjectName("yeahbuddy"));
+                teamService.registerNewTeam(
+                        new TeamDto()
+                                .setUsername("team2")
+                                .setPassword("team2")
+                                .setDisplayName("Team 2")
+                                .setEmail("c@b.com")
+                                .setPhone("18908888888")
+                                .setProjectName("yeaddy"));
                 teamId = team.getId();
                 SecurityContextHolder.getContext().setAuthentication(null);
             }

@@ -125,7 +125,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
         if (tutorRepository.findByUsername(dto.getUsername()) != null) {
             log.info("Failed to register Tutor " + dto.getUsername() + ": name already exist");
-            throw new IdentifierAlreadyExistsException("tutor.name.exist");
+            throw new IdentifierAlreadyExistsException("tutor.name.exist", dto.getUsername());
         }
 
         Tutor tutor = new Tutor(dto.getUsername(), ybPasswordEncodeService.encode(dto.getPassword()));
@@ -186,7 +186,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         if (dto.getUsername() != null) {
             if (tutorRepository.findByUsername(dto.getUsername()) != null) {
                 log.info("Fail to update username for Tutor " + tutor.getUsername() + ": username already exist");
-                throw new IdentifierAlreadyExistsException("tutor.username.exist");
+                throw new IdentifierAlreadyExistsException("tutor.username.exist", dto.getUsername());
             } else {
                 log.trace("Updated username for Tutor " + id + ":" + tutor.getUsername() +
                                   " -> " + dto.getUsername());

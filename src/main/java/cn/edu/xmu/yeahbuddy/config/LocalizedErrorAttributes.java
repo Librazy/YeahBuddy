@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -139,7 +140,11 @@ public class LocalizedErrorAttributes
                                  Locale locale) {
         BindingResult result = extractBindingResult(error);
         if (result == null) {
-            errorAttributes.put("message", error.getMessage());
+            if (error instanceof MessageSourceAware) {
+                ((MessageSourceAware) error).setMessageSource(messageSource);
+            }
+            String message = error.getLocalizedMessage();
+            errorAttributes.put("message", message);
             return;
         }
         if (result.getErrorCount() > 0) {

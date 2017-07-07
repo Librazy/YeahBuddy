@@ -103,7 +103,7 @@ public class AdministratorService implements UserDetailsService {
 
         if (administratorRepository.findByUsername(dto.getUsername()) != null) {
             log.info("Failed to register Administrator " + dto.getUsername() + ": username already exist");
-            throw new IdentifierAlreadyExistsException("admin.username.exist");
+            throw new IdentifierAlreadyExistsException("admin.username.exist", dto.getUsername());
         }
 
         Administrator admin = new Administrator(dto.getUsername(), ybPasswordEncodeService.encode(dto.getPassword()));
@@ -157,8 +157,8 @@ public class AdministratorService implements UserDetailsService {
 
         if (dto.getUsername() != null) {
             if (administratorRepository.findByUsername(dto.getUsername()) != null) {
-                log.info("Fail to update username for Administrator " + administrator.getUsername() + ": name already exist");
-                throw new IdentifierAlreadyExistsException("admin.name.exist");
+                log.info("Fail to update username for Administrator " + dto.getUsername() + ": name already exist");
+                throw new IdentifierAlreadyExistsException("admin.username.exist", dto.getUsername());
             } else {
                 log.trace("Updated username for Administrator " + id + ":" + administrator.getUsername() +
                                   " -> " + dto.getUsername());

@@ -1,6 +1,7 @@
 package cn.edu.xmu.yeahbuddy.model;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NonNls;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -41,6 +42,7 @@ public class TeamDto implements Serializable {
         return this;
     }
 
+    @NonNls
     @Contract(pure = true)
     public String getUsername() {
         return username;
