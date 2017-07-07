@@ -12,9 +12,7 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +33,14 @@ public class TeamController {
         this.teamReportService = teamReportService;
     }
 
-    @RequestMapping(value = "/team/{teamId:\\d+}", method = {RequestMethod.GET, RequestMethod.HEAD})
+    @PutMapping("/team")
+    public String register(TeamDto teamDto) {
+        log.debug("Update team " + ":" + teamDto);
+        Team team = teamService.registerNewTeam(teamDto);
+        return String.format("redirect:team/%d", team.getId());
+    }
+
+    @GetMapping("/team/{teamId:\\d+}")
     public String showInformation(@PathVariable int teamId, Model model) {
         Optional<Team> team = teamService.findByteamId(teamId);
         if (team == null) {
@@ -47,13 +52,14 @@ public class TeamController {
         return "team/information";
     }
 
-    @RequestMapping(value = "/team/{teamId:\\d+}", method = {RequestMethod.POST, RequestMethod.PUT})
-    public String updateInformation(@PathVariable int teamId, TeamDto teamdto) {
-        teamService.updateTeam(teamId, teamdto);
+    @PostMapping("/team/{teamId:\\d+}")
+    public String updateInformation(@PathVariable int teamId, TeamDto teamDto) {
+        log.debug("Update team " + teamId + ": " + teamDto);
+        teamService.updateTeam(teamId, teamDto);
         return String.format("redirect:team/%d", teamId);
     }
 
-    @RequestMapping(value = "/team/{teamId:\\d+}/reports", method = {RequestMethod.GET, RequestMethod.HEAD})
+    @GetMapping("/team/{teamId:\\d+}/reports")
     public String showReports(@PathVariable int teamId, Model model) {
         List<TeamReport> teamReports = teamReportService.findByteamId(teamId);
         model.addAttribute("teamReports", teamReports);
