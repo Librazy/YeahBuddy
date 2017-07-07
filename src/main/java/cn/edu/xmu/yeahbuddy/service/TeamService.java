@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class TeamService implements UserDetailsService {
 
@@ -78,6 +80,17 @@ public class TeamService implements UserDetailsService {
     public Team findByUsername(String username) {
         log.debug("Finding Team " + username);
         return teamRepository.findByUsername(username);
+    }
+
+    /**
+     * 查找团队 代理{@link TeamRepository#findByUsername(String)}
+     *
+     * @param teamId 查找的团队主键
+     * @return 团队或null
+     */
+    public Optional<Team> findByteamId(int teamId){
+        log.debug("Finding Team by teamId "+Integer.toString(teamId));
+        return teamRepository.findById(teamId);
     }
 
     /**

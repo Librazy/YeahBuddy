@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -43,6 +44,18 @@ public class TeamReportService {
     public Optional<TeamReport> findById(TeamStage teamStage) {
         log.debug("Finding TeamReport " + teamStage);
         return teamReportRepository.findById(teamStage);
+    }
+
+    /**
+     * 查找某团队的所有项目报告
+     *
+     * @param teamId 团队主键
+     * @return 所有团队项目报告
+     */
+    @Transactional
+    public List<TeamReport> findByteamId(int teamId){
+        log.debug("Finding all TeamReports of one Team "+teamId);
+        return teamReportRepository.findByTeamStageTeamId(teamId);
     }
 
     /**
