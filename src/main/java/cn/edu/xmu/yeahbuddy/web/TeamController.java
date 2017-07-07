@@ -33,7 +33,7 @@ public class TeamController {
         this.teamReportService = teamReportService;
     }
 
-    @PutMapping("/team")
+    @PostMapping("/team")
     public String register(TeamDto teamDto) {
         log.debug("Update team " + ":" + teamDto);
         Team team = teamService.registerNewTeam(teamDto);
@@ -52,7 +52,7 @@ public class TeamController {
         return "team/information";
     }
 
-    @PostMapping("/team/{teamId:\\d+}")
+    @PutMapping("/team/{teamId:\\d+}")
     public String updateInformation(@PathVariable int teamId, TeamDto teamDto) {
         log.debug("Update team " + teamId + ": " + teamDto);
         teamService.updateTeam(teamId, teamDto);
