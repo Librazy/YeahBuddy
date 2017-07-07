@@ -5,14 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>导师项目评审</title>
-    <link rel="stylesheet" href="/webjars/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css">
-    <link rel="stylesheet" href="/static/css/bg.css">
+    <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
+          data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
+          data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
+    <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
     <style type="text/css">
-        @media screen and (min-width:768px) {
+        #main-table {
+            display: table;
+        }
+
+        @media screen and (max-width: 768px) {
             #main-table {
                 display: inline-block;
             }
+        }
+
+        .table thead th, .table tbody tr td {
+            min-width: 4rem;
         }
     </style>
 </head>
@@ -22,38 +32,29 @@
 <nav class="navbar navbar-toggleable-md fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">项目管理系统</a>
+            <a class="navbar-brand" href="#">
+                <img src="../../static/image/favicon.svg"
+                     data-th-src="@{/static/image/favicon.svg}"
+                     width="30" height="30" class="d-inline-block align-top">项目管理系统
+            </a>
+
         </div>
     </div>
 </nav>
-
-<div class="container-fluid">
-
+<div class="container-fluid pt-md-3">
     <div class="row">
         <div class="col-md-3 offset-md-1">
-            <div class="page-header">
-                <h1>LOGO</h1>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 offset-md-1 pr-md-0">
             <div class="list-group pt-md-0">
                 <a href="#" class="list-group-item active">
                     我的菜单
                 </a>
                 <a href="#" class="list-group-item">基本信息</a>
-                <a href="#" class="list-group-item">项目报告</a>
+                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseExample">项目报告</a>
             </div>
         </div>
         <div class="col-md-7 pl-md-0">
-            <table class="table table-responsive table-striped" id="main-table">
-                <thead>
-                <tr>
-                    <th>项目报告</th>
-                </tr>
-                </thead>
-
+            <h2>项目报告</h2>
+            <table class="table table-responsive table-striped table-hover" id="main-table">
                 <thead>
                 <tr>
                     <th>
@@ -91,7 +92,7 @@
                         查看结果
                     </td>
                 </tr>
-                <tr class="success">
+                <tr>
                     <td>
                         期末项目报告1
                     </td>
@@ -108,7 +109,7 @@
                         未评审
                     </td>
                 </tr>
-                <tr class="error">
+                <tr>
                     <td>
                         期中项目报告3
                     </td>
@@ -125,7 +126,7 @@
                         查看结果
                     </td>
                 </tr>
-                <tr class="warning">
+                <tr>
                     <td>
                         期中项目报告2
                     </td>
@@ -142,7 +143,7 @@
                         未评审
                     </td>
                 </tr>
-                <tr class="info">
+                <tr>
                     <td>
                         期中项目报告1
                     </td>
@@ -201,9 +202,11 @@
         </div>
     </footer>
 </div>
-<script src="/webjars/jquery/dist/jquery.min.js"></script>
-<script src="/webjars/tether/dist/js/tether.min.js"></script>
-<script src="/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"></script>
+<script src="../../webjars/jquery/dist/jquery.min.js" data-th-src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+<script src="../../webjars/tether/dist/js/tether.min.js"
+        data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
+<script src="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"
+        data-th-src="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js}"></script>
 <script>
     $('body').bootstrapMaterialDesign();
 </script>

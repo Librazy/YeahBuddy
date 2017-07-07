@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title data-th-text="#{team.profile.title}">团队信息管理</title>
+    <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
+          data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
+          data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
+    <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
+    <style type="text/css">
+        .input-group-addon {
+            color: rgb(100, 114, 116);
+        }
+
+        .form-control:focus {
+            color: black;
+        }
+
+        #submit {
+            background: rgba(0, 0, 0, .12);
+        }
+
+        #submit:hover {
+            background: rgba(0, 0, 128, .22);
+        }
+    </style>
+</head>
+
+<body>
+<div id="bg"></div>
+<nav class="navbar navbar-toggleable-md fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="../../static/image/favicon.svg"
+                     data-th-src="@{/static/image/favicon.svg}"
+                     width="30" height="30" class="d-inline-block align-top">项目管理系统
+            </a>
+
+        </div>
+    </div>
+</nav>
+<div class="container-fluid pt-md-3">
+    <div class="row">
+        <div class="col-md-3 offset-md-1">
+            <div class="list-group pt-md-0">
+                <a href="#" class="list-group-item active">
+                    我的菜单
+                </a>
+                <a href="#" class="list-group-item">基本信息</a>
+                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseExample">项目报告</a>
+            </div>
+        </div>
+        <div class="col-md-7 pl-md-0">
+            <h1 data-th-text="#{team.profile.title}" style="text-align: center;">
+                团队信息管理
+            </h1>
+            <form class="form-horizontal" data-th-action="@{/team/profile}" method="post" role="form">
+                <div class="form-group row mt-2">
+                    <fieldset class="input-group col-md-5">
+                        <label for="username" class="input-group-addon" data-th-text="#{username}">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" required
+                               data-th-text="#{team.username}"/>
+                    </fieldset>
+                    <fieldset class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                        <label for="email" class="input-group-addon" data-th-text="#{email}">电子邮件</label>
+                        <input type="email" class="form-control" id="email" name="email"
+                               data-th-text="#{team.email}"/>
+                    </fieldset>
+                </div>
+                <div class="form-group row mt-3">
+                    <fieldset class="input-group col-md-5">
+                        <label for="displayName" class="input-group-addon" data-th-text="#{display-name}">姓名</label>
+                        <input type="text" class="form-control" id="displayName" name="displayName" required
+                               data-th-text="#{team.displayName}"/>
+                    </fieldset>
+                    <fieldset class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                        <label for="phone" class="input-group-addon" data-th-text="#{phone}">手机号码</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" data-th-text="#{team.phone}"/>
+                    </fieldset>
+                </div>
+                <div class="form-group row mt-3">
+                    <fieldset class="input-group col-md-12">
+                        <label for="projectName" class="input-group-addon" data-th-text="#{project-name}">项目名</label>
+                        <input type="text" class="form-control" id="projectName" name="projectName" required
+                               data-th-text="#{team.projectName}"/>
+                    </fieldset>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block" data-th-text="#{submit}"
+                            id="submit">提交
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="row clearfix">
+        <div class="col-md-10 offset-md-1 column">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.about}">关于我们</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.help}">帮助中心</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.us}">联系我们</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    All rights reserved
+                </li>
+            </ul>
+        </div>
+    </footer>
+</div>
+<script src="../../webjars/jquery/dist/jquery.min.js" data-th-src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+<script src="../../webjars/tether/dist/js/tether.min.js"
+        data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
+<script src="../../webjars/bootstrap/dist/js/bootstrap.min.js"
+        data-th-src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+</body>
+</html>

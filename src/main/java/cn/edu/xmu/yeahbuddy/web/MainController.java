@@ -7,7 +7,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -69,11 +68,11 @@ public class MainController {
     public String tutor(Model model) {
         String phone = ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getPhone();
         model.addAttribute("name", phone);
-        return "tutor/report";
+        return "tutor/index";
     }
 
     @RequestMapping("/204")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void empty(){
+    public void empty() {
     }
 }

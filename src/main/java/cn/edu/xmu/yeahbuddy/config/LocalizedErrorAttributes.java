@@ -102,6 +102,10 @@ public class LocalizedErrorAttributes
             // Unable to obtain a reason
             errorAttributes.put("error", messageSource.getMessage("http.status.code", new Object[]{status}, locale));
         }
+        try {
+            errorAttributes.put("detail", messageSource.getMessage("http.status." + status + ".detail", new Object[]{}, locale));
+        } catch (Exception ignored) {
+        }
     }
 
     private void addErrorDetails(Map<String, Object> errorAttributes,
@@ -121,8 +125,12 @@ public class LocalizedErrorAttributes
         Object message = getAttribute(webRequest, "javax.servlet.error.message");
         if ((!StringUtils.isEmpty(message) || errorAttributes.get("message") == null)
                     && !(error instanceof BindingResult)) {
-            errorAttributes.put("message",
-                    StringUtils.isEmpty(message) ? messageSource.getMessage("http.message.none", new Object[]{}, locale) : message);
+            if (errorAttributes.get("detail") != null) {
+                errorAttributes.put("message", errorAttributes.get("detail"));
+            } else {
+                errorAttributes.put("message",
+                        StringUtils.isEmpty(message) ? messageSource.getMessage("http.message.none", new Object[]{}, locale) : message);
+            }
         }
     }
 

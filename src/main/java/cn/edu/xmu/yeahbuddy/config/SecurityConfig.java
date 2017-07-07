@@ -73,7 +73,7 @@ public class SecurityConfig {
                     .formLogin()
                         .loginPage("/login")
                             .permitAll()
-                        .defaultSuccessUrl("/admin").and()
+                        .defaultSuccessUrl("/admin", true).and()
                     // logout
                     .logout()
                         .logoutUrl("/logout")
@@ -114,7 +114,7 @@ public class SecurityConfig {
                         .formLogin()
                             .loginPage("/team/login")
                                 .permitAll()
-                            .defaultSuccessUrl("/team").and()
+                            .defaultSuccessUrl("/team", true).and()
                     // logout
                         .logout()
                             .logoutUrl("/team/logout")
@@ -171,7 +171,7 @@ public class SecurityConfig {
                     .formLogin()
                         .loginPage("/tutor/login")
                             .permitAll()
-                        .defaultSuccessUrl("/tutor").and()
+                        .defaultSuccessUrl("/tutor", true).and()
                     // logout
                     .logout()
                         .logoutUrl("/tutor/logout")

@@ -1,5 +1,6 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
@@ -29,6 +30,7 @@ public class Team implements UserDetails {
     private int id = Integer.MIN_VALUE;
 
     @Column(name = "TeamPassword", nullable = false)
+    @JsonIgnore
     private String password;
 
     @NonNls
