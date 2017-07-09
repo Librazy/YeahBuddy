@@ -14,14 +14,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.security.Principal;
 import java.util.*;
 
 @Controller
@@ -43,18 +44,39 @@ public class TeamController {
         this.messageSource = messageSource;
     }
 
+    @GetMapping("/team/login")
+    public String login(@RequestParam(required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("loginError", true);
+        }
+        return "team/login";
+    }
+
+    @GetMapping({"/team", "/team/"})
+    @PreAuthorize("hasRole('TEAM')")
+    public String index(Model model) {
+        String email = ((Team) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+        model.addAttribute("name", email);
+        return "team/index";
+    }
+
     @PostMapping("/team")
+    @PreAuthorize("hasAuthority('ManageTeam')")
     public RedirectView register(TeamDto teamDto) {
         log.debug("Register team " + ":" + teamDto);
         Team team = teamService.registerNewTeam(teamDto);
         return new RedirectView(String.format("/team/%d", team.getId()), false, false);
     }
 
-    @GetMapping("/team/{teamId:\\d+}")
-    public String profile(@PathVariable int teamId, Model model) {
+    @GetMapping(value = "/team/{teamId:\\d+}", produces = MediaType.TEXT_HTML_VALUE)
+    public String profile(@PathVariable int teamId, Model model, @AuthenticationPrincipal Principal principal) {
         Optional<Team> team = teamService.findByteamId(teamId);
         if (!team.isPresent()) {
             throw new ResourceNotFoundException("team.id.not_found", teamId);
+        }
+
+        if (principal instanceof Team) {
+            model.addAttribute("readOnly", ((Team) principal).getId() != teamId);
         }
 
         model.addAttribute("team", team.get());
@@ -80,5 +102,4 @@ public class TeamController {
         model.addAttribute("formAction", String.format("/team/%d/reports", teamId));
         return "team/reports";
     }
-
 }
