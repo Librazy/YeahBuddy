@@ -1,8 +1,12 @@
 package cn.edu.xmu.yeahbuddy.web;
 
+import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.TeamReport;
+import cn.edu.xmu.yeahbuddy.domain.TeamStage;
+import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
+import cn.edu.xmu.yeahbuddy.model.TeamReportDto;
 import cn.edu.xmu.yeahbuddy.service.TeamReportService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
@@ -22,6 +26,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.websocket.server.PathParam;
 import java.security.Principal;
 import java.util.*;
 
@@ -35,12 +40,15 @@ public class TeamController {
 
     private final TeamReportService teamReportService;
 
+    private final ReviewRepository reviewRepository;
+
     private final MessageSource messageSource;
 
     @Autowired
-    public TeamController(TeamService teamService, TeamReportService teamReportService, MessageSource messageSource) {
+    public TeamController(TeamService teamService, TeamReportService teamReportService,ReviewRepository reviewRepository, MessageSource messageSource) {
         this.teamService = teamService;
         this.teamReportService = teamReportService;
+        this.reviewRepository=reviewRepository;
         this.messageSource = messageSource;
     }
 
@@ -101,5 +109,36 @@ public class TeamController {
         model.addAttribute("teamReports", teamReports);
         model.addAttribute("formAction", String.format("/team/%d/reports", teamId));
         return "team/reports";
+    }
+
+    @GetMapping("/team/{teamId:\\d+}/reports/{stage:\\d+}")
+    public String showSelectedReport(@PathVariable int teamId,@PathVariable int stage,Model model){
+        Optional<TeamReport> teamReport=teamReportService.findById(new TeamStage(teamId,stage));
+        if(!teamReport.isPresent()){
+            throw new ResourceNotFoundException("teamReport.stage.not_found",new TeamStage(teamId,stage));
+        }
+
+        model.addAttribute("teamReport",teamReport.get());
+        model.addAttribute("formAction",String.format("/team/%d/reports/%d",teamId,stage));
+        return "team/reportInformation";
+    }
+
+    @PutMapping("/team/{teamId:\\d+}/reports/{stage:\\d+}")
+    public ResponseEntity<Map<String,String>> updateReport(@PathVariable int teamId, @PathVariable int stage, TeamReportDto teamReportDto){
+        log.debug("Update teamReport ");
+        teamReportService.updateTeamReport(new TeamStage(teamId,stage),teamReportDto);
+        Map<String,String> result=new HashMap<>();
+        Locale locale=LocaleContextHolder.getLocale();
+        result.put("status",messageSource.getMessage("response.ok",new Object[]{},locale));
+        result.put("message",messageSource.getMessage("teamReport.update.ok",new Object[]{},locale));
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/team/{teamId:\\d+}/reports/review/{stage:\\d+}")
+    public String showReportReview(@PathVariable int teamId,@PathVariable int stage,Model model){
+        List<Review> reviews= reviewRepository.findByReviewKey_TeamIdAndReviewKey_Stage(teamId,stage);
+        model.addAttribute("reviews",reviews);
+        model.addAttribute("formAction",String.format("/team/%d/reports/review/%d",teamId,stage));
+        return "team/reportReviews";
     }
 }
