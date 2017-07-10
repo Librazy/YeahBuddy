@@ -70,34 +70,34 @@
             <form id="profileForm" class="form-horizontal" data-th-action="${formAction}" method="POST" role="form">
                 <input type="hidden" name="_method" value="PUT"/><!--@see {@link HiddenHttpMethodFilter}-->
                 <div class="form-group row mt-2">
-                    <fieldset class="input-group col-md-5">
+                    <div class="input-group col-md-5">
                         <label for="username" class="input-group-addon" data-th-text="#{username}">用户名</label>
                         <input type="text" class="form-control" id="username" name="username" required
                                data-th-value="${team.username}"/>
-                    </fieldset>
-                    <fieldset class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                    </div>
+                    <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
                         <label for="email" class="input-group-addon" data-th-text="#{email}">电子邮件</label>
                         <input type="email" class="form-control" id="email" name="email"
                                data-th-value="${team.email}"/>
-                    </fieldset>
+                    </div>
                 </div>
                 <div class="form-group row mt-3">
-                    <fieldset class="input-group col-md-5">
+                    <div class="input-group col-md-5">
                         <label for="displayName" class="input-group-addon" data-th-text="#{display-name}">姓名</label>
                         <input type="text" class="form-control" id="displayName" name="displayName" required
                                data-th-value="${team.displayName}"/>
-                    </fieldset>
-                    <fieldset class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                    </div>
+                    <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
                         <label for="phone" class="input-group-addon" data-th-text="#{phone}">手机号码</label>
                         <input type="tel" class="form-control" id="phone" name="phone" data-th-value="${team.phone}"/>
-                    </fieldset>
+                    </div>
                 </div>
                 <div class="form-group row mt-3">
-                    <fieldset class="input-group col-md-12">
+                    <div class="input-group col-md-12">
                         <label for="projectName" class="input-group-addon" data-th-text="#{project-name}">项目名</label>
                         <input type="text" class="form-control" id="projectName" name="projectName" required
                                data-th-value="${team.projectName}"/>
-                    </fieldset>
+                    </div>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block" data-th-text="#{submit}"
