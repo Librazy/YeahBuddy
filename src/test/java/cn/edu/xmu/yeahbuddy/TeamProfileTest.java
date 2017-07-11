@@ -41,7 +41,7 @@ public class TeamProfileTest extends ApplicationTestBase {
            .andExpect(view().name("team/profile"));
 
         mvc.perform(put(String.format("/team/%d?locale=en&displayName=test TEAM", testteam.getId()))
-                //workarounds https://jira.spring.io/browse/SPR-15753
+                            //workarounds https://jira.spring.io/browse/SPR-15753
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .accept(MediaType.APPLICATION_JSON))
            .andExpect(status().isOk())

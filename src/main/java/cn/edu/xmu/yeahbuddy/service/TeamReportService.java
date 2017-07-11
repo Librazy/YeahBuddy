@@ -53,8 +53,8 @@ public class TeamReportService {
      * @return 所有团队项目报告
      */
     @Transactional
-    public List<TeamReport> findByteamId(int teamId){
-        log.debug("Finding all TeamReports of one Team "+teamId);
+    public List<TeamReport> findByteamId(int teamId) {
+        log.debug("Finding all TeamReports of one Team " + teamId);
         return teamReportRepository.findByTeamStageTeamId(teamId);
     }
 

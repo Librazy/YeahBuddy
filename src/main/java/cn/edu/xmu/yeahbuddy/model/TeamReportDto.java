@@ -52,7 +52,7 @@ public class TeamReportDto implements Serializable {
     }
 
     @Contract(pure = true)
-    public Map<Integer, String> getContent(){
+    public Map<Integer, String> getContent() {
         return content;
     }
 

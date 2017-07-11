@@ -111,14 +111,14 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
      * @param dto 导师DTO
      * @return 新注册的导师
      * @throws IdentifierAlreadyExistsException 用户名已存在
-     * @throws IllegalArgumentException DTO中未填满所需信息
+     * @throws IllegalArgumentException         DTO中未填满所需信息
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor')")
     public Tutor registerNewTutor(TutorDto dto) throws IdentifierAlreadyExistsException {
         log.debug("Trying to register new Tutor " + dto.getUsername());
 
-        if(!dto.ready()){
+        if (!dto.ready()) {
             log.info("Failed to register Tutor " + dto.getUsername() + ": data not ready yet");
             throw new IllegalArgumentException("tutor.register.not_ready");
         }
@@ -179,7 +179,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         log.debug("Trying to update Tutor " + id);
         Tutor tutor = tutorRepository.getOne(id);
 
-        if(dto.getDisplayName() != null ){
+        if (dto.getDisplayName() != null) {
             log.trace("Updated display name for Tutor " + id + ":" + tutor.getDisplayName() +
                               " -> " + dto.getDisplayName());
             tutor.setDisplayName(dto.getDisplayName());

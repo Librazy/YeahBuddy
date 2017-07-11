@@ -88,8 +88,8 @@ public class TeamService implements UserDetailsService {
      * @param teamId 查找的团队主键
      * @return 团队或null
      */
-    public Optional<Team> findByteamId(int teamId){
-        log.debug("Finding Team by teamId "+Integer.toString(teamId));
+    public Optional<Team> findByteamId(int teamId) {
+        log.debug("Finding Team by teamId " + Integer.toString(teamId));
         return teamRepository.findById(teamId);
     }
 
@@ -99,14 +99,14 @@ public class TeamService implements UserDetailsService {
      * @param dto 团队DTO
      * @return 新注册的团队
      * @throws IdentifierAlreadyExistsException 用户名已存在
-     * @throws IllegalArgumentException DTO中未填满所需信息
+     * @throws IllegalArgumentException         DTO中未填满所需信息
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTeam')")
     public Team registerNewTeam(TeamDto dto) throws IdentifierAlreadyExistsException {
         log.debug("Trying to register new Team " + dto.getUsername());
 
-        if(!dto.ready()){
+        if (!dto.ready()) {
             log.info("Failed to register Team " + dto.getUsername() + ": data not ready yet");
             throw new IllegalArgumentException("team.register.not_ready");
         }
@@ -155,7 +155,7 @@ public class TeamService implements UserDetailsService {
         log.debug("Trying to update Team " + id);
         Team team = teamRepository.getOne(id);
 
-        if(dto.getDisplayName() != null ){
+        if (dto.getDisplayName() != null) {
             log.trace("Updated display name for Team " + id + ":" + team.getDisplayName() +
                               " -> " + dto.getDisplayName());
             team.setDisplayName(dto.getDisplayName());

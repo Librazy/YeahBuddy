@@ -70,7 +70,7 @@ public class TutorDto implements Serializable {
         return this;
     }
 
-    public boolean ready(){
+    public boolean ready() {
         return Stream.of(password, username, displayName)
                      .allMatch(Objects::nonNull);
     }

@@ -34,11 +34,11 @@ public class IdentifierAlreadyExistsException extends RuntimeException implement
     }
 
     @Override
-    public String getLocalizedMessage(){
+    public String getLocalizedMessage() {
         Locale locale = LocaleContextHolder.getLocale();
         try {
             return messageSource.getMessage(getMessage(), new Object[]{id}, locale);
-        } catch (Exception e){
+        } catch (Exception e) {
             return getMessage();
         }
     }

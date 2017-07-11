@@ -89,14 +89,14 @@ public class AdministratorService implements UserDetailsService {
      * @param dto 管理员DTO
      * @return 新注册的管理员
      * @throws IdentifierAlreadyExistsException 用户名已存在
-     * @throws IllegalArgumentException DTO中未填满所需信息
+     * @throws IllegalArgumentException         DTO中未填满所需信息
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageAdministrator') and  authentication.authorities.containsAll(#dto.authorities)")
     public Administrator registerNewAdministrator(AdministratorDto dto) throws IdentifierAlreadyExistsException {
         log.debug("Trying to register new Administrator " + dto.getUsername());
 
-        if(!dto.ready()){
+        if (!dto.ready()) {
             log.info("Failed to register Administrator " + dto.getUsername() + ": data not ready yet");
             throw new IllegalArgumentException("admin.register.not_ready");
         }
@@ -149,7 +149,7 @@ public class AdministratorService implements UserDetailsService {
             administrator.setAuthorities(dto.getAuthorities());
         }
 
-        if(dto.getDisplayName() != null ){
+        if (dto.getDisplayName() != null) {
             log.trace("Updated display name for Administrator " + id + ":" + administrator.getDisplayName() +
                               " -> " + dto.getDisplayName());
             administrator.setDisplayName(dto.getDisplayName());

@@ -59,7 +59,7 @@ public class AdministratorDto implements Serializable {
         return this;
     }
 
-    public boolean ready(){
+    public boolean ready() {
         return Stream.of(password, username, displayName, authorities)
                      .allMatch(Objects::nonNull);
     }

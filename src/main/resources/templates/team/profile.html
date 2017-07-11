@@ -33,7 +33,8 @@
             padding: .75rem 1.25rem;
             color: inherit;
         }
-        .alert strong{
+
+        .alert strong {
             margin-right: 1rem;
         }
     </style>
@@ -64,7 +65,8 @@
             </div>
         </div>
         <div class="col-md-7 pl-md-0">
-            <h1 data-th-text="${readOnly} ? #{team.profile.view_title} : #{team.profile.title}" style="text-align: center;">
+            <h1 data-th-text="${readOnly} ? #{team.profile.view_title} : #{team.profile.title}"
+                style="text-align: center;">
                 团队信息管理
             </h1>
             <form id="profileForm" class="form-horizontal" data-th-action="${formAction}" method="POST" role="form">

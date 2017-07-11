@@ -2,7 +2,6 @@ package cn.edu.xmu.yeahbuddy.utils;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -33,11 +32,11 @@ public class ResourceNotFoundException extends RuntimeException implements Messa
     }
 
     @Override
-    public String getLocalizedMessage(){
+    public String getLocalizedMessage() {
         Locale locale = LocaleContextHolder.getLocale();
         try {
             return messageSource.getMessage(getMessage(), new Object[]{notFound}, locale);
-        } catch (Exception e){
+        } catch (Exception e) {
             return getMessage();
         }
     }
