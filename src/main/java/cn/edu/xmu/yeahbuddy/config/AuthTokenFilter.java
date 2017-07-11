@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
+import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -13,11 +14,14 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * Token认证过滤器
@@ -32,14 +36,43 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
      * @param defaultTargetUrl          目标跳转URL
      * @param authenticationManager     认证管理器
      */
-    AuthTokenFilter(String defaultFilterProcessesUrl, String defaultTargetUrl, AuthenticationManager authenticationManager) {
+    AuthTokenFilter(String defaultFilterProcessesUrl, String defaultTargetUrl, BiFunction<Authentication, Pair<HttpServletRequest, HttpServletResponse>, String> targetUrlCallback, AuthenticationManager authenticationManager) {
         super(defaultFilterProcessesUrl);
         super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(defaultFilterProcessesUrl));
         setAuthenticationManager(authenticationManager);
         setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler(defaultTargetUrl) {
+
+            private Authentication authentication;
+
             @Override
             public boolean isAlwaysUseDefaultTargetUrl() {
-                return true;
+                return authentication != null;
+            }
+
+            @Contract("false -> fail")
+            @Override
+            public void setAlwaysUseDefaultTargetUrl(boolean alwaysUseDefaultTargetUrl) {
+                throw new IllegalArgumentException();
+            }
+
+            @Override
+            protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response) {
+                try {
+                    if (authentication != null) {
+                        return targetUrlCallback.apply(authentication, Pair.of(request, response));
+                    } else {
+                        throw new NullPointerException();
+                    }
+                } catch (Exception e) {
+                    return super.determineTargetUrl(request, response);
+                }
+
+            }
+
+            @Override
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                this.authentication = authentication;
+                super.onAuthenticationSuccess(request, response, authentication);
             }
         });
     }

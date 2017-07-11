@@ -1,5 +1,6 @@
 package cn.edu.xmu.yeahbuddy.config;
 
+import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
@@ -159,6 +160,7 @@ public class SecurityConfig {
                         new AuthTokenFilter(
                                 "/tutor/token",
                                 "/tutor",
+                                (authentication, Pair) -> String.format("/tutor/%d", ((Token) authentication.getCredentials()).getTutorId()),
                                 authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class);
 
