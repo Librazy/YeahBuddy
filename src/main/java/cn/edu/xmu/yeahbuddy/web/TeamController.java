@@ -26,7 +26,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.websocket.server.PathParam;
 import java.security.Principal;
 import java.util.*;
 
@@ -45,10 +44,10 @@ public class TeamController {
     private final MessageSource messageSource;
 
     @Autowired
-    public TeamController(TeamService teamService, TeamReportService teamReportService,ReviewRepository reviewRepository, MessageSource messageSource) {
+    public TeamController(TeamService teamService, TeamReportService teamReportService, ReviewRepository reviewRepository, MessageSource messageSource) {
         this.teamService = teamService;
         this.teamReportService = teamReportService;
-        this.reviewRepository=reviewRepository;
+        this.reviewRepository = reviewRepository;
         this.messageSource = messageSource;
     }
 
@@ -77,14 +76,14 @@ public class TeamController {
     }
 
     @GetMapping(value = "/team/{teamId:\\d+}", produces = MediaType.TEXT_HTML_VALUE)
-    public String profile(@PathVariable int teamId, Model model, @AuthenticationPrincipal Principal principal) {
+    public String profile(@PathVariable int teamId, Model model) {
         Optional<Team> team = teamService.findByteamId(teamId);
         if (!team.isPresent()) {
             throw new ResourceNotFoundException("team.id.not_found", teamId);
         }
 
-        if (principal instanceof Team) {
-            model.addAttribute("readOnly", ((Team) principal).getId() != teamId);
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Team) {
+            model.addAttribute("readOnly", ((Team) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() != teamId);
         }
 
         model.addAttribute("team", team.get());
@@ -112,33 +111,33 @@ public class TeamController {
     }
 
     @GetMapping("/team/{teamId:\\d+}/reports/{stage:\\d+}")
-    public String showSelectedReport(@PathVariable int teamId,@PathVariable int stage,Model model){
-        Optional<TeamReport> teamReport=teamReportService.findById(new TeamStage(teamId,stage));
-        if(!teamReport.isPresent()){
-            throw new ResourceNotFoundException("teamReport.stage.not_found",new TeamStage(teamId,stage));
+    public String showSelectedReport(@PathVariable int teamId, @PathVariable int stage, Model model) {
+        Optional<TeamReport> teamReport = teamReportService.findById(new TeamStage(teamId, stage));
+        if (!teamReport.isPresent()) {
+            throw new ResourceNotFoundException("teamReport.stage.not_found", new TeamStage(teamId, stage));
         }
 
-        model.addAttribute("teamReport",teamReport.get());
-        model.addAttribute("formAction",String.format("/team/%d/reports/%d",teamId,stage));
+        model.addAttribute("teamReport", teamReport.get());
+        model.addAttribute("formAction", String.format("/team/%d/reports/%d", teamId, stage));
         return "team/reportInformation";
     }
 
     @PutMapping("/team/{teamId:\\d+}/reports/{stage:\\d+}")
-    public ResponseEntity<Map<String,String>> updateReport(@PathVariable int teamId, @PathVariable int stage, TeamReportDto teamReportDto){
+    public ResponseEntity<Map<String, String>> updateReport(@PathVariable int teamId, @PathVariable int stage, TeamReportDto teamReportDto) {
         log.debug("Update teamReport ");
-        teamReportService.updateTeamReport(new TeamStage(teamId,stage),teamReportDto);
-        Map<String,String> result=new HashMap<>();
-        Locale locale=LocaleContextHolder.getLocale();
-        result.put("status",messageSource.getMessage("response.ok",new Object[]{},locale));
-        result.put("message",messageSource.getMessage("teamReport.update.ok",new Object[]{},locale));
+        teamReportService.updateTeamReport(new TeamStage(teamId, stage), teamReportDto);
+        Map<String, String> result = new HashMap<>();
+        Locale locale = LocaleContextHolder.getLocale();
+        result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
+        result.put("message", messageSource.getMessage("teamReport.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/team/{teamId:\\d+}/reports/review/{stage:\\d+}")
-    public String showReportReview(@PathVariable int teamId,@PathVariable int stage,Model model){
-        List<Review> reviews= reviewRepository.findByReviewKey_TeamIdAndReviewKey_Stage(teamId,stage);
-        model.addAttribute("reviews",reviews);
-        model.addAttribute("formAction",String.format("/team/%d/reports/review/%d",teamId,stage));
+    public String showReportReview(@PathVariable int teamId, @PathVariable int stage, Model model) {
+        List<Review> reviews = reviewRepository.findByReviewKey_TeamIdAndReviewKey_Stage(teamId, stage);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stage));
         return "team/reportReviews";
     }
 }

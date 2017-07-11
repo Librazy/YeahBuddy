@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title data-th-text="#{team.profile.title}">团队信息管理</title>
+    <title data-th-text="${readOnly} ? #{team.profile.view_title} : #{team.profile.title}">团队信息 管理</title>
     <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
           data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
@@ -64,7 +64,7 @@
             </div>
         </div>
         <div class="col-md-7 pl-md-0">
-            <h1 data-th-text="#{team.profile.title}" style="text-align: center;">
+            <h1 data-th-text="${readOnly} ? #{team.profile.view_title} : #{team.profile.title}" style="text-align: center;">
                 团队信息管理
             </h1>
             <form id="profileForm" class="form-horizontal" data-th-action="${formAction}" method="POST" role="form">
@@ -83,7 +83,7 @@
                 </div>
                 <div class="form-group row mt-3">
                     <div class="input-group col-md-5">
-                        <label for="displayName" class="input-group-addon" data-th-text="#{display-name}">姓名</label>
+                        <label for="displayName" class="input-group-addon" data-th-text="#{display_name}">姓名</label>
                         <input type="text" class="form-control" id="displayName" name="displayName" required
                                data-th-value="${team.displayName}"/>
                     </div>
@@ -94,7 +94,7 @@
                 </div>
                 <div class="form-group row mt-3">
                     <div class="input-group col-md-12">
-                        <label for="projectName" class="input-group-addon" data-th-text="#{project-name}">项目名</label>
+                        <label for="projectName" class="input-group-addon" data-th-text="#{project_name}">项目名</label>
                         <input type="text" class="form-control" id="projectName" name="projectName" required
                                data-th-value="${team.projectName}"/>
                     </div>
@@ -135,6 +135,10 @@
         data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
 <script src="../../webjars/bootstrap/dist/js/bootstrap.min.js"
         data-th-src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+<script data-th-if="${readOnly}">
+    $("input").attr("readonly", true);
+    $("#submit").hide();
+</script>
 <script>
     //https://stackoverflow.com/questions/5221633/select-submit-only-changed-form-fields-with-jquery
     function hashDiff(h1, h2) {

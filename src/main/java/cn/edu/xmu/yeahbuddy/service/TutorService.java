@@ -152,6 +152,18 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     }
 
     /**
+     * 按ID删除导师
+     *
+     * @param id 管理员ID
+     */
+    @Transactional
+    @PreAuthorize("hasAuthority('ManageTutor')")
+    public void deleteTutor(int id) {
+        log.debug("Deleting Tutor " + id);
+        tutorRepository.deleteById(id);
+    }
+
+    /**
      * 修改导师信息
      * 需要当前主体有ManageTutor权限或当前主体即为被修改用户
      *
