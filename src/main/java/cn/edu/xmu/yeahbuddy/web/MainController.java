@@ -38,22 +38,6 @@ public class MainController {
         return "login";
     }
 
-    @GetMapping("/tutor/login")
-    public String tutorLogin(@RequestParam(required = false) String error, Model model) {
-        if (error != null) {
-            model.addAttribute("loginError", true);
-        }
-        return "tutor/login";
-    }
-
-    @GetMapping({"/tutor", "/tutor/"})
-    @PreAuthorize("hasRole('TUTOR')")
-    public String tutor(Model model) {
-        String phone = ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getPhone();
-        model.addAttribute("name", phone);
-        return "tutor/index";
-    }
-
     @RequestMapping("/204")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void empty() {
