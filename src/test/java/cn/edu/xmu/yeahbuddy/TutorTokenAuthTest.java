@@ -17,7 +17,7 @@ public class TutorTokenAuthTest extends ApplicationTestBase {
     public void tutorTokenAuthTest() throws Exception {
         mvc.perform(get("/tutor/token?auth_token=" + token))
            .andExpect(status().is3xxRedirection())
-           .andExpect(redirectedUrl("/tutor"))
+           .andExpect(redirectedUrl(String.format("/tutor/%d", tutor.getId())))
            .andExpect(authenticated().withAuthenticationPrincipal(tutorService.findByUsername("testtutor")));
     }
 }
