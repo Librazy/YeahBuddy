@@ -2,7 +2,6 @@ package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.Review;
-import cn.edu.xmu.yeahbuddy.domain.ReviewKey;
 import cn.edu.xmu.yeahbuddy.domain.repo.AdministratorRepository;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
@@ -83,7 +82,7 @@ public class RepositoriesAndUtilsTests extends AbstractTransactionalJUnit4Spring
         // 测试findAll, 查询所有记录
         Assert.assertEquals(9, reviewRepository.findAll().size());
 
-        Optional<Review> review2 = reviewRepository.findById(new ReviewKey(1, 201701, 1, false));
+        Optional<Review> review2 = reviewRepository.find(1, 201701, 1, false);
 
         Assert.assertTrue(review2.isPresent());
 

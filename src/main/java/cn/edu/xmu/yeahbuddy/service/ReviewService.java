@@ -1,7 +1,6 @@
 package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.domain.Review;
-import cn.edu.xmu.yeahbuddy.domain.ReviewKey;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.model.ReviewDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
@@ -36,32 +35,50 @@ public class ReviewService {
     /**
      * 查找评审报告
      *
-     * @param reviewKey 评审报告报告主键
+     * @param id 评审报告报告主键
      * @return 评审报告
      */
     @Transactional(readOnly = true)
-    public Optional<Review> findById(ReviewKey reviewKey) {
-        log.debug("Finding Review with key " + reviewKey);
-        return reviewRepository.findById(reviewKey);
+    public Optional<Review> findById(int id) {
+        log.debug("Finding Review with key " + id);
+        return reviewRepository.findById(id);
+    }
+
+    /**
+     * 查找评审报告
+     *
+     * @param teamId        团队ID
+     * @param stage         阶段
+     * @param viewer        审核ID
+     * @param viewerIsAdmin 审核者是否是管理员
+     * @return 评审报告
+     */
+    @Transactional(readOnly = true)
+    public Optional<Review> find(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
+        log.debug("Finding Review");
+        return reviewRepository.find(teamId, stage, viewer, viewerIsAdmin);
     }
 
     /**
      * 新建评审报告
      *
-     * @param reviewKey 评审报告主键
+     * @param teamId        团队ID
+     * @param stage         阶段
+     * @param viewer        审核ID
+     * @param viewerIsAdmin 审核者是否是管理员
      * @return 新注册的评审报告
      */
     @Transactional
-    public Review createReview(ReviewKey reviewKey) throws IdentifierAlreadyExistsException {
-        log.debug("Trying to create Review with id " + reviewKey);
-        if (reviewRepository.findById(reviewKey).isPresent()) {
-            log.info("Fail to create Review with id " + reviewKey + ": id already exist");
-            throw new IdentifierAlreadyExistsException("review.id.exist", reviewKey);
+    public Review createReview(int teamId, int stage, int viewer, boolean viewerIsAdmin) throws IdentifierAlreadyExistsException {
+        log.debug(String.format("Trying to create Review: %d %d %d %b", teamId, stage, viewer, viewerIsAdmin));
+        if (reviewRepository.find(teamId, stage, viewer, viewerIsAdmin).isPresent()) {
+            log.info(String.format("Fail to create Review with id: %d %d %d %b: id already exist", teamId, stage, viewer, viewerIsAdmin));
+            throw new IdentifierAlreadyExistsException("review.id.exist", null);
         }
 
-        Review review = new Review(reviewKey);
+        Review review = new Review(teamId, stage, viewer, viewerIsAdmin);
         reviewRepository.save(review);
-        log.debug("Created new Review with id " + review.getReviewKey());
+        log.debug(String.format("Created new Review with id: %d %d %d %b", teamId, stage, viewer, viewerIsAdmin));
         return review;
     }
 
@@ -71,13 +88,13 @@ public class ReviewService {
      * @param id 评审报告主键
      */
     @Transactional
-    public void deleteReview(ReviewKey id) {
+    public void deleteReview(int id) {
         log.debug("Delete TeamReport with id" + id);
         reviewRepository.deleteById(id);
     }
 
     @Transactional
-    public Review updateReview(ReviewKey id, ReviewDto dto) {
+    public Review updateReview(int id, ReviewDto dto) {
         log.debug("Trying to update Review with id" + id);
         Review review = reviewRepository.getOne(id);
 

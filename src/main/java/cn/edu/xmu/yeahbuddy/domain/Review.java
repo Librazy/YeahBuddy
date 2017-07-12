@@ -5,12 +5,29 @@ import org.jetbrains.annotations.Contract;
 import javax.persistence.*;
 import java.util.Map;
 
-
+@Table(
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"ReviewTeamId", "ReviewStage", "ReviewViewer", "ReviewViewerIsAdmin"})
+)
 @Entity
 public class Review {
 
-    @EmbeddedId
-    private ReviewKey reviewKey;
+    @Id
+    @GeneratedValue
+    @Column(name = "ReviewId", unique = true, updatable = false, nullable = false)
+    private int id = Integer.MIN_VALUE;
+
+    @Column(name = "ReviewTeamId", updatable = false, nullable = false)
+    private int teamId;
+
+    @Column(name = "ReviewStage", updatable = false, nullable = false)
+    private int stage;
+
+    @Column(name = "ReviewViewer", updatable = false, nullable = false)
+    private int viewer;
+
+    @Column(name = "ReviewViewerIsAdmin", updatable = false, nullable = false)
+    private boolean viewerIsAdmin;
 
     @Column(name = "ReviewRank", nullable = false)
     private int rank = -1;
@@ -25,17 +42,36 @@ public class Review {
     public Review() {
     }
 
-    public Review(ReviewKey reviewKey) {
-        this.reviewKey = reviewKey;
-    }
-
     public Review(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
-        this.reviewKey = new ReviewKey(teamId, stage, viewer, viewerIsAdmin);
+        this.teamId = teamId;
+        this.stage = stage;
+        this.viewer = viewer;
+        this.viewerIsAdmin = viewerIsAdmin;
     }
 
     @Contract(pure = true)
-    public ReviewKey getReviewKey() {
-        return reviewKey;
+    public int getId() {
+        return id;
+    }
+
+    @Contract(pure = true)
+    public int getTeamId() {
+        return teamId;
+    }
+
+    @Contract(pure = true)
+    public int getStage() {
+        return stage;
+    }
+
+    @Contract(pure = true)
+    public int getViewer() {
+        return viewer;
+    }
+
+    @Contract(pure = true)
+    public boolean isViewerIsAdmin() {
+        return viewerIsAdmin;
     }
 
     @Contract(pure = true)

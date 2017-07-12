@@ -133,7 +133,7 @@ public class TeamController {
 
     @GetMapping("/team/{teamId:\\d+}/reports/review/{stage:\\d+}")
     public String showReportReview(@PathVariable int teamId, @PathVariable int stage, Model model) {
-        List<Review> reviews = reviewRepository.findByReviewKey_TeamIdAndReviewKey_Stage(teamId, stage);
+        List<Review> reviews = reviewRepository.findByTeamIdAndStage(teamId, stage);
         model.addAttribute("reviews", reviews);
         model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stage));
         return "team/reportReviews";
