@@ -47,6 +47,12 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
     @NonNls
     String token;
 
+    Tutor tutor;
+
+    Team team1;
+
+    Team team2;
+
     @Autowired
     private TokenService tokenService;
 
@@ -59,7 +65,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
-            Team team = teamService.registerNewTeam(
+            team1 = teamService.registerNewTeam(
                     new TeamDto()
                             .setUsername("testteam")
                             .setPassword("testteam")
@@ -67,8 +73,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
                             .setEmail("a@b.com")
                             .setPhone("18988888888")
                             .setProjectName("yeahbuddy"));
-            int teamId = team.getId();
-            teamService.registerNewTeam(
+            team2 = teamService.registerNewTeam(
                     new TeamDto()
                             .setUsername("test2team")
                             .setPassword("test2team")
@@ -76,14 +81,14 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
                             .setEmail("a2@b.com")
                             .setPhone("18288888888")
                             .setProjectName("nyaacat"));
-            Tutor tutor = tutorService.registerNewTutor(
+            tutor = tutorService.registerNewTutor(
                     new TutorDto()
                             .setUsername("testtutor")
                             .setPassword("testtutor")
                             .setDisplayName("testtutor")
                             .setEmail("c@b.com")
                             .setPhone("13988888888"));
-            token = tokenService.createToken(tutor, 2017, Collections.singletonList(teamId));
+            token = tokenService.createToken(tutor, 2017, Collections.singletonList(team1.getId()));
 
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;

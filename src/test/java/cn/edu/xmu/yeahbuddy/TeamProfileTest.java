@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Rollback
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestExecutionListeners(listeners = {WithSecurityContextTestExecutionListener.class})
 public class TeamProfileTest extends ApplicationTestBase {
 
@@ -40,8 +39,8 @@ public class TeamProfileTest extends ApplicationTestBase {
            .andExpect(status().isOk())
            .andExpect(view().name("team/profile"));
 
-        mvc.perform(put(String.format("/team/%d?locale=en&displayName=test TEAM", testteam.getId()))
-                            //workarounds https://jira.spring.io/browse/SPR-15753
+        mvc.perform(put(String.format("/team/%d", testteam.getId()))
+                            .content("displayName=test TEAM")
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                             .accept(MediaType.APPLICATION_JSON))
            .andExpect(status().isOk())
@@ -50,9 +49,9 @@ public class TeamProfileTest extends ApplicationTestBase {
 
         Assert.assertEquals("test TEAM", testteam.getDisplayName());
 
-        mvc.perform(put(String.format("/team/%d?locale=en&username=test2team", testteam.getId()))
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                            .accept(MediaType.APPLICATION_JSON))
+        mvc.perform(put(String.format("/team/%d", testteam.getId()))
+                            .content("username=test2team")
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED))
            .andDo(print())
            .andExpect(status().isConflict());
     }

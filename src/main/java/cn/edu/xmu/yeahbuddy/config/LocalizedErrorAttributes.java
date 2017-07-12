@@ -16,6 +16,7 @@ package cn.edu.xmu.yeahbuddy.config;
  * limitations under the License.
  */
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorAttributes;
@@ -156,6 +157,7 @@ public class LocalizedErrorAttributes
         }
     }
 
+    @Contract("null -> null")
     private BindingResult extractBindingResult(Throwable error) {
         if (error instanceof BindingResult) {
             return (BindingResult) error;

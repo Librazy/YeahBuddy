@@ -1,3 +1,5 @@
+# -link "http://docs.spring.io/spring-framework/docs/5.0.0.M2/javadoc-api/" -link "https://docs.spring.io/spring-security/site/docs/5.0.0.M2/api/" -link "http://docs.spring.io/spring-boot/docs/2.0.0.M2/api/" -link "https://docs.oracle.com/javase/8/docs/api/" -encoding utf-8 -html5 -charset utf8 --no-frames -keywords -linksource
+
 # Created by .ignore support plugin (hsz.mobi)
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
