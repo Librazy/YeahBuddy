@@ -33,7 +33,8 @@ public class AuthTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     /**
      * @param defaultFilterProcessesUrl Token登录URL
-     * @param defaultTargetUrl          目标跳转URL
+     * @param defaultTargetUrl          默认目标跳转URL
+     * @param targetUrlCallback         目标跳转URL回调
      * @param authenticationManager     认证管理器
      */
     AuthTokenFilter(String defaultFilterProcessesUrl, String defaultTargetUrl, BiFunction<Authentication, Pair<HttpServletRequest, HttpServletResponse>, String> targetUrlCallback, AuthenticationManager authenticationManager) {

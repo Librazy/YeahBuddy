@@ -58,6 +58,7 @@ dependencies {
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "org.springframework.security:spring-security-test:$springVersion"
+    testCompile 'org.apache.httpcomponents:httpclient:4.5.3'
     testCompile 'junit:junit:4.12'
 }
 
