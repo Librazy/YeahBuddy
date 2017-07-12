@@ -1,6 +1,7 @@
 package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.domain.Team;
+import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TeamRepository;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
@@ -83,14 +84,33 @@ public class TeamService implements UserDetailsService {
     }
 
     /**
-     * 查找团队 代理{@link TeamRepository#findByUsername(String)}
+     * 查找团队 代理{@link TeamRepository#findById(Object)}
      *
      * @param teamId 查找的团队主键
      * @return 团队或null
      */
-    public Optional<Team> findByteamId(int teamId) {
+    public Optional<Team> findById(int teamId) {
         log.debug("Finding Team by teamId " + Integer.toString(teamId));
         return teamRepository.findById(teamId);
+    }
+
+    /**
+     * 按ID查找团队
+     *
+     * @param id 查找的团队id
+     * @return 团队
+     * @throws UsernameNotFoundException 找不到团队
+     */
+    @Transactional(readOnly = true)
+    public Team loadById(int id) throws UsernameNotFoundException {
+        log.debug("Trying to load Team id " + id);
+        Optional<Team> team = teamRepository.findById(id);
+        if (!team.isPresent()) {
+            log.info("Failed to load Team id" + id + ": not found");
+            throw new UsernameNotFoundException(Integer.toString(id));
+        }
+        log.debug("Loaded Team id " + id);
+        return team.get();
     }
 
     /**

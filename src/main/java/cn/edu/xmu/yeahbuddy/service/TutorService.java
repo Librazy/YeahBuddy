@@ -81,7 +81,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
      * @throws UsernameNotFoundException 找不到导师
      */
     @Transactional(readOnly = true)
-    public Tutor loadTutorById(int id) throws UsernameNotFoundException {
+    public Tutor loadById(int id) throws UsernameNotFoundException {
         log.debug("Trying to load Tutor id " + id);
         Optional<Tutor> tutor = tutorRepository.findById(id);
         if (!tutor.isPresent()) {

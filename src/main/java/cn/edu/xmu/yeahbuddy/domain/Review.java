@@ -21,7 +21,7 @@ public class Review {
     private int teamId;
 
     @Column(name = "ReviewStage", updatable = false, nullable = false)
-    private int stage;
+    private int stageId;
 
     @Column(name = "ReviewViewer", updatable = false, nullable = false)
     private int viewer;
@@ -42,9 +42,9 @@ public class Review {
     public Review() {
     }
 
-    public Review(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
+    public Review(int teamId, int stageId, int viewer, boolean viewerIsAdmin) {
         this.teamId = teamId;
-        this.stage = stage;
+        this.stageId = stageId;
         this.viewer = viewer;
         this.viewerIsAdmin = viewerIsAdmin;
     }
@@ -60,8 +60,8 @@ public class Review {
     }
 
     @Contract(pure = true)
-    public int getStage() {
-        return stage;
+    public int getStageId() {
+        return stageId;
     }
 
     @Contract(pure = true)

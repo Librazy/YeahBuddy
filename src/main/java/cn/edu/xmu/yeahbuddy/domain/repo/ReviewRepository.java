@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
-    List<Review> findByTeamIdAndStage(int teamId, int stage);
+    List<Review> findByTeamIdAndStageId(int teamId, int stageId);
 
-    Optional<Review> findByTeamIdAndStageAndViewerAndViewerIsAdmin(int teamId, int stage, int viewer, boolean viewerIsAdmin);
+    Optional<Review> findByTeamIdAndStageIdAndViewerAndViewerIsAdmin(int teamId, int stageId, int viewer, boolean viewerIsAdmin);
 
-    default Optional<Review> find(int teamId, int stage, int viewer, boolean viewerIsAdmin){
-        return findByTeamIdAndStageAndViewerAndViewerIsAdmin(teamId, stage, viewer, viewerIsAdmin);
+    default Optional<Review> find(int teamId, int stageId, int viewer, boolean viewerIsAdmin){
+        return findByTeamIdAndStageIdAndViewerAndViewerIsAdmin(teamId, stageId, viewer, viewerIsAdmin);
     }
 }

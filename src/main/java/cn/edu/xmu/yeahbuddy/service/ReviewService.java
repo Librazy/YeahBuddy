@@ -89,7 +89,7 @@ public class ReviewService {
      */
     @Transactional
     public void deleteReview(int id) {
-        log.debug("Delete TeamReport with id" + id);
+        log.debug("Delete Report with id" + id);
         reviewRepository.deleteById(id);
     }
 

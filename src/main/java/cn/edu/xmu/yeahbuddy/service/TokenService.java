@@ -65,7 +65,7 @@ public class TokenService {
                 throw new BadCredentialsException(tokenStr);
             }
             log.info("Loaded Token " + tokenStr + ", loading Tutor " + token.getTutorId());
-            Tutor tutor = tutorService.loadTutorById(token.getTutorId());
+            Tutor tutor = tutorService.loadById(token.getTutorId());
             return Pair.of(tutor, token);
         } catch (Exception e) {
             log.info("Failed to load Token " + tokenStr + ": " + e.getMessage(), e);

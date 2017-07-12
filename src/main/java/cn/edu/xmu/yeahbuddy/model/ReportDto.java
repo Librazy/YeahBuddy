@@ -1,17 +1,14 @@
 package cn.edu.xmu.yeahbuddy.model;
 
-import cn.edu.xmu.yeahbuddy.domain.TeamStage;
 import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
-public class TeamReportDto implements Serializable {
+public class ReportDto implements Serializable {
 
     private static final long serialVersionUID = -4399048744984741761L;
-
-    private TeamStage teamStage;
 
     private Boolean submitted;
 
@@ -22,21 +19,11 @@ public class TeamReportDto implements Serializable {
     private Collection<String> files;
 
     @Contract(pure = true)
-    public TeamStage getTeamStage() {
-        return teamStage;
-    }
-
-    public TeamReportDto setTeamStage(TeamStage teamStage) {
-        this.teamStage = teamStage;
-        return this;
-    }
-
-    @Contract(pure = true)
     public Boolean getSubmitted() {
         return submitted;
     }
 
-    public TeamReportDto setSubmitted(Boolean submitted) {
+    public ReportDto setSubmitted(Boolean submitted) {
         this.submitted = submitted;
         return this;
     }
@@ -46,7 +33,7 @@ public class TeamReportDto implements Serializable {
         return title;
     }
 
-    public TeamReportDto setTitle(String title) {
+    public ReportDto setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -56,7 +43,7 @@ public class TeamReportDto implements Serializable {
         return content;
     }
 
-    public TeamReportDto setContent(Map<Integer, String> content) {
+    public ReportDto setContent(Map<Integer, String> content) {
         this.content = content;
         return this;
     }
@@ -66,7 +53,7 @@ public class TeamReportDto implements Serializable {
         return files;
     }
 
-    public TeamReportDto setFiles(Collection<String> files) {
+    public ReportDto setFiles(Collection<String> files) {
         this.files = files;
         return this;
     }

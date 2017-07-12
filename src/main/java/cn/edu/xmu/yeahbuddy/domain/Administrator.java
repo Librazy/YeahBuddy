@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -144,6 +145,8 @@ public final class Administrator implements UserDetails, Authentication {
         return getName();
     }
 
+    @NotNull
+    @Contract(pure = true)
     @Override
     public Object getDetails() {
         return getId();

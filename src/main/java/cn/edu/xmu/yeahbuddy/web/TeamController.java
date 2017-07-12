@@ -1,13 +1,12 @@
 package cn.edu.xmu.yeahbuddy.web;
 
+import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.Team;
-import cn.edu.xmu.yeahbuddy.domain.TeamReport;
-import cn.edu.xmu.yeahbuddy.domain.TeamStage;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
-import cn.edu.xmu.yeahbuddy.model.TeamReportDto;
-import cn.edu.xmu.yeahbuddy.service.TeamReportService;
+import cn.edu.xmu.yeahbuddy.model.ReportDto;
+import cn.edu.xmu.yeahbuddy.service.ReportService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -18,6 +17,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -35,16 +35,16 @@ public class TeamController {
 
     private final TeamService teamService;
 
-    private final TeamReportService teamReportService;
+    private final ReportService reportService;
 
     private final ReviewRepository reviewRepository;
 
     private final MessageSource messageSource;
 
     @Autowired
-    public TeamController(TeamService teamService, TeamReportService teamReportService, ReviewRepository reviewRepository, MessageSource messageSource) {
+    public TeamController(TeamService teamService, ReportService reportService, ReviewRepository reviewRepository, MessageSource messageSource) {
         this.teamService = teamService;
-        this.teamReportService = teamReportService;
+        this.reportService = reportService;
         this.reviewRepository = reviewRepository;
         this.messageSource = messageSource;
     }
@@ -75,7 +75,7 @@ public class TeamController {
 
     @GetMapping(value = "/team/{teamId:\\d+}", produces = MediaType.TEXT_HTML_VALUE)
     public String profile(@PathVariable int teamId, Model model) {
-        Optional<Team> team = teamService.findByteamId(teamId);
+        Optional<Team> team = teamService.findById(teamId);
         if (!team.isPresent()) {
             throw new ResourceNotFoundException("team.id.not_found", teamId);
         }
@@ -102,40 +102,48 @@ public class TeamController {
 
     @GetMapping("/team/{teamId:\\d+}/reports")
     public String showReports(@PathVariable int teamId, Model model) {
-        List<TeamReport> teamReports = teamReportService.findByteamId(teamId);
-        model.addAttribute("teamReports", teamReports);
+        List<Report> reports = reportService.findByTeamId(teamId);
+        model.addAttribute("reports", reports);
         model.addAttribute("formAction", String.format("/team/%d/reports", teamId));
         return "team/reports";
     }
 
-    @GetMapping("/team/{teamId:\\d+}/reports/{stage:\\d+}")
-    public String showSelectedReport(@PathVariable int teamId, @PathVariable int stage, Model model) {
-        Optional<TeamReport> teamReport = teamReportService.findById(new TeamStage(teamId, stage));
-        if (!teamReport.isPresent()) {
-            throw new ResourceNotFoundException("teamReport.stage.not_found", new TeamStage(teamId, stage));
+    @GetMapping("/team/{teamId:\\d+}/reports/{stageId:\\d+}")
+    public String showSelectedReport(@PathVariable int teamId, @PathVariable int stageId, Model model) {
+        Optional<Report> report = reportService.find(teamId, stageId);
+        if (!report.isPresent()) {
+            throw new ResourceNotFoundException("report.team_stage.not_found", String.format("%d, %d", teamId, stageId));
         }
 
-        model.addAttribute("teamReport", teamReport.get());
-        model.addAttribute("formAction", String.format("/team/%d/reports/%d", teamId, stage));
+        model.addAttribute("report", report.get());
+        model.addAttribute("formAction", String.format("/team/%d/reports/%d", teamId, stageId));
         return "team/reportInformation";
     }
 
-    @PutMapping("/team/{teamId:\\d+}/reports/{stage:\\d+}")
-    public ResponseEntity<Map<String, String>> updateReport(@PathVariable int teamId, @PathVariable int stage, TeamReportDto teamReportDto) {
-        log.debug("Update teamReport ");
-        teamReportService.updateTeamReport(new TeamStage(teamId, stage), teamReportDto);
+    @PutMapping("/team/{teamId:\\d+}/reports/{reportId:\\d+}")
+    public ResponseEntity<Map<String, String>> updateReport(@PathVariable int teamId, @PathVariable int reportId, ReportDto reportDto) {
+        log.debug("Update report ");
+
+        Optional<Report> report = reportService.findById(reportId);
+        if (!report.isPresent()) {
+            throw new ResourceNotFoundException("report.id.not_found", reportId);
+        } else if(report.get().getTeamId() != teamId){
+            throw new AccessDeniedException("team.report.not_owned");
+        }
+
+        reportService.updateReport(reportId, reportDto);
         Map<String, String> result = new HashMap<>();
         Locale locale = LocaleContextHolder.getLocale();
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
-        result.put("message", messageSource.getMessage("teamReport.update.ok", new Object[]{}, locale));
+        result.put("message", messageSource.getMessage("report.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/team/{teamId:\\d+}/reports/review/{stage:\\d+}")
-    public String showReportReview(@PathVariable int teamId, @PathVariable int stage, Model model) {
-        List<Review> reviews = reviewRepository.findByTeamIdAndStage(teamId, stage);
+    @GetMapping("/team/{teamId:\\d+}/reports/review/{stageId:\\d+}")
+    public String showReportReview(@PathVariable int teamId, @PathVariable int stageId, Model model) {
+        List<Review> reviews = reviewRepository.findByTeamIdAndStageId(teamId, stageId);
         model.addAttribute("reviews", reviews);
-        model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stage));
+        model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stageId));
         return "team/reportReviews";
     }
 }

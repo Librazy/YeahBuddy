@@ -6,36 +6,59 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Map;
 
+@Table(
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"ReportTeamId", "ReportStageId"})
+)
 @Entity
-public class TeamReport {
+public class Report {
 
-    @EmbeddedId
-    private TeamStage teamStage;
+    @Id
+    @GeneratedValue
+    @Column(name = "ReviewId", unique = true, updatable = false, nullable = false)
+    private int id = Integer.MIN_VALUE;
 
-    @Column(name = "TeamReportSubmitted", nullable = false)
+    @Column(name = "ReportTeamId", updatable = false, nullable = false)
+    private int teamId;
+
+    @Column(name = "ReportStageId", updatable = false, nullable = false)
+    private int stageId;
+
+    @Column(name = "ReportSubmitted", nullable = false)
     private boolean submitted;
 
-    @Column(name = "TeamReportTitle", nullable = false)
+    @Column(name = "ReportTitle", nullable = false)
     private String title;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TeamReportContent")
+    @CollectionTable(name = "ReportContent")
     private Map<Integer, String> content;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TeamReportFiles")
+    @CollectionTable(name = "ReportFiles")
     private Collection<String> files;
 
-    public TeamReport() {
+    public Report() {
     }
 
-    public TeamReport(TeamStage teamStage) {
-        this.teamStage = teamStage;
+    public Report(int teamId, int stageId) {
+        this.teamId = teamId;
+        this.stageId = stageId;
     }
 
     @Contract(pure = true)
-    public TeamStage getTeamStage() {
-        return teamStage;
+    public int getId() {
+        return id;
+    }
+
+    @Contract(pure = true)
+    public int getTeamId() {
+        return teamId;
+    }
+
+    @Contract(pure = true)
+    public int getStageId() {
+        return stageId;
     }
 
     @Contract(pure = true)
