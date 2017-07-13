@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * 管理员账户服务
  */
@@ -81,6 +83,18 @@ public class AdministratorService implements UserDetailsService {
     public Administrator findByUsername(String username) {
         log.debug("Finding Administrator " + username);
         return administratorRepository.findByUsername(username);
+    }
+
+    /**
+     * 按ID查找管理员
+     *
+     * @param id 查找的管理员用户名
+     * @return 管理员
+     */
+    @Transactional
+    public Optional<Administrator> findById(int id) {
+        log.debug("Finding Administrator "+id);
+        return administratorRepository.findById(id);
     }
 
     /**

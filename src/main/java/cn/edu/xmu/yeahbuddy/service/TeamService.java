@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -111,6 +112,15 @@ public class TeamService implements UserDetailsService {
         }
         log.debug("Loaded Team id " + id);
         return team.get();
+    }
+
+    /**
+     * 查找所有团队
+     *
+     * @return 所有团队
+     */
+    public List<Team> findAllTeams(){
+        return teamRepository.findAll();
     }
 
     /**
