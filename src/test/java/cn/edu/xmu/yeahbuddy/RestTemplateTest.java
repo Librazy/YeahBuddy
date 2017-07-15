@@ -29,6 +29,6 @@ public class RestTemplateTest extends ApplicationTestBase {
         Assert.assertEquals(response.getStatusCode(), HttpStatus.FOUND);
         @NonNls URI redirect = response.getHeaders().getLocation();
         if(redirect == null)throw new RuntimeException();
-        Assert.assertTrue(redirect.getPath().equals(String.format("/tutor/%d", tutor.getId())));
+        Assert.assertTrue(redirect.getPath().equals(String.format("/tutor/%d/review", tutor.getId())));
     }
 }

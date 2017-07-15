@@ -1,5 +1,6 @@
 package cn.edu.xmu.yeahbuddy;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ public class TeamFormLoginTest extends ApplicationTestBase {
     @Transactional
     public void teamFormLoginTest() throws Exception {
 
+        Assert.assertTrue(teamService.findByUsername("testteam").isPresent());
         mvc.perform(get("/team"))
            .andExpect(status().is3xxRedirection())
            .andExpect(unauthenticated());
@@ -26,7 +28,7 @@ public class TeamFormLoginTest extends ApplicationTestBase {
         mvc.perform(formLogin("/team/login").user("testteam").password("testteam"))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/team"))
-           .andExpect(authenticated().withAuthenticationPrincipal(teamService.findByUsername("testteam")));
+           .andExpect(authenticated().withAuthenticationPrincipal(teamService.findByUsername("testteam").get()));
 
         mvc.perform(logout("/team/logout"))
            .andExpect(status().is3xxRedirection())

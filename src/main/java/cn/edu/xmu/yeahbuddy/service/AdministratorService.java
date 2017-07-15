@@ -171,7 +171,7 @@ public class AdministratorService implements UserDetailsService {
         }
 
         if (dto.getUsername() != null) {
-            if (administratorRepository.findByUsername(dto.getUsername()) != null) {
+            if (administratorRepository.findByUsername(dto.getUsername()).isPresent()) {
                 log.info("Fail to update username for Administrator " + dto.getUsername() + ": name already exist");
                 throw new IdentifierAlreadyExistsException("admin.username.exist", dto.getUsername());
             } else {

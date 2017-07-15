@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @Rollback
@@ -40,8 +39,6 @@ public class RepositoriesAndUtilsTests extends AbstractTransactionalJUnit4Spring
     @Test
     public void administratorRepositoryTest() throws Exception {
 
-        administratorRepository.deleteAll();
-
         // 创建2条记录
         administratorRepository.save(new Administrator("AAA", "xxx"));
         administratorRepository.save(new Administrator("BBB", "xxx"));
@@ -50,16 +47,18 @@ public class RepositoriesAndUtilsTests extends AbstractTransactionalJUnit4Spring
         Assert.assertEquals(2, administratorRepository.findAll().size());
 
         // 测试findByName, 查询姓名为AAA的Administrator
-        Assert.assertEquals("xxx", administratorRepository.findByUsername("AAA").getPassword());
+        Assert.assertTrue(administratorRepository.findByUsername("AAA").isPresent());
+        Assert.assertEquals("xxx", administratorRepository.findByUsername("AAA").get().getPassword());
 
         // 测试删除姓名为BBB的Administrator
-        administratorRepository.delete(administratorRepository.findByUsername("BBB"));
+        Assert.assertTrue(administratorRepository.findByUsername("BBB").isPresent());
+        administratorRepository.delete(administratorRepository.findByUsername("BBB").get());
 
         // 测试findAll, 查询所有记录, 验证上面的删除是否成功
         Assert.assertEquals(1, administratorRepository.findAll().size());
 
         // 测试删除姓名为AAA的Administrator
-        administratorRepository.delete(administratorRepository.findByUsername("AAA"));
+        administratorRepository.delete(administratorRepository.findByUsername("AAA").get());
     }
 
     @Test

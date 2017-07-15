@@ -30,7 +30,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.AUTO_CONFIGURED)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Rollback

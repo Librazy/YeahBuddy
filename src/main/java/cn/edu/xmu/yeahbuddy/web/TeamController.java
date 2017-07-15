@@ -100,7 +100,7 @@ public class TeamController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/team/{teamId:\\d+}/reports")
+    @GetMapping("/team/{teamId:\\d+}/report")
     //TODO
     public ResponseEntity<Model> showReports(@PathVariable int teamId, Model model) {
         List<Report> reports = reportService.findByTeamId(teamId);

@@ -22,6 +22,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Optional;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -71,23 +72,24 @@ public class ServicesConcurrentTests {
         log.info("==================Start================\\n\\n");
         AtomicInteger counter = new AtomicInteger(0);
         final CyclicBarrier gate = new CyclicBarrier(4);
-
         Runnable r = () -> transactionTemplate.execute((status) -> {
+
             if(usingInnoDB)em.createNativeQuery("set innodb_lock_wait_timeout = 1;").executeUpdate();
             try {
                 gate.await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();
             }
-            Administrator administrator = administratorRepository.queryById(id);
+            Optional<Administrator> administrator = administratorRepository.queryById(id);
             log.info(String.format("Sleeping: %d", Thread.currentThread().getId()));
             try {
                 Thread.sleep(4000);
             } catch (InterruptedException ignored) {
             }
             log.info(String.format("Waken: %d", Thread.currentThread().getId()));
-            administrator.setDisplayName("DP");
-            administratorRepository.save(administrator);
+            Assert.assertTrue(administrator.isPresent());
+            administrator.get().setDisplayName("DP");
+            administratorRepository.save(administrator.get());
             return null;
         });
 
