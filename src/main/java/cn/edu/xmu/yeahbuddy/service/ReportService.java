@@ -71,6 +71,14 @@ public class ReportService {
     }
 
     /**
+     * 查找所有项目报告
+     *
+     * @return 所有项目报告
+     */
+    @Transactional
+    public List<Report> findAllReports(){ return reportRepository.findAll();}
+
+    /**
      * 新建团队项目报告
      *
      * @param teamId  团队ID

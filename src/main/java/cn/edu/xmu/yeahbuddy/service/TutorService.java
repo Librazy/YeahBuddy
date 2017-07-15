@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -104,6 +105,13 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         log.debug("Finding Tutor " + username);
         return tutorRepository.findByUsername(username);
     }
+
+    /**
+     * 查找所有导师
+     *所有导师
+     */
+    @Transactional
+    public List<Tutor> findAllTutors(){ return tutorRepository.findAll();}
 
     /**
      * 注册导师

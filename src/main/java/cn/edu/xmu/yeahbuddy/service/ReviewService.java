@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -57,6 +58,18 @@ public class ReviewService {
     public Optional<Review> find(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
         log.debug("Finding Review");
         return reviewRepository.find(teamId, stage, viewer, viewerIsAdmin);
+    }
+
+    /**
+     * 查找某个团队项目报告的所有评审报告
+     *
+     * @param teamId 团队ID
+     * @param stageId 阶段ID
+     * @return 所有评审报告
+     */
+    @Transactional
+    public List<Review> findByTeamIdAndStageId(int teamId, int stageId){
+        return reviewRepository.findByTeamIdAndStageId(teamId, stageId);
     }
 
     /**

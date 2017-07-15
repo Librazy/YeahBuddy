@@ -1,9 +1,7 @@
 package cn.edu.xmu.yeahbuddy.web;
 
-import cn.edu.xmu.yeahbuddy.domain.Administrator;
-import cn.edu.xmu.yeahbuddy.domain.Team;
+import cn.edu.xmu.yeahbuddy.domain.*;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
-import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.service.*;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.jetbrains.annotations.NonNls;
@@ -16,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
 
@@ -31,20 +28,20 @@ public class AdministratorController {
 
     private final TutorService tutorService;
 
-    private final ReviewService reviewService;
+    private final ReportService reportService;
 
-    private final ReportService ReportService;
+    private final TokenService tokenService;
 
     private final MessageSource messageSource;
 
     @Autowired
-    public AdministratorController(AdministratorService administratorService,TeamService teamService, TutorService tutorService, ReviewService reviewService, ReportService ReportService, MessageSource messageSource){
-        this.administratorService=administratorService;
-        this.teamService=teamService;
-        this.tutorService=tutorService;
-        this.reviewService=reviewService;
-        this.ReportService=ReportService;
-        this.messageSource=messageSource;
+    public AdministratorController(AdministratorService administratorService,TeamService teamService, TutorService tutorService, ReportService reportService, TokenService tokenService, MessageSource messageSource){
+        this.administratorService = administratorService;
+        this.teamService = teamService;
+        this.tutorService = tutorService;
+        this.reportService = reportService;
+        this.tokenService = tokenService;
+        this.messageSource = messageSource;
     }
 
     @GetMapping("/admin/{adminId:\\d+}")
@@ -74,26 +71,43 @@ public class AdministratorController {
     public String manageTeams(Model model){
         List<Team> teams=teamService.findAllTeams();
         model.addAttribute("teams", teams);
-        return "administrator/manageteam";
+        return "administrator/manageTeams";
     }
 
-    @GetMapping("/admin/team/add")
-    public String addTeamPage(Model model){
-        return "administrator/addteam";
+    @GetMapping("/admin/tutor")
+    public String manageTutors(Model model){
+        List<Tutor> tutors = tutorService.findAllTutors();
+        model.addAttribute("tutors", tutors);
+        return "administrator/manageTutors";
     }
 
-    @PostMapping(value = "/admin/team/add")
-    public RedirectView addTeam(TeamDto teamDto){
-        log.debug("Add team");
-        Team team = teamService.registerNewTeam(teamDto);
-        return new RedirectView("/admin/manageteam/add", false, false);
+    @GetMapping("/admin/report/create")
+    public String createReport(Model model){
+        List<Team> teams = teamService.findAllTeams();
+        model.addAttribute("teams", teams);
+        return "administrator/createReport";
     }
 
-    @GetMapping("/admin/team/{teamId:\\d+}/update")
-    public String updateTeamPage(@PathVariable int teamId, Model model){
-        Team team = teamService.loadById(teamId);
-        model.addAttribute("team",team);
-        return "admin/updateteam";
+    @GetMapping("/admin/report/history")
+    public String allReports(Model model){
+        List<Report> reports = reportService.findAllReports();
+        model.addAttribute("reports",reports);
+        return "administrator/ReportHistory";
     }
 
+    @GetMapping("/admin/token/create")
+    public String createToken(Model model){
+        List<Team> teams = teamService.findAllTeams();
+        List<Tutor> tutors = tutorService.findAllTutors();
+        model.addAttribute("teams", teams);
+        model.addAttribute("tutors", tutors);
+        return "administrator/createToken";
+    }
+
+    @GetMapping("/admin/token/history")
+    public String allTokens(Model model){
+        List<Token> tokens = tokenService.findAllTokens();
+        model.addAttribute("tokens",tokens);
+        return "administrator/TokenHistory";
+    }
 }

@@ -37,15 +37,12 @@ public class TeamController {
 
     private final ReportService reportService;
 
-    private final ReviewRepository reviewRepository;
-
     private final MessageSource messageSource;
 
     @Autowired
-    public TeamController(TeamService teamService, ReportService reportService, ReviewRepository reviewRepository, MessageSource messageSource) {
+    public TeamController(TeamService teamService, ReportService reportService, MessageSource messageSource) {
         this.teamService = teamService;
         this.reportService = reportService;
-        this.reviewRepository = reviewRepository;
         this.messageSource = messageSource;
     }
 
@@ -108,18 +105,6 @@ public class TeamController {
         return "team/reports";
     }
 
-    @GetMapping("/team/{teamId:\\d+}/reports/{stageId:\\d+}")
-    public String showSelectedReport(@PathVariable int teamId, @PathVariable int stageId, Model model) {
-        Optional<Report> report = reportService.find(teamId, stageId);
-        if (!report.isPresent()) {
-            throw new ResourceNotFoundException("report.team_stage.not_found", String.format("%d, %d", teamId, stageId));
-        }
-
-        model.addAttribute("report", report.get());
-        model.addAttribute("formAction", String.format("/team/%d/reports/%d", teamId, stageId));
-        return "team/reportInformation";
-    }
-
     @PutMapping("/team/{teamId:\\d+}/reports/{reportId:\\d+}")
     public ResponseEntity<Map<String, String>> updateReport(@PathVariable int teamId, @PathVariable int reportId, ReportDto reportDto) {
         log.debug("Update report ");
@@ -137,13 +122,5 @@ public class TeamController {
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
         result.put("message", messageSource.getMessage("report.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/team/{teamId:\\d+}/reports/review/{stageId:\\d+}")
-    public String showReportReview(@PathVariable int teamId, @PathVariable int stageId, Model model) {
-        List<Review> reviews = reviewRepository.findByTeamIdAndStageId(teamId, stageId);
-        model.addAttribute("reviews", reviews);
-        model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stageId));
-        return "team/reportReviews";
     }
 }

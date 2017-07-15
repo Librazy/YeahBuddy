@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -42,6 +43,13 @@ public class TokenService {
         this.tutorService = tutorService;
     }
 
+    /**
+     * 查找所有Token
+     *
+     * @return 所有Token
+     */
+    @Transactional
+    public List<Token> findAllTokens(){ return tokenRepository.findAll();}
 
     /**
      * 按登录Token值查找导师与Token

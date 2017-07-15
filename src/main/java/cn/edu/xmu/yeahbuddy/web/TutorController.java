@@ -40,16 +40,13 @@ public class TutorController {
 
     private final TeamService teamService;
 
-    private final ReportService reportService;
-
     private final MessageSource messageSource;
 
     @Autowired
-    public TutorController(TutorService tutorService, ReviewService reviewService, TeamService teamService, ReportService reportService, MessageSource messageSource) {
+    public TutorController(TutorService tutorService, ReviewService reviewService, TeamService teamService, MessageSource messageSource) {
         this.tutorService = tutorService;
         this.reviewService = reviewService;
         this.teamService = teamService;
-        this.reportService = reportService;
         this.messageSource = messageSource;
     }
 
@@ -85,47 +82,6 @@ public class TutorController {
         }
         model.addAttribute("reportsReview", resultList);
         return "tutor/review";
-    }
-
-    @GetMapping("/tutor/{tutorId:\\d+}/review/{reviewId:\\d+}")
-    public String tutorReviewReport(@PathVariable int tutorId, @PathVariable int reviewId, Model model) {
-        Optional<Review> review = reviewService.findById(reviewId);
-        if (!review.isPresent()) {
-            throw new ResourceNotFoundException("tutor.review.not_found", reviewId);
-        }else if (!(review.get().getViewer() == tutorId && !review.get().isViewerIsAdmin())) {
-            model.addAttribute("readOnly", true);
-        }
-
-        Optional<Report> report = reportService.find(review.get().getTeamId(), review.get().getStageId());
-        if (!report.isPresent()) {
-            throw new ResourceNotFoundException("team.report.not_found", String.format("%d, %d", review.get().getTeamId(), review.get().getStageId()));
-        }
-
-        Team team = teamService.loadById(report.get().getTeamId());
-
-        model.addAttribute("team", team);
-        model.addAttribute("report", report.get());
-        model.addAttribute("review", review.get());
-        return "tutor/reviewReport";
-    }
-
-    @PutMapping("/tutor/{tutorId:\\d+}/review/{reviewId:\\d+}")
-    public ResponseEntity<Map<String, String>> updateReview(@PathVariable int tutorId, @PathVariable int reviewId, ReviewDto reviewDto) {
-        log.debug("Update Review");
-        Optional<Review> review = reviewService.findById(reviewId);
-
-        if (!review.isPresent()) {
-            throw new ResourceNotFoundException("tutor.review.not_found", reviewId);
-        } else if (!(review.get().getViewer() == tutorId && !review.get().isViewerIsAdmin())) {
-            throw new AccessDeniedException("tutor.review.not_owned");
-        }
-
-        reviewService.updateReview(reviewId, reviewDto);
-        Map<String, String> result = new HashMap<>();
-        Locale locale = LocaleContextHolder.getLocale();
-        result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
-        result.put("message", messageSource.getMessage("review.update.ok", new Object[]{}, locale));
-        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/tutor/{tutorId:\\d+}/information")
