@@ -4,9 +4,11 @@ import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReportRepository;
 import cn.edu.xmu.yeahbuddy.model.ReportDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierNotExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +78,9 @@ public class ReportService {
      * @return 所有项目报告
      */
     @Transactional
-    public List<Report> findAllReports(){ return reportRepository.findAll();}
+    public List<Report> findAllReports() {
+        return reportRepository.findAll();
+    }
 
     /**
      * 新建团队项目报告
@@ -123,7 +127,13 @@ public class ReportService {
     @Transactional
     public Report updateReport(int id, ReportDto dto) {
         log.debug("Trying to update Report " + id);
-        Report report = reportRepository.getOne(id);
+        Optional<Report> r = reportRepository.queryById(id);
+
+        if (!r.isPresent()) {
+            log.info("Failed to load Report " + id + ": not found");
+            throw new IdentifierNotExistsException("report.id.not_found", id);
+        }
+        Report report = r.get();
 
         if (dto.getTitle() != null) {
             log.trace("Update title for Report " + id + ":" + report.getTitle() +

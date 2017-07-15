@@ -3,6 +3,7 @@ package cn.edu.xmu.yeahbuddy.service;
 import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierNotExistsException;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,8 +49,10 @@ public class TokenService {
      *
      * @return 所有Token
      */
-    @Transactional
-    public List<Token> findAllTokens(){ return tokenRepository.findAll();}
+    @Transactional(readOnly = true)
+    public List<Token> findAllTokens() {
+        return tokenRepository.findAll();
+    }
 
     /**
      * 按登录Token值查找导师与Token
@@ -101,4 +104,25 @@ public class TokenService {
         log.debug("Created Token " + result);
         return result.getTokenValue();
     }
+
+    /**
+     * 吊销Token
+     *
+     * @param tokenStr 查找的登录Token值
+     * @throws IdentifierNotExistsException 找不到Token
+     */
+    @Transactional
+    public void revokeToken(@NonNls String tokenStr) throws IdentifierNotExistsException {
+        log.debug("Trying to load Token " + tokenStr);
+        Optional<Token> tok = tokenRepository.queryByTokenValue(tokenStr);
+        if (!tok.isPresent()) {
+            log.info("Failed to load Token " + tokenStr + ": not found");
+            throw new IdentifierNotExistsException("token.not_found", tokenStr);
+        }
+
+        Token token = tok.get();
+        token.setRevoked();
+        tokenRepository.save(token);
+    }
+
 }

@@ -4,6 +4,7 @@ import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.model.ReviewDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierNotExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
@@ -63,12 +64,12 @@ public class ReviewService {
     /**
      * 查找某个团队项目报告的所有评审报告
      *
-     * @param teamId 团队ID
+     * @param teamId  团队ID
      * @param stageId 阶段ID
      * @return 所有评审报告
      */
     @Transactional
-    public List<Review> findByTeamIdAndStageId(int teamId, int stageId){
+    public List<Review> findByTeamIdAndStageId(int teamId, int stageId) {
         return reviewRepository.findByTeamIdAndStageId(teamId, stageId);
     }
 
@@ -109,8 +110,13 @@ public class ReviewService {
     @Transactional
     public Review updateReview(int id, ReviewDto dto) {
         log.debug("Trying to update Review with id" + id);
-        Review review = reviewRepository.getOne(id);
+        Optional<Review> r = reviewRepository.queryById(id);
 
+        if (!r.isPresent()) {
+            log.info("Failed to load Report " + id + ": not found");
+            throw new IdentifierNotExistsException("review.id.not_found", id);
+        }
+        Review review = r.get();
         if (dto.getSubmitted() != null) {
             log.trace("Updated submitted for Review with id " + id + ":" + review.isSubmitted() +
                               " -> " + dto.getSubmitted());

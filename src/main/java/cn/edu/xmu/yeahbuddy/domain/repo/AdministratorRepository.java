@@ -13,6 +13,7 @@ public interface AdministratorRepository extends JpaRepository<Administrator, In
     @NotNull
     Optional<Administrator> findByUsername(String username);
 
+    @NotNull
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Administrator> queryById(int id);
 }

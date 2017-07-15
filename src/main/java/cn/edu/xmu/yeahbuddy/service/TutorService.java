@@ -109,10 +109,13 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
 
     /**
      * 查找所有导师
-     *所有导师
+     *
+     * @return 所有导师
      */
     @Transactional
-    public List<Tutor> findAllTutors(){ return tutorRepository.findAll();}
+    public List<Tutor> findAllTutors() {
+        return tutorRepository.findAll();
+    }
 
     /**
      * 注册导师

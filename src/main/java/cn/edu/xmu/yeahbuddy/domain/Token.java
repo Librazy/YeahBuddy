@@ -8,6 +8,8 @@ import java.sql.Time;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+
+//TODO: 每个阶段每个导师是否至多一个token？
 @Entity
 public class Token {
 
@@ -15,14 +17,14 @@ public class Token {
     @Column(name = "TokenValue", updatable = false, nullable = false)
     private String tokenValue;
 
-    @Column(name = "TokenTutorId", nullable = false)
+    @Column(name = "TokenTutorId", updatable = false, nullable = false)
     private int tutorId;
 
-    @Column(name = "TokenStage", nullable = false)
+    @Column(name = "TokenStage", updatable = false, nullable = false)
     private int stage;
 
     @CreationTimestamp
-    @Column(name = "TokenTime", nullable = false)
+    @Column(name = "TokenTime", updatable = false, nullable = false)
     private Time time;
 
     @Column(name = "TokenRevoked", nullable = false)
@@ -52,17 +54,9 @@ public class Token {
         return tutorId;
     }
 
-    public void setTutorId(int tutorId) {
-        this.tutorId = tutorId;
-    }
-
     @Contract(pure = true)
     public int getStage() {
         return stage;
-    }
-
-    public void setStage(int stage) {
-        this.stage = stage;
     }
 
     @Contract(pure = true)
@@ -75,17 +69,13 @@ public class Token {
         return revoked;
     }
 
-    public void setRevoked(boolean revoked) {
-        this.revoked = revoked;
+    public void setRevoked() {
+        this.revoked = true;
     }
 
     @Contract(pure = true)
     public Collection<Integer> getTeamIds() {
         return teamIds;
-    }
-
-    public void setTeamIds(Collection<Integer> teamIds) {
-        this.teamIds = teamIds;
     }
 
     @Override
