@@ -141,7 +141,7 @@ public class TeamService implements UserDetailsService {
             throw new IllegalArgumentException("team.register.not_ready");
         }
 
-        if (teamRepository.findByUsername(dto.getUsername()) != null) {
+        if (teamRepository.findByUsername(dto.getUsername()).isPresent()) {
             log.info("Failed to register Team " + dto.getUsername() + ": username already exist");
             throw new IdentifierAlreadyExistsException("team.username.exist", dto.getUsername());
         }
@@ -210,7 +210,7 @@ public class TeamService implements UserDetailsService {
         }
 
         if (dto.getUsername() != null && !dto.getUsername().equals(team.getUsername())) {
-            if (teamRepository.findByUsername(dto.getUsername()) != null) {
+            if (teamRepository.findByUsername(dto.getUsername()).isPresent()) {
                 log.info("Failed to update username for Team " + team.getUsername() + ": username already exist");
                 throw new IdentifierAlreadyExistsException("team.username.exist", dto.getUsername());
             } else {

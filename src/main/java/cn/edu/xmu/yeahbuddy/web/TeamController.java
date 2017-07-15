@@ -3,10 +3,9 @@ package cn.edu.xmu.yeahbuddy.web;
 import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.Team;
-import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
-import cn.edu.xmu.yeahbuddy.model.ReportDto;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
+import cn.edu.xmu.yeahbuddy.service.ReviewService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -15,14 +14,15 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
@@ -37,16 +37,16 @@ public class TeamController {
 
     private final ReportService reportService;
 
-    private final ReviewRepository reviewRepository;
-
     private final MessageSource messageSource;
 
+    private final ReviewService reviewService;
+
     @Autowired
-    public TeamController(TeamService teamService, ReportService reportService, ReviewRepository reviewRepository, MessageSource messageSource) {
+    public TeamController(TeamService teamService, ReportService reportService, MessageSource messageSource, ReviewService reviewService) {
         this.teamService = teamService;
         this.reportService = reportService;
-        this.reviewRepository = reviewRepository;
         this.messageSource = messageSource;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/team/login")
@@ -109,44 +109,26 @@ public class TeamController {
         return ResponseEntity.ok(model);
     }
 
-    @GetMapping("/reports/{reportId:\\d+}")
-    //TODO
-    public ResponseEntity<Model> showSelectedReport(@PathVariable int reportId, Model model) {
-        Optional<Report> report = reportService.findById(reportId);
-        if (!report.isPresent()) {
-            throw new ResourceNotFoundException("report.id.not_found", reportId);
-        }
-
-        model.addAttribute("report", report.get());
-        model.addAttribute("formAction", String.format("/reports/%d", reportId));
-        return ResponseEntity.ok(model);
-    }
-
-    @PutMapping("/reports/{reportId:\\d+}")
-    public ResponseEntity<Map<String, String>> updateReport(@PathVariable int teamId, @PathVariable int reportId, ReportDto reportDto) {
-        log.debug("Update report ");
-
-        Optional<Report> report = reportService.findById(reportId);
-        if (!report.isPresent()) {
-            throw new ResourceNotFoundException("report.id.not_found", reportId);
-        } else if (report.get().getTeamId() != teamId) {
-            throw new AccessDeniedException("team.report.not_owned");
-        }
-
-        reportService.updateReport(reportId, reportDto);
-        Map<String, String> result = new HashMap<>();
-        Locale locale = LocaleContextHolder.getLocale();
-        result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
-        result.put("message", messageSource.getMessage("report.update.ok", new Object[]{}, locale));
-        return ResponseEntity.ok(result);
-    }
-
     @GetMapping("/team/{teamId:\\d+}/review/{stageId:\\d+}")
     //TODO
     public ResponseEntity<Model> showReviewByTeamAndStage(@PathVariable int teamId, @PathVariable int stageId, Model model) {
-        List<Review> reviews = reviewRepository.findByTeamIdAndStageId(teamId, stageId);
+        List<Review> reviews = reviewService.findByTeamIdAndStageId(teamId, stageId);
         model.addAttribute("reviews", reviews);
         model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stageId));
         return ResponseEntity.ok(model);
     }
+
+    @GetMapping("/team/{teamId:\\d+}/report/{stageId:\\d+}")
+    public RedirectView showSelectedReport(@PathVariable int teamId, @PathVariable int stageId, RedirectAttributes redirectAttributes) {
+        Optional<Report> report = reportService.find(teamId, stageId);
+        if (!report.isPresent()) {
+            throw new ResourceNotFoundException("report.team_stage.not_found", String.format("%d, %d", teamId, stageId));
+        }
+
+        redirectAttributes.addFlashAttribute("report", report.get());
+        final RedirectView redirectView = new RedirectView(String.format("/report/%d", report.get().getId()), false, false);
+        redirectView.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
+        return redirectView;
+    }
+
 }

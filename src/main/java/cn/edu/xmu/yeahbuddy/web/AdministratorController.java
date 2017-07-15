@@ -1,8 +1,12 @@
 package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
+import cn.edu.xmu.yeahbuddy.domain.Report;
+import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
-import cn.edu.xmu.yeahbuddy.service.*;
+import cn.edu.xmu.yeahbuddy.service.AdministratorService;
+import cn.edu.xmu.yeahbuddy.service.ReportService;
+import cn.edu.xmu.yeahbuddy.service.TokenService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,10 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class AdministratorController {
@@ -34,23 +35,17 @@ public class AdministratorController {
 
     private final AdministratorService administratorService;
 
-    private final TeamService teamService;
+    private final ReportService reportService;
 
-    private final TutorService tutorService;
-
-    private final ReviewService reviewService;
-
-    private final ReportService ReportService;
+    private final TokenService tokenService;
 
     private final MessageSource messageSource;
 
     @Autowired
-    public AdministratorController(AdministratorService administratorService, TeamService teamService, TutorService tutorService, ReviewService reviewService, ReportService ReportService, MessageSource messageSource) {
+    public AdministratorController(AdministratorService administratorService, ReportService reportService, TokenService tokenService, MessageSource messageSource) {
         this.administratorService = administratorService;
-        this.teamService = teamService;
-        this.tutorService = tutorService;
-        this.reviewService = reviewService;
-        this.ReportService = ReportService;
+        this.reportService = reportService;
+        this.tokenService = tokenService;
         this.messageSource = messageSource;
     }
 
@@ -92,5 +87,19 @@ public class AdministratorController {
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
         result.put("message", messageSource.getMessage("administrator.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/admin/report/history")
+    public String allReports(Model model) {
+        List<Report> reports = reportService.findAllReports();
+        model.addAttribute("reports", reports);
+        return "administrator/ReportHistory";
+    }
+
+    @GetMapping("/admin/token/history")
+    public String allTokens(Model model) {
+        List<Token> tokens = tokenService.findAllTokens();
+        model.addAttribute("tokens", tokens);
+        return "administrator/TokenHistory";
     }
 }

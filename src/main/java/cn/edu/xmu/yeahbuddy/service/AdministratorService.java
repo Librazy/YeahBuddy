@@ -116,7 +116,7 @@ public class AdministratorService implements UserDetailsService {
             throw new IllegalArgumentException("admin.register.not_ready");
         }
 
-        if (administratorRepository.findByUsername(dto.getUsername()) != null) {
+        if (administratorRepository.findByUsername(dto.getUsername()).isPresent()) {
             log.info("Failed to register Administrator " + dto.getUsername() + ": username already exist");
             throw new IdentifierAlreadyExistsException("admin.username.exist", dto.getUsername());
         }

@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -107,6 +108,13 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     }
 
     /**
+     * 查找所有导师
+     *所有导师
+     */
+    @Transactional
+    public List<Tutor> findAllTutors(){ return tutorRepository.findAll();}
+
+    /**
      * 注册导师
      *
      * @param dto 导师DTO
@@ -124,7 +132,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
             throw new IllegalArgumentException("tutor.register.not_ready");
         }
 
-        if (tutorRepository.findByUsername(dto.getUsername()) != null) {
+        if (tutorRepository.findByUsername(dto.getUsername()).isPresent()) {
             log.info("Failed to register Tutor " + dto.getUsername() + ": name already exist");
             throw new IdentifierAlreadyExistsException("tutor.name.exist", dto.getUsername());
         }
@@ -197,7 +205,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
             tutor.setPhone(dto.getPhone());
         }
         if (dto.getUsername() != null) {
-            if (tutorRepository.findByUsername(dto.getUsername()) != null) {
+            if (tutorRepository.findByUsername(dto.getUsername()).isPresent()) {
                 log.info("Fail to update username for Tutor " + tutor.getUsername() + ": username already exist");
                 throw new IdentifierAlreadyExistsException("tutor.username.exist", dto.getUsername());
             } else {

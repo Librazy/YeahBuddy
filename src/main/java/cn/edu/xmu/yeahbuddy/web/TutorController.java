@@ -1,13 +1,13 @@
 package cn.edu.xmu.yeahbuddy.web;
 
-import cn.edu.xmu.yeahbuddy.domain.*;
-import cn.edu.xmu.yeahbuddy.model.ReviewDto;
+import cn.edu.xmu.yeahbuddy.domain.Review;
+import cn.edu.xmu.yeahbuddy.domain.Team;
+import cn.edu.xmu.yeahbuddy.domain.Token;
+import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
-import cn.edu.xmu.yeahbuddy.service.ReportService;
 import cn.edu.xmu.yeahbuddy.service.ReviewService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
-import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
@@ -16,7 +16,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -40,16 +39,13 @@ public class TutorController {
 
     private final TeamService teamService;
 
-    private final ReportService reportService;
-
     private final MessageSource messageSource;
 
     @Autowired
-    public TutorController(TutorService tutorService, ReviewService reviewService, TeamService teamService, ReportService reportService, MessageSource messageSource) {
+    public TutorController(TutorService tutorService, ReviewService reviewService, TeamService teamService, MessageSource messageSource) {
         this.tutorService = tutorService;
         this.reviewService = reviewService;
         this.teamService = teamService;
-        this.reportService = reportService;
         this.messageSource = messageSource;
     }
 
@@ -86,53 +82,6 @@ public class TutorController {
         }
         model.addAttribute("reportsReview", resultList);
         return ResponseEntity.ok(resultList);
-    }
-
-    @GetMapping("/review/{reviewId:\\d+}")
-    //TODO
-    public ResponseEntity<Model> tutorReviewReport(@PathVariable int reviewId, Model model) {
-        Optional<Review> review = reviewService.findById(reviewId);
-        if (!review.isPresent()) {
-            throw new ResourceNotFoundException("tutor.review.not_found", reviewId);
-        } else {
-            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Tutor) {
-                int tutorId = ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-                if (!(review.get().getViewer() == tutorId && !review.get().isViewerIsAdmin())) {
-                    model.addAttribute("readOnly", true);
-                }
-            }
-        }
-
-        Optional<Report> report = reportService.find(review.get().getTeamId(), review.get().getStageId());
-        if (!report.isPresent()) {
-            throw new ResourceNotFoundException("team.report.not_found", String.format("%d, %d", review.get().getTeamId(), review.get().getStageId()));
-        }
-
-        Team team = teamService.loadById(report.get().getTeamId());
-
-        model.addAttribute("team", team);
-        model.addAttribute("report", report.get());
-        model.addAttribute("review", review.get());
-        return ResponseEntity.ok(model);
-    }
-
-    @PutMapping("/tutor/{tutorId:\\d+}/review/{reviewId:\\d+}")
-    public ResponseEntity<Map<String, String>> updateReview(@PathVariable int tutorId, @PathVariable int reviewId, ReviewDto reviewDto) {
-        log.debug("Update Review");
-        Optional<Review> review = reviewService.findById(reviewId);
-
-        if (!review.isPresent()) {
-            throw new ResourceNotFoundException("tutor.review.not_found", reviewId);
-        } else if (!(review.get().getViewer() == tutorId && !review.get().isViewerIsAdmin())) {
-            throw new AccessDeniedException("tutor.review.not_owned");
-        }
-
-        reviewService.updateReview(reviewId, reviewDto);
-        Map<String, String> result = new HashMap<>();
-        Locale locale = LocaleContextHolder.getLocale();
-        result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
-        result.put("message", messageSource.getMessage("review.update.ok", new Object[]{}, locale));
-        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/tutor/{tutorId:\\d+}")
