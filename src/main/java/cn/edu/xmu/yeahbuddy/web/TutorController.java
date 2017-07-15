@@ -69,9 +69,10 @@ public class TutorController {
         return "tutor/index";
     }
 
-    @GetMapping("/tutor/{tutorId:\\d+}")
+    @GetMapping("/tutor/{tutorId:\\d+}/reviews")
     @PreAuthorize("hasRole('TUTOR')")
-    public String tutorReview(@PathVariable int tutorId, Model model) {
+    //TODO
+    public ResponseEntity<List<Pair<Team, Pair<Integer, Integer>>>> tutorReview(@PathVariable int tutorId, Model model) {
         Token token = (Token) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         List<Pair<Team, Pair<Integer, Integer>>> resultList = new ArrayList<>();
         for (int teamId : token.getTeamIds()) {
@@ -80,20 +81,26 @@ public class TutorController {
 
             Optional<Review> review = reviewService.find(teamId, token.getStage(), tutorId, false);
             if (!review.isPresent()) continue;
-            Pair<Team, Pair<Integer, Integer>> result = Pair.of(team.get(), Pair.of(token.getStage(), review.get().getStageId()));
+            Pair<Team, Pair<Integer, Integer>> result = Pair.of(team.get(), Pair.of(token.getStage(), review.get().getId()));
             resultList.add(result);
         }
         model.addAttribute("reportsReview", resultList);
-        return "tutor/review";
+        return ResponseEntity.ok(resultList);
     }
 
-    @GetMapping("/tutor/{tutorId:\\d+}/review/{reviewId:\\d+}")
-    public String tutorReviewReport(@PathVariable int tutorId, @PathVariable int reviewId, Model model) {
+    @GetMapping("/review/{reviewId:\\d+}")
+    //TODO
+    public ResponseEntity<Model> tutorReviewReport(@PathVariable int reviewId, Model model) {
         Optional<Review> review = reviewService.findById(reviewId);
         if (!review.isPresent()) {
             throw new ResourceNotFoundException("tutor.review.not_found", reviewId);
-        }else if (!(review.get().getViewer() == tutorId && !review.get().isViewerIsAdmin())) {
-            model.addAttribute("readOnly", true);
+        } else {
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Tutor) {
+                int tutorId = ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+                if (!(review.get().getViewer() == tutorId && !review.get().isViewerIsAdmin())) {
+                    model.addAttribute("readOnly", true);
+                }
+            }
         }
 
         Optional<Report> report = reportService.find(review.get().getTeamId(), review.get().getStageId());
@@ -106,7 +113,7 @@ public class TutorController {
         model.addAttribute("team", team);
         model.addAttribute("report", report.get());
         model.addAttribute("review", review.get());
-        return "tutor/reviewReport";
+        return ResponseEntity.ok(model);
     }
 
     @PutMapping("/tutor/{tutorId:\\d+}/review/{reviewId:\\d+}")
@@ -128,7 +135,7 @@ public class TutorController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/tutor/{tutorId:\\d+}/information")
+    @GetMapping("/tutor/{tutorId:\\d+}")
     public String profile(@PathVariable int tutorId, Model model) {
         Tutor tutor = tutorService.loadById(tutorId);
         model.addAttribute("tutor", tutor);

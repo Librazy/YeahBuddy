@@ -11,7 +11,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     Optional<Review> findByTeamIdAndStageIdAndViewerAndViewerIsAdmin(int teamId, int stageId, int viewer, boolean viewerIsAdmin);
 
-    default Optional<Review> find(int teamId, int stageId, int viewer, boolean viewerIsAdmin){
+    default Optional<Review> find(int teamId, int stageId, int viewer, boolean viewerIsAdmin) {
         return findByTeamIdAndStageIdAndViewerAndViewerIsAdmin(teamId, stageId, viewer, viewerIsAdmin);
     }
 }

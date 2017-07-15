@@ -5,12 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.sql.Time;
 import java.util.List;
+import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<Token, String> {
 
     List<Token> findByTutorId(int tutorId);
 
-    Token findByTutorIdAndStage(int tutorId, int stage);
+    Optional<Token> findByTutorIdAndStage(int tutorId, int stage);
 
     List<Token> findByTimeBefore(Time time);
 }

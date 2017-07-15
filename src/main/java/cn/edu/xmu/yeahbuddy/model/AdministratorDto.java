@@ -21,6 +21,7 @@ public class AdministratorDto implements Serializable {
 
     private Collection<AdministratorPermission> authorities;
 
+    @Contract(pure = true)
     public String getDisplayName() {
         return displayName;
     }
@@ -30,6 +31,7 @@ public class AdministratorDto implements Serializable {
         return this;
     }
 
+    @Contract(pure = true)
     public String getPassword() {
         return password;
     }

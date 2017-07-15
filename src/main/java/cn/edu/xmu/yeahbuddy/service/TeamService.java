@@ -1,16 +1,16 @@
 package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.domain.Team;
-import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TeamRepository;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierNotExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -62,24 +62,24 @@ public class TeamService implements UserDetailsService {
     @Transactional(readOnly = true)
     public Team loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Trying to load Team " + username);
-        Team team = teamRepository.findByUsername(username);
-        if (team == null) {
+        Optional<Team> team = teamRepository.findByUsername(username);
+        if (!team.isPresent()) {
             log.info("Failed to load Team " + username + ": not found");
             throw new UsernameNotFoundException(username);
         }
         log.debug("Loaded Team " + username);
-        return team;
+        return team.get();
     }
 
     /**
      * 查找团队 代理{@link TeamRepository#findByUsername(String)}
      *
      * @param username 查找的团队用户名
-     * @return 团队或null
+     * @return 团队
      */
-    @Nullable
+    @NotNull
     @Transactional(readOnly = true)
-    public Team findByUsername(String username) {
+    public Optional<Team> findByUsername(String username) {
         log.debug("Finding Team " + username);
         return teamRepository.findByUsername(username);
     }
@@ -88,7 +88,7 @@ public class TeamService implements UserDetailsService {
      * 查找团队 代理{@link TeamRepository#findById(Object)}
      *
      * @param teamId 查找的团队主键
-     * @return 团队或null
+     * @return 团队
      */
     public Optional<Team> findById(int teamId) {
         log.debug("Finding Team by teamId " + Integer.toString(teamId));
@@ -119,7 +119,7 @@ public class TeamService implements UserDetailsService {
      *
      * @return 所有团队
      */
-    public List<Team> findAllTeams(){
+    public List<Team> findAllTeams() {
         return teamRepository.findAll();
     }
 
@@ -183,7 +183,7 @@ public class TeamService implements UserDetailsService {
                           "|| (T(cn.edu.xmu.yeahbuddy.service.TeamService).isTeam(principal) && T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id == #id)")
     public Team updateTeam(int id, TeamDto dto) {
         log.debug("Trying to update Team " + id);
-        Team team = teamRepository.getOne(id);
+        Team team = loadForUpdate(id);
 
         if (dto.getDisplayName() != null) {
             log.trace("Updated display name for Team " + id + ":" + team.getDisplayName() +
@@ -237,7 +237,9 @@ public class TeamService implements UserDetailsService {
                           "|| (T(cn.edu.xmu.yeahbuddy.service.TeamService).isTeam(principal) && T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id == #id)")
     public Team updateTeamPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException {
         log.info("Trying to update password for Team " + id);
-        Team team = teamRepository.getOne(id);
+
+        Team team = loadForUpdate(id);
+
         if (ybPasswordEncodeService.matches(oldPassword, team.getPassword())) {
             team.setPassword(ybPasswordEncodeService.encode(newPassword));
             log.info("Updated password for Team " + id);
@@ -259,9 +261,21 @@ public class TeamService implements UserDetailsService {
     @Transactional
     @PreAuthorize("hasAuthority('ResetPassword') && hasAuthority('ManageTeam')")
     public Team resetTeamPassword(int id, String newPassword) {
-        Team team = teamRepository.getOne(id);
+        Team team = loadForUpdate(id);
         log.info("Reset password for Team " + id);
         team.setPassword(ybPasswordEncodeService.encode(newPassword));
         return teamRepository.save(team);
+    }
+
+    @NotNull
+    private Team loadForUpdate(int id) {
+        Optional<Team> t = teamRepository.queryById(id);
+
+        if (!t.isPresent()) {
+            log.info("Failed to load Team id" + id + ": not found");
+            throw new IdentifierNotExistsException("team.id.not_found", id);
+        }
+
+        return t.get();
     }
 }

@@ -2,7 +2,7 @@ package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
-import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
+import cn.edu.xmu.yeahbuddy.model.AdministratorDtoImpl;
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
 import cn.edu.xmu.yeahbuddy.service.YbPasswordEncodeService;
 import org.junit.Assert;
@@ -57,7 +57,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             administratorService.registerNewAdministrator(
-                    new AdministratorDto()
+                    new AdministratorDtoImpl()
                             .setUsername("some")
                             .setPassword("one")
                             .setDisplayName("some")
@@ -66,7 +66,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
                                           .map(AdministratorPermission::name)
                                           .collect(Collectors.toSet())));
             administratorService.registerNewAdministrator(
-                    new AdministratorDto()
+                    new AdministratorDtoImpl()
                             .setUsername("other")
                             .setPassword("one")
                             .setDisplayName("other")
@@ -93,7 +93,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
     @WithUserDetails(value = "some", userDetailsServiceBeanName = "administratorService")
     public void registerNewAdministratorTest() {
         administratorService.registerNewAdministrator(
-                new AdministratorDto()
+                new AdministratorDtoImpl()
                         .setUsername("admin2")
                         .setPassword("admin2")
                         .setDisplayName("admin2")
@@ -107,7 +107,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
     @WithUserDetails(value = "some", userDetailsServiceBeanName = "administratorService")
     public void registerNewAdministratorAndResetPasswordTest() {
         Administrator admin3 = administratorService.registerNewAdministrator(
-                new AdministratorDto()
+                new AdministratorDtoImpl()
                         .setUsername("admin3")
                         .setPassword("admin3")
                         .setDisplayName("admin3")
@@ -116,7 +116,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
                                       .map(AdministratorPermission::name)
                                       .collect(Collectors.toSet())));
         Assert.assertTrue(ybPasswordEncodeService.matches("admin3", admin3.getPassword()));
-        administratorService.resetAdministratorPassword(admin3.getId(), "admin");
+        admin3 = administratorService.resetAdministratorPassword(admin3.getId(), "admin");
         Assert.assertTrue(ybPasswordEncodeService.matches("admin", admin3.getPassword()));
     }
 
@@ -125,7 +125,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
     public void registerNewAdministratorWithoutAuthTest() {
         exception.expect(AccessDeniedException.class);
         administratorService.registerNewAdministrator(
-                new AdministratorDto()
+                new AdministratorDtoImpl()
                         .setUsername("admin3")
                         .setPassword("admin3")
                         .setAuthorities(

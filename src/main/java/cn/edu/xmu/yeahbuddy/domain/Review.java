@@ -1,13 +1,14 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
 import java.util.Map;
 
 @Table(
-        uniqueConstraints=
-        @UniqueConstraint(columnNames={"ReviewTeamId", "ReviewStage", "ReviewViewer", "ReviewViewerIsAdmin"})
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"ReviewTeamId", "ReviewStage", "ReviewViewer", "ReviewViewerIsAdmin"})
 )
 @Entity
 public class Review {
@@ -17,15 +18,19 @@ public class Review {
     @Column(name = "ReviewId", unique = true, updatable = false, nullable = false)
     private int id = Integer.MIN_VALUE;
 
+    @NaturalId
     @Column(name = "ReviewTeamId", updatable = false, nullable = false)
     private int teamId;
 
+    @NaturalId
     @Column(name = "ReviewStage", updatable = false, nullable = false)
     private int stageId;
 
+    @NaturalId
     @Column(name = "ReviewViewer", updatable = false, nullable = false)
     private int viewer;
 
+    @NaturalId
     @Column(name = "ReviewViewerIsAdmin", updatable = false, nullable = false)
     private boolean viewerIsAdmin;
 

@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Contract;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.sql.Time;
+import java.sql.Timestamp;
 
 @Entity
 public class Stage {
@@ -15,21 +15,21 @@ public class Stage {
     private int id;
 
     @Column(name = "StageStart", nullable = false)
-    private Time start;
+    private Timestamp start;
 
     @Column(name = "StageEnd", nullable = false)
-    private Time end;
+    private Timestamp end;
 
     @Column(name = "StageDescription")
     private String description;
 
-    @Column(name = "StageTitle", nullable = false)
+    @Column(name = "StageTitle")
     private String title;
 
     public Stage() {
     }
 
-    public Stage(int id, Time start, Time end) {
+    public Stage(int id, Timestamp start, Timestamp end) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -41,20 +41,20 @@ public class Stage {
     }
 
     @Contract(pure = true)
-    public Time getStart() {
+    public Timestamp getStart() {
         return start;
     }
 
-    public void setStart(Time start) {
+    public void setStart(Timestamp start) {
         this.start = start;
     }
 
     @Contract(pure = true)
-    public Time getEnd() {
+    public Timestamp getEnd() {
         return end;
     }
 
-    public void setEnd(Time end) {
+    public void setEnd(Timestamp end) {
         this.end = end;
     }
 

@@ -5,12 +5,13 @@ import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TutorRepository;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierNotExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -64,13 +65,13 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     @Transactional(readOnly = true)
     public Tutor loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Trying to load Tutor " + username);
-        Tutor tutor = tutorRepository.findByUsername(username);
-        if (tutor == null) {
+        Optional<Tutor> tutor = tutorRepository.findByUsername(username);
+        if (!tutor.isPresent()) {
             log.info("Failed to load Tutor " + username + ": not found");
             throw new UsernameNotFoundException(username);
         }
         log.debug("Loaded Tutor " + username);
-        return tutor;
+        return tutor.get();
     }
 
     /**
@@ -95,12 +96,12 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     /**
      * 查找导师 代理{@link TutorRepository#findByUsername(String)}
      *
-     * @param username 查找的导师 用户名
-     * @return 导师 或null
+     * @param username 查找的导师用户名
+     * @return 导师
      */
-    @Nullable
+    @NotNull
     @Transactional(readOnly = true)
-    public Tutor findByUsername(String username) {
+    public Optional<Tutor> findByUsername(String username) {
         log.debug("Finding Tutor " + username);
         return tutorRepository.findByUsername(username);
     }
@@ -177,7 +178,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
                           "|| (T(cn.edu.xmu.yeahbuddy.service.TutorService).isTutor(principal) && T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id == #id)")
     public Tutor updateTutor(int id, TutorDto dto) {
         log.debug("Trying to update Tutor " + id);
-        Tutor tutor = tutorRepository.getOne(id);
+        Tutor tutor = loadForUpdate(id);
 
         if (dto.getDisplayName() != null) {
             log.trace("Updated display name for Tutor " + id + ":" + tutor.getDisplayName() +
@@ -223,7 +224,7 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
                           "|| (T(cn.edu.xmu.yeahbuddy.service.TutorService).isTutor(principal) && T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id == #id)")
     public Tutor updateTutorPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException {
         log.info("Trying to update password for Tutor " + id);
-        Tutor tutor = tutorRepository.getOne(id);
+        Tutor tutor = loadForUpdate(id);
         if (ybPasswordEncodeService.matches(oldPassword, tutor.getPassword())) {
             tutor.setPassword(ybPasswordEncodeService.encode(newPassword));
             log.info("Updated password for Tutor " + id);
@@ -245,9 +246,21 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     @Transactional
     @PreAuthorize("hasAuthority('ResetPassword') && hasAuthority('ManageTutor')")
     public Tutor resetTutorPassword(int id, String newPassword) {
-        Tutor tutor = tutorRepository.getOne(id);
+        Tutor tutor = loadForUpdate(id);
         log.info("Reset password for Tutor " + id);
         tutor.setPassword(ybPasswordEncodeService.encode(newPassword));
         return tutorRepository.save(tutor);
+    }
+
+    @NotNull
+    private Tutor loadForUpdate(int id) {
+        Optional<Tutor> t = tutorRepository.queryById(id);
+
+        if (!t.isPresent()) {
+            log.info("Failed to load Tutor id" + id + ": not found");
+            throw new IdentifierNotExistsException("tutor.id.not_found", id);
+        }
+
+        return t.get();
     }
 }

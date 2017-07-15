@@ -1,5 +1,6 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
@@ -7,8 +8,8 @@ import java.util.Collection;
 import java.util.Map;
 
 @Table(
-        uniqueConstraints=
-        @UniqueConstraint(columnNames={"ReportTeamId", "ReportStageId"})
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"ReportTeamId", "ReportStageId"})
 )
 @Entity
 public class Report {
@@ -18,9 +19,11 @@ public class Report {
     @Column(name = "ReviewId", unique = true, updatable = false, nullable = false)
     private int id = Integer.MIN_VALUE;
 
+    @NaturalId
     @Column(name = "ReportTeamId", updatable = false, nullable = false)
     private int teamId;
 
+    @NaturalId
     @Column(name = "ReportStageId", updatable = false, nullable = false)
     private int stageId;
 

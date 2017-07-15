@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html data-th-lang="${#locale.language}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>导师项目评审</title>
+    <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
+          data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
+          data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
+    <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
+    <style type="text/css">
+        #main-table {
+            display: table;
+        }
+
+        @media screen and (max-width: 768px) {
+            #main-table {
+                display: inline-block;
+            }
+        }
+
+        .table thead th, .table tbody tr td {
+            min-width: 4rem;
+        }
+    </style>
+</head>
+
+<body>
+<div id="bg"></div>
+<nav class="navbar navbar-toggleable-md fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="../../static/image/favicon.svg"
+                     data-th-src="@{/static/image/favicon.svg}"
+                     width="30" height="30" class="d-inline-block align-top">项目管理系统
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid pt-md-3">
+    <div class="row">
+        <div class="col-md-3 offset-md-1">
+            <div class="list-group pt-md-0">
+                <a href="#" class="list-group-item active">
+                    我的菜单
+                </a>
+                <a href="#" class="list-group-item">基本信息</a>
+                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseExample">项目报告评审</a>
+                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseExample">项目评审</a>
+                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseExample">历史评审</a>
+            </div>
+        </div>
+        <div class="col-md-7 pl-md-0">
+            <h2>项目报告</h2>
+            <table class="table table-responsive table-striped table-hover" id="main-table">
+                <thead>
+
+                <th>
+                    团队编号
+                </th>
+                <th>
+                    项目名
+                </th>
+                <th>
+                    团队名
+                </th>
+                <th>
+                    阶段
+                </th>
+                <th>
+                    排名
+                </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        评审
+                    </td>
+                </tr>
+                <tr >
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        3
+                    </td>
+                </tr>
+                <tr >
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        2
+                    </td>
+                </tr>
+                <tr >
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        5
+                    </td>
+                </tr>
+                <tr >
+                    <td>
+                        5
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        xxx
+                    </td>
+                    <td>
+                        4
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-md-7 offset-md-5">
+                    <nav>
+                        <button class="btn btn-mini btn-primary" type="button">提交</button>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="row clearfix">
+        <div class="col-md-10 offset-md-1 column">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.about}">关于我们</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.help}">帮助中心</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.us}">联系我们</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    All rights reserved
+                </li>
+            </ul>
+        </div>
+    </footer>
+</div>
+<script src="../../webjars/jquery/dist/jquery.min.js" data-th-src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+<script src="../../webjars/tether/dist/js/tether.min.js"
+        data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
+<script src="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"
+        data-th-src="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js}"></script>
+<script>
+    $('body').bootstrapMaterialDesign();
+</script>
+</body>
+</html>

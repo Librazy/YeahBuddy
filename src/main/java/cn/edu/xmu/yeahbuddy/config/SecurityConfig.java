@@ -160,7 +160,7 @@ public class SecurityConfig {
                         new AuthTokenFilter(
                                 "/tutor/token",
                                 "/tutor",
-                                (authentication, Pair) -> String.format("/tutor/%d", ((Token) authentication.getCredentials()).getTutorId()),
+                                (authentication, pair) -> String.format("/tutor/%d", ((Token) authentication.getCredentials()).getTutorId()),
                                 authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class);
 

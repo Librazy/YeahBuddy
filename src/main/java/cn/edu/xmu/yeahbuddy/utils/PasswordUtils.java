@@ -1,7 +1,6 @@
 package cn.edu.xmu.yeahbuddy.utils;
 
 import org.jetbrains.annotations.Contract;
-import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -12,7 +11,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Random;
 
-@Service
 public final class PasswordUtils {
 
     private static final Random random = new SecureRandom();

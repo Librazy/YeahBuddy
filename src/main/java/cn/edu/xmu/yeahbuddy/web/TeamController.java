@@ -4,8 +4,8 @@ import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
-import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.model.ReportDto;
+import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
@@ -101,33 +101,35 @@ public class TeamController {
     }
 
     @GetMapping("/team/{teamId:\\d+}/reports")
-    public String showReports(@PathVariable int teamId, Model model) {
+    //TODO
+    public ResponseEntity<Model> showReports(@PathVariable int teamId, Model model) {
         List<Report> reports = reportService.findByTeamId(teamId);
         model.addAttribute("reports", reports);
         model.addAttribute("formAction", String.format("/team/%d/reports", teamId));
-        return "team/reports";
+        return ResponseEntity.ok(model);
     }
 
-    @GetMapping("/team/{teamId:\\d+}/reports/{stageId:\\d+}")
-    public String showSelectedReport(@PathVariable int teamId, @PathVariable int stageId, Model model) {
-        Optional<Report> report = reportService.find(teamId, stageId);
+    @GetMapping("/reports/{reportId:\\d+}")
+    //TODO
+    public ResponseEntity<Model> showSelectedReport(@PathVariable int reportId, Model model) {
+        Optional<Report> report = reportService.findById(reportId);
         if (!report.isPresent()) {
-            throw new ResourceNotFoundException("report.team_stage.not_found", String.format("%d, %d", teamId, stageId));
+            throw new ResourceNotFoundException("report.id.not_found", reportId);
         }
 
         model.addAttribute("report", report.get());
-        model.addAttribute("formAction", String.format("/team/%d/reports/%d", teamId, stageId));
-        return "team/reportInformation";
+        model.addAttribute("formAction", String.format("/reports/%d", reportId));
+        return ResponseEntity.ok(model);
     }
 
-    @PutMapping("/team/{teamId:\\d+}/reports/{reportId:\\d+}")
+    @PutMapping("/reports/{reportId:\\d+}")
     public ResponseEntity<Map<String, String>> updateReport(@PathVariable int teamId, @PathVariable int reportId, ReportDto reportDto) {
         log.debug("Update report ");
 
         Optional<Report> report = reportService.findById(reportId);
         if (!report.isPresent()) {
             throw new ResourceNotFoundException("report.id.not_found", reportId);
-        } else if(report.get().getTeamId() != teamId){
+        } else if (report.get().getTeamId() != teamId) {
             throw new AccessDeniedException("team.report.not_owned");
         }
 
@@ -139,11 +141,12 @@ public class TeamController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/team/{teamId:\\d+}/reports/review/{stageId:\\d+}")
-    public String showReportReview(@PathVariable int teamId, @PathVariable int stageId, Model model) {
+    @GetMapping("/team/{teamId:\\d+}/review/{stageId:\\d+}")
+    //TODO
+    public ResponseEntity<Model> showReviewByTeamAndStage(@PathVariable int teamId, @PathVariable int stageId, Model model) {
         List<Review> reviews = reviewRepository.findByTeamIdAndStageId(teamId, stageId);
         model.addAttribute("reviews", reviews);
         model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stageId));
-        return "team/reportReviews";
+        return ResponseEntity.ok(model);
     }
 }

@@ -4,12 +4,13 @@ import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.repo.AdministratorRepository;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
+import cn.edu.xmu.yeahbuddy.utils.IdentifierNotExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -63,24 +64,24 @@ public class AdministratorService implements UserDetailsService {
     @Transactional(readOnly = true)
     public Administrator loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Trying to load Administrator " + username);
-        Administrator admin = administratorRepository.findByUsername(username);
-        if (admin == null) {
+        Optional<Administrator> admin = administratorRepository.findByUsername(username);
+        if (!admin.isPresent()) {
             log.info("Failed to load Administrator " + username + ": not found");
             throw new UsernameNotFoundException(username);
         }
         log.debug("Loaded Administrator " + username);
-        return admin;
+        return admin.get();
     }
 
     /**
      * 查找管理员 代理{@link AdministratorRepository#findByUsername(String)}
      *
      * @param username 查找的管理员用户名
-     * @return 管理员或null
+     * @return 管理员
      */
-    @Nullable
+    @NotNull
     @Transactional(readOnly = true)
-    public Administrator findByUsername(String username) {
+    public Optional<Administrator> findByUsername(String username) {
         log.debug("Finding Administrator " + username);
         return administratorRepository.findByUsername(username);
     }
@@ -91,9 +92,9 @@ public class AdministratorService implements UserDetailsService {
      * @param id 查找的管理员用户名
      * @return 管理员
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<Administrator> findById(int id) {
-        log.debug("Finding Administrator "+id);
+        log.debug("Finding Administrator " + id);
         return administratorRepository.findById(id);
     }
 
@@ -156,7 +157,7 @@ public class AdministratorService implements UserDetailsService {
     public Administrator updateAdministrator(int id, AdministratorDto dto) {
 
         log.debug("Trying to update Administrator " + id);
-        Administrator administrator = administratorRepository.getOne(id);
+        Administrator administrator = loadForUpdate(id);
 
         if (dto.getAuthorities() != null) {
             log.trace("Updated authorities for Administrator " + id);
@@ -199,11 +200,11 @@ public class AdministratorService implements UserDetailsService {
                           "|| (T(cn.edu.xmu.yeahbuddy.service.AdministratorService).isAdministrator(principal) && T(cn.edu.xmu.yeahbuddy.service.AdministratorService).asAdministrator(principal).id == #id)")
     public Administrator updateAdministratorPassword(int id, CharSequence oldPassword, String newPassword) throws BadCredentialsException {
         log.info("Trying to update password for Administrator " + id);
-        Administrator admin = administratorRepository.getOne(id);
-        if (ybPasswordEncodeService.matches(oldPassword, admin.getPassword())) {
-            admin.setPassword(ybPasswordEncodeService.encode(newPassword));
+        Administrator administrator = loadForUpdate(id);
+        if (ybPasswordEncodeService.matches(oldPassword, administrator.getPassword())) {
+            administrator.setPassword(ybPasswordEncodeService.encode(newPassword));
             log.info("Updated password for Administrator " + id);
-            return administratorRepository.save(admin);
+            return administratorRepository.save(administrator);
         } else {
             log.warn("Failed to update password for Administrator " + id + ": old password doesn't match");
             throw new BadCredentialsException("admin.update.password");
@@ -221,9 +222,21 @@ public class AdministratorService implements UserDetailsService {
     @Transactional
     @PreAuthorize("hasAuthority('ResetPassword') && hasAuthority('ManageAdministrator')")
     public Administrator resetAdministratorPassword(int id, String newPassword) {
-        Administrator admin = administratorRepository.getOne(id);
+        Administrator administrator = loadForUpdate(id);
         log.info("Reset password for Administrator " + id);
-        admin.setPassword(ybPasswordEncodeService.encode(newPassword));
-        return administratorRepository.save(admin);
+        administrator.setPassword(ybPasswordEncodeService.encode(newPassword));
+        return administratorRepository.save(administrator);
+    }
+
+    @NotNull
+    private Administrator loadForUpdate(int id) {
+        Optional<Administrator> admin = administratorRepository.queryById(id);
+
+        if (!admin.isPresent()) {
+            log.info("Failed to load Administrator " + id + ": not found");
+            throw new IdentifierNotExistsException("admin.id.not_found", id);
+        }
+
+        return admin.get();
     }
 }

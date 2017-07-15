@@ -70,6 +70,10 @@ bootRun {
     environment 'spring.profiles.active', 'dev'
 }
 
+test {
+    environment 'spring.profiles.active', 'test-default'
+}
+
 task('extractWebjars') {
     doLast {
         configurations.webjars.each { jar ->
