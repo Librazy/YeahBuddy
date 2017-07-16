@@ -8,6 +8,7 @@ import cn.edu.xmu.yeahbuddy.model.TutorDto;
 import cn.edu.xmu.yeahbuddy.service.ReviewService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
+import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
@@ -86,8 +87,15 @@ public class TutorController {
 
     @GetMapping("/tutor/{tutorId:\\d+}")
     public String profile(@PathVariable int tutorId, Model model) {
-        Tutor tutor = tutorService.loadById(tutorId);
-        model.addAttribute("tutor", tutor);
+        Optional<Tutor> tutor = tutorService.findById(tutorId);
+        if (!tutor.isPresent()) {
+            throw new ResourceNotFoundException("team.id.not_found", tutorId);
+        }
+
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Tutor) {
+            model.addAttribute("readOnly", ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() != tutorId);
+        }
+        model.addAttribute("tutor", tutor.get());
         model.addAttribute("formAction", String.format("/tutor/%d", tutorId));
         return "tutor/profile";
     }

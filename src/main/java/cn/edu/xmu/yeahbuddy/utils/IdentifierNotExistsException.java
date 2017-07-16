@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.annotation.Resource;
 import java.util.Locale;
 
-@ResponseStatus(value = HttpStatus.CONFLICT)
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class IdentifierNotExistsException extends RuntimeException implements MessageSourceAware {
 
     private static final long serialVersionUID = 485072927208950954L;

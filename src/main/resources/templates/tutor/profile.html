@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title data-th-text="${readOnly} ? #{team.profile.view_title} : #{team.profile.title}">团队信息 管理</title>
+    <title data-th-text="${readOnly} ? #{tutor.profile.view_title} : #{tutor.profile.title}">团队信息 管理</title>
     <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
           data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="col-md-7 pl-md-0">
-            <h1 data-th-text="${readOnly} ? #{team.profile.view_title} : #{team.profile.title}"
+            <h1 data-th-text="${readOnly} ? #{tutor.profile.view_title} : #{tutor.profile.title}"
                 style="text-align: center;">
                 导师信息管理
             </h1>
@@ -75,32 +75,25 @@
                 <input type="hidden" name="_method" value="PUT"/><!--@see {@link HiddenHttpMethodFilter}-->
                 <div class="form-group row mt-2">
                     <div class="input-group col-md-5">
-                        <label for="username" class="input-group-addon" data-th-text="#{username}">教工号</label>
+                        <label for="username" class="input-group-addon" data-th-text="#{username}">用户名</label>
                         <input type="text" class="form-control" id="username" name="username" required
-                               data-th-value="${team.username}"/>
+                               data-th-value="${tutor.username}"/>
                     </div>
                     <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
                         <label for="email" class="input-group-addon" data-th-text="#{email}">电子邮件</label>
                         <input type="email" class="form-control" id="email" name="email"
-                               data-th-value="${team.email}"/>
+                               data-th-value="${tutor.email}"/>
                     </div>
                 </div>
                 <div class="form-group row mt-3">
                     <div class="input-group col-md-5">
                         <label for="displayName" class="input-group-addon" data-th-text="#{display_name}">姓名</label>
                         <input type="text" class="form-control" id="displayName" name="displayName" required
-                               data-th-value="${team.displayName}"/>
+                               data-th-value="${tutor.displayName}"/>
                     </div>
                     <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
                         <label for="phone" class="input-group-addon" data-th-text="#{phone}">手机号码</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" data-th-value="${team.phone}"/>
-                    </div>
-                </div>
-                <div class="form-group row mt-3">
-                    <div class="input-group col-md-12">
-                        <label for="projectName" class="input-group-addon" data-th-text="#{project_name}">个人简介</label>
-                        <input type="text" class="form-control" id="projectName" name="projectName" required
-                               data-th-value="${team.projectName}"/>
+                        <input type="tel" class="form-control" id="phone" name="phone" data-th-value="${tutor.phone}"/>
                     </div>
                 </div>
                 <div class="form-group">

@@ -100,15 +100,15 @@ public class TeamService implements UserDetailsService {
      *
      * @param id 查找的团队id
      * @return 团队
-     * @throws UsernameNotFoundException 找不到团队
+     * @throws IdentifierNotExistsException 找不到团队
      */
     @Transactional(readOnly = true)
-    public Team loadById(int id) throws UsernameNotFoundException {
+    public Team loadById(int id) throws IdentifierNotExistsException {
         log.debug("Trying to load Team id " + id);
         Optional<Team> team = teamRepository.findById(id);
         if (!team.isPresent()) {
             log.info("Failed to load Team id" + id + ": not found");
-            throw new UsernameNotFoundException(Integer.toString(id));
+            throw new IdentifierNotExistsException("tutor.id.not_found", id);
         }
         log.debug("Loaded Team id " + id);
         return team.get();

@@ -46,13 +46,13 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     }
 
     @Contract(pure = true)
-    public static Team asTutor(Object obj) {
-        return ((Team) obj);
+    public static Tutor asTutor(Object obj) {
+        return ((Tutor) obj);
     }
 
     @Contract(pure = true)
     public static boolean isTutor(Object obj) {
-        return obj instanceof Team;
+        return obj instanceof Tutor;
     }
 
     /**
@@ -76,19 +76,31 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     }
 
     /**
+     * 查找团队 代理{@link TutorRepository#findById(Object)}
+     *
+     * @param tutorId 查找的导师id
+     * @return 团队
+     */
+    @Transactional(readOnly = true)
+    public Optional<Tutor> findById(int tutorId) {
+        log.debug("Finding Tutor by tutorId " + tutorId);
+        return tutorRepository.findById(tutorId);
+    }
+
+    /**
      * 按ID查找导师
      *
      * @param id 查找的导师id
      * @return 导师
-     * @throws UsernameNotFoundException 找不到导师
+     * @throws IdentifierNotExistsException 找不到导师
      */
     @Transactional(readOnly = true)
-    public Tutor loadById(int id) throws UsernameNotFoundException {
+    public Tutor loadById(int id) throws IdentifierNotExistsException {
         log.debug("Trying to load Tutor id " + id);
         Optional<Tutor> tutor = tutorRepository.findById(id);
         if (!tutor.isPresent()) {
             log.info("Failed to load Tutor id" + id + ": not found");
-            throw new UsernameNotFoundException(Integer.toString(id));
+            throw new IdentifierNotExistsException("tutor.id.not_found", id);
         }
         log.debug("Loaded Tutor id " + id);
         return tutor.get();

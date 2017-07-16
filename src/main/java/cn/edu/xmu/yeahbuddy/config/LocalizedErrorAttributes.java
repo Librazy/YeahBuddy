@@ -18,6 +18,7 @@ package cn.edu.xmu.yeahbuddy.config;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
@@ -43,6 +44,9 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * 本地化错误标签
+ */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class LocalizedErrorAttributes
@@ -54,6 +58,12 @@ public class LocalizedErrorAttributes
     @NonNls
     private final MessageSource messageSource;
 
+    /**
+     * 构造LocalizedErrorAttributes
+     *
+     * @param messageSource Autowired
+     */
+    @Autowired
     public LocalizedErrorAttributes(MessageSource messageSource) {
         this.messageSource = messageSource;
     }

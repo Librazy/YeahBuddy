@@ -17,6 +17,15 @@ public final class PasswordUtils {
 
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
+    private static final SecretKeyFactory skf;
+
+    static {
+        try {
+            skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+        } catch (NoSuchAlgorithmException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     private PasswordUtils() {
     }
@@ -45,9 +54,8 @@ public final class PasswordUtils {
         PBEKeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, KEY_LENGTH);
         Arrays.fill(password, Character.MIN_VALUE);
         try {
-            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
             return skf.generateSecret(spec).getEncoded();
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+        } catch (InvalidKeySpecException e) {
             throw new AssertionError("Error while hashing a password", e);
         } finally {
             spec.clearPassword();

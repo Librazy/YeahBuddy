@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -98,6 +99,34 @@ public class TeamController {
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
         result.put("message", messageSource.getMessage("team.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(value = "/team/{teamId:\\d+}/password", produces = MediaType.TEXT_HTML_VALUE)
+    @PreAuthorize("hasAuthority('ManageTeam') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TeamService).isTeam(principal) && T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id == #teamId)")
+    public String password(@PathVariable int teamId, @RequestParam Map<String, String> form, Model model) {
+        String oldPassword = form.get("oldPassword");
+        String newPassword = form.get("newPassword");
+        try {
+            teamService.updateTeamPassword(teamId, oldPassword, newPassword);
+        } catch (BadCredentialsException e){
+            model.addAttribute("passwordError", true);
+        }
+        model.addAttribute("formAction", String.format("/team/%d/password", teamId));
+        return "team/password";
+    }
+
+    @GetMapping(value = "/team/{teamId:\\d+}/password", produces = MediaType.TEXT_HTML_VALUE)
+    @PreAuthorize("hasAuthority('ManageTeam') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TeamService).isTeam(principal) && T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id == #teamId)")
+    public String password(@PathVariable int teamId, Model model) {
+        Optional<Team> team = teamService.findById(teamId);
+        if (!team.isPresent()) {
+            throw new ResourceNotFoundException("team.id.not_found", teamId);
+        }
+        model.addAttribute("team", team.get());
+        model.addAttribute("formAction", String.format("/team/%d/password", teamId));
+        return "team/password";
     }
 
     @GetMapping("/team/{teamId:\\d+}/report")
