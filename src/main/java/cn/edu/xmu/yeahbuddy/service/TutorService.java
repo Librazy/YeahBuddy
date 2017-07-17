@@ -1,6 +1,5 @@
 package cn.edu.xmu.yeahbuddy.service;
 
-import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TutorRepository;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
@@ -36,6 +35,9 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
     private final TutorRepository tutorRepository;
 
     /**
+     * 构造函数
+     * Spring Boot自动装配
+     *
      * @param tutorRepository         Autowired
      * @param ybPasswordEncodeService Autowired
      */
@@ -45,11 +47,25 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         this.ybPasswordEncodeService = ybPasswordEncodeService;
     }
 
+    /**
+     * 强制转换对象至Tutor
+     * 用于SpEL
+     *
+     * @param obj 对象
+     * @return 强制转换为Tutor的对象
+     */
     @Contract(pure = true)
     public static Tutor asTutor(Object obj) {
         return ((Tutor) obj);
     }
 
+    /**
+     * 对象是否为Tutor
+     * 用于SpEL
+     *
+     * @param obj 对象
+     * @return 对象是否为Tutor
+     */
     @Contract(pure = true)
     public static boolean isTutor(Object obj) {
         return obj instanceof Tutor;
@@ -275,6 +291,13 @@ public class TutorService implements UserDetailsService, AuthenticationUserDetai
         return tutorRepository.save(tutor);
     }
 
+    /**
+     * 查找并加写锁
+     * 用于读取并修改
+     *
+     * @param id 导师ID
+     * @return 导师
+     */
     @NotNull
     private Tutor loadForUpdate(int id) {
         Optional<Tutor> t = tutorRepository.queryById(id);

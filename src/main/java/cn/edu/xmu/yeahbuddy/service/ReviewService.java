@@ -27,6 +27,9 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     /**
+     * 构造函数
+     * Spring Boot自动装配
+     *
      * @param reviewRepository Autowired
      */
     @Autowired

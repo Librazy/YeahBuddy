@@ -8,7 +8,6 @@ import cn.edu.xmu.yeahbuddy.utils.IdentifierNotExistsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +27,9 @@ public class ReportService {
     private ReportRepository reportRepository;
 
     /**
+     * 构造函数
+     * Spring Boot自动装配
+     *
      * @param reportRepository Autowired
      */
     @Autowired

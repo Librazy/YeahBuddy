@@ -2,10 +2,12 @@ package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.Report;
+import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
+import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.service.TokenService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdministratorController {
@@ -38,13 +41,16 @@ public class AdministratorController {
 
     private final TokenService tokenService;
 
+    private final TeamService teamService;
+
     private final MessageSource messageSource;
 
     @Autowired
-    public AdministratorController(AdministratorService administratorService, ReportService reportService, TokenService tokenService, MessageSource messageSource) {
+    public AdministratorController(AdministratorService administratorService, ReportService reportService, TokenService tokenService, TeamService teamService, MessageSource messageSource) {
         this.administratorService = administratorService;
         this.reportService = reportService;
         this.tokenService = tokenService;
+        this.teamService = teamService;
         this.messageSource = messageSource;
     }
 
@@ -89,7 +95,9 @@ public class AdministratorController {
     @GetMapping("/admin/report/history")
     public String allReports(Model model) {
         List<Report> reports = reportService.findAllReports();
+        Set<Team> teams = reports.stream().map(Report::getTeamId).distinct().map(teamService::loadById).collect(Collectors.toSet());
         model.addAttribute("reports", reports);
+        model.addAttribute("teams", teams);
         return "admin/ReportHistory";
     }
 

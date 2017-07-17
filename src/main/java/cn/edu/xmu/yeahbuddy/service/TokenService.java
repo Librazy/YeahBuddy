@@ -35,6 +35,9 @@ public class TokenService {
     private final TutorService tutorService;
 
     /**
+     * 构造函数
+     * Spring Boot自动装配
+     *
      * @param tokenRepository Autowired
      * @param tutorService    Autowired
      */

@@ -32,6 +32,9 @@ public class TeamService implements UserDetailsService {
     private final TeamRepository teamRepository;
 
     /**
+     * 构造函数
+     * Spring Boot自动装配
+     *
      * @param teamRepository          Autowired
      * @param ybPasswordEncodeService Autowired
      */
@@ -41,11 +44,25 @@ public class TeamService implements UserDetailsService {
         this.ybPasswordEncodeService = ybPasswordEncodeService;
     }
 
+    /**
+     * 强制转换对象至Team
+     * 用于SpEL
+     *
+     * @param obj 对象
+     * @return 强制转换为Team的对象
+     */
     @Contract(pure = true)
     public static Team asTeam(Object obj) {
         return ((Team) obj);
     }
 
+    /**
+     * 对象是否为Team
+     * 用于SpEL
+     *
+     * @param obj 对象
+     * @return 对象是否为Team
+     */
     @Contract(pure = true)
     public static boolean isTeam(Object obj) {
         return obj instanceof Team;
@@ -267,6 +284,13 @@ public class TeamService implements UserDetailsService {
         return teamRepository.save(team);
     }
 
+    /**
+     * 查找并加写锁
+     * 用于读取并修改
+     *
+     * @param id 团队ID
+     * @return 团队
+     */
     @NotNull
     private Team loadForUpdate(int id) {
         Optional<Team> t = teamRepository.queryById(id);

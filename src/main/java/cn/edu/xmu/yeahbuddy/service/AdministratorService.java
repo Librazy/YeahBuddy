@@ -34,6 +34,9 @@ public class AdministratorService implements UserDetailsService {
     private final AdministratorRepository administratorRepository;
 
     /**
+     * 构造函数
+     * Spring Boot自动装配
+     *
      * @param administratorRepository Autowired
      * @param ybPasswordEncodeService Autowired
      */
@@ -43,11 +46,25 @@ public class AdministratorService implements UserDetailsService {
         this.ybPasswordEncodeService = ybPasswordEncodeService;
     }
 
+    /**
+     * 强制转换对象至Administrator
+     * 用于SpEL
+     *
+     * @param obj 对象
+     * @return 强制转换为Administrator的对象
+     */
     @Contract(pure = true)
     public static Administrator asAdministrator(Object obj) {
         return ((Administrator) obj);
     }
 
+    /**
+     * 对象是否为Administrator
+     * 用于SpEL
+     *
+     * @param obj 对象
+     * @return 对象是否为Administrator
+     */
     @Contract(pure = true)
     public static boolean isAdministrator(Object obj) {
         return obj instanceof Administrator;
@@ -104,7 +121,6 @@ public class AdministratorService implements UserDetailsService {
      * @param dto 管理员DTO
      * @return 新注册的管理员
      * @throws IdentifierAlreadyExistsException 用户名已存在
-     * @throws IllegalArgumentException         DTO中未填满所需信息
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageAdministrator') and  authentication.authorities.containsAll(#dto.authorities)")
@@ -242,6 +258,13 @@ public class AdministratorService implements UserDetailsService {
         return administratorRepository.save(administrator);
     }
 
+    /**
+     * 查找并加写锁
+     * 用于读取并修改
+     *
+     * @param id 管理员ID
+     * @return 管理员
+     */
     @NotNull
     private Administrator loadForUpdate(int id) {
         Optional<Administrator> admin = administratorRepository.queryById(id);
