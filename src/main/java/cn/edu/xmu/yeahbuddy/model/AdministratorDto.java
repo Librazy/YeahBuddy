@@ -21,6 +21,10 @@ public class AdministratorDto implements Serializable {
 
     private Collection<AdministratorPermission> authorities;
 
+    private String phone;
+
+    private String email;
+
     @Contract(pure = true)
     public String getDisplayName() {
         return displayName;
@@ -58,6 +62,26 @@ public class AdministratorDto implements Serializable {
 
     public AdministratorDto setAuthorities(Collection<String> authorities) {
         this.authorities = authorities.stream().map(AdministratorPermission::valueOf).collect(Collectors.toSet());
+        return this;
+    }
+
+    @Contract(pure = true)
+    public String getPhone() {
+        return phone;
+    }
+
+    public AdministratorDto setPhone(String phone) {
+        this.phone = phone;
+        return this;
+    }
+
+    @Contract(pure = true)
+    public String getEmail() {
+        return email;
+    }
+
+    public AdministratorDto setEmail(String email) {
+        this.email = email;
         return this;
     }
 

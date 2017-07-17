@@ -124,6 +124,8 @@ public class AdministratorService implements UserDetailsService {
         Administrator admin = new Administrator(dto.getUsername(), ybPasswordEncodeService.encode(dto.getPassword()));
         admin.setAuthorities(dto.getAuthorities());
         admin.setDisplayName(dto.getDisplayName());
+        admin.setEmail(dto.getEmail());
+        admin.setPhone(dto.getPhone());
 
         Administrator result = administratorRepository.save(admin);
         log.debug("Registered new Administrator " + result.toString());
@@ -168,6 +170,18 @@ public class AdministratorService implements UserDetailsService {
             log.trace("Updated display name for Administrator " + id + ":" + administrator.getDisplayName() +
                               " -> " + dto.getDisplayName());
             administrator.setDisplayName(dto.getDisplayName());
+        }
+
+        if (dto.getEmail() != null) {
+            log.trace("Updated email for Administrator " + id + ":" + administrator.getEmail() +
+                              " -> " + dto.getEmail());
+            administrator.setEmail(dto.getEmail());
+        }
+
+        if (dto.getPhone() != null) {
+            log.trace("Updated phone for Administrator " + id + ":" + administrator.getPhone() +
+                              " -> " + dto.getPhone());
+            administrator.setPhone(dto.getPhone());
         }
 
         if (dto.getUsername() != null) {

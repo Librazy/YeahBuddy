@@ -31,13 +31,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-public class ServicesConcurrentTests {
+public class RepositoriesConcurrentTests {
 
     @NonNls
     private static final String INNODB = "innodb";
 
     @NonNls
-    private static Log log = LogFactory.getLog(ServicesConcurrentTests.class);
+    private static Log log = LogFactory.getLog(RepositoriesConcurrentTests.class);
 
     @Autowired
     private AdministratorRepository administratorRepository;
@@ -68,7 +68,7 @@ public class ServicesConcurrentTests {
 
     @Test
     @Repeat(10)
-    public void administratorServiceConcurrentTest() throws Exception {
+    public void administratorRepositoryConcurrentTest() throws Exception {
         log.info("==================Start================\\n\\n");
         AtomicInteger counter = new AtomicInteger(0);
         final CyclicBarrier gate = new CyclicBarrier(4);

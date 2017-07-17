@@ -41,6 +41,12 @@ public final class Administrator implements UserDetails, Authentication {
     @Enumerated(EnumType.STRING)
     private Collection<AdministratorPermission> authorities;
 
+    @Column(name = "AdminPhone")
+    private String phone;
+
+    @Column(name = "AdminEmail")
+    private String email;
+
     public Administrator() {
     }
 
@@ -83,6 +89,24 @@ public final class Administrator implements UserDetails, Authentication {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Contract(pure = true)
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    @Contract(pure = true)
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Contract(pure = true)

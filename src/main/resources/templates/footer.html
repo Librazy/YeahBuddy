@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html data-th-lang="${#locale.language}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Footer Template</title>
+    <link rel="stylesheet" href="../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
+          data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
+    <link rel="stylesheet" href="../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
+</head>
+
+<body>
+<div id="bg"></div>
+<div class="container" style="margin-top: 10%">
+    <footer class="row clearfix" data-th-fragment="narrow">
+        <div class="col-md-8 offset-md-2 column">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.about}">关于我们</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.help}">帮助中心</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.us}">联系我们</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    All rights reserved
+                </li>
+            </ul>
+        </div>
+    </footer>
+    <footer class="row clearfix" data-th-fragment="normal">
+        <div class="col-md-10 offset-md-1 column">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.about}">关于我们</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.help}">帮助中心</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.us}">联系我们</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    All rights reserved
+                </li>
+            </ul>
+        </div>
+    </footer>
+</div>
+<script src="../webjars/jquery/dist/jquery.min.js" data-th-src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+<script src="../webjars/tether/dist/js/tether.min.js" data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
+<script src="../webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"
+        data-th-src="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js}"></script>
+<script>
+    $('body').bootstrapMaterialDesign();
+</script>
+</body>
+</html>

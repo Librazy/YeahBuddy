@@ -60,10 +60,9 @@ public class TeamController {
 
     @GetMapping({"/team", "/team/"})
     @PreAuthorize("hasRole('TEAM')")
-    public String index(Model model) {
-        String email = ((Team) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
-        model.addAttribute("name", email);
-        return "team/index";
+    public RedirectView index() {
+        int id = ((Team) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        return new RedirectView(String.format("/team/%d", id), false, false);
     }
 
     @PostMapping("/team")
@@ -109,6 +108,7 @@ public class TeamController {
         String newPassword = form.get("newPassword");
         try {
             teamService.updateTeamPassword(teamId, oldPassword, newPassword);
+            model.addAttribute("success", true);
         } catch (BadCredentialsException e){
             model.addAttribute("passwordError", true);
         }
@@ -159,5 +159,4 @@ public class TeamController {
         redirectView.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
         return redirectView;
     }
-
 }

@@ -17,13 +17,12 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
 
@@ -49,13 +48,11 @@ public class AdministratorController {
         this.messageSource = messageSource;
     }
 
-    @PreAuthorize("hasAuthority('ViewReport')")
     @GetMapping("/admin")
-    public String admin(Model model) {
-        String name = ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getName();
-        log.debug("Administrator " + name + " viewed /admin");
-        model.addAttribute("name", name);
-        return "admin";
+    @PreAuthorize("T(cn.edu.xmu.yeahbuddy.service.AdministratorService).isAdministrator(principal)")
+    public RedirectView index() {
+        int id = ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        return new RedirectView(String.format("/admin/%d", id), false, false);
     }
 
     @GetMapping("/login")
@@ -63,7 +60,7 @@ public class AdministratorController {
         if (error != null) {
             model.addAttribute("loginError", true);
         }
-        return "login";
+        return "admin/login";
     }
 
     @GetMapping("/admin/{adminId:\\d+}")
@@ -75,11 +72,11 @@ public class AdministratorController {
 
         model.addAttribute("administrator", administrator);
         model.addAttribute("formAction", String.format("/admin/%d", adminId));
-        return "administrator/profile";
+        return "admin/profile";
     }
 
     @PutMapping(value = "/admin/{adminId:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> updateAdminInfo(@PathVariable int adminId, AdministratorDto administratorDto) {
+    public ResponseEntity<Map<String, String>> update(@PathVariable int adminId, AdministratorDto administratorDto) {
         log.debug("Update administrator " + adminId + ": " + administratorDto);
         administratorService.updateAdministrator(adminId, administratorDto);
         Map<String, String> result = new HashMap<>();
@@ -93,13 +90,42 @@ public class AdministratorController {
     public String allReports(Model model) {
         List<Report> reports = reportService.findAllReports();
         model.addAttribute("reports", reports);
-        return "administrator/ReportHistory";
+        return "admin/ReportHistory";
     }
 
     @GetMapping("/admin/token/history")
     public String allTokens(Model model) {
         List<Token> tokens = tokenService.findAllTokens();
         model.addAttribute("tokens", tokens);
-        return "administrator/TokenHistory";
+        return "admin/TokenHistory";
+    }
+
+    @PostMapping(value = "/admin/{adminId:\\d+}/password", produces = MediaType.TEXT_HTML_VALUE)
+    @PreAuthorize("hasAuthority('ManageAdministrator') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.AdministratorService).isAdministrator(principal) && T(cn.edu.xmu.yeahbuddy.service.AdministratorService).asAdministrator(principal).id == #adminId)")
+    public String password(@PathVariable int adminId, @RequestParam Map<String, String> form, Model model) {
+        String oldPassword = form.get("oldPassword");
+        String newPassword = form.get("newPassword");
+        try {
+            administratorService.updateAdministratorPassword(adminId, oldPassword, newPassword);
+            model.addAttribute("success", true);
+        } catch (BadCredentialsException e) {
+            model.addAttribute("passwordError", true);
+        }
+        model.addAttribute("formAction", String.format("/admin/%d/password", adminId));
+        return "admin/password";
+    }
+
+    @GetMapping(value = "/admin/{adminId:\\d+}/password", produces = MediaType.TEXT_HTML_VALUE)
+    @PreAuthorize("hasAuthority('ManageAdministrator') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.AdministratorService).isAdministrator(principal) && T(cn.edu.xmu.yeahbuddy.service.AdministratorService).asAdministrator(principal).id == #adminId)")
+    public String password(@PathVariable int adminId, Model model) {
+        Optional<Administrator> administrator = administratorService.findById(adminId);
+        if (!administrator.isPresent()) {
+            throw new ResourceNotFoundException("admin.id.not_found", adminId);
+        }
+        model.addAttribute("admin", administrator.get());
+        model.addAttribute("formAction", String.format("/admin/%d/password", adminId));
+        return "tutor/password";
     }
 }
