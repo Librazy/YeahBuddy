@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html data-th-lang="${#locale.language}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>评审结果</title>
+    <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
+          data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
+          data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
+    <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
+    <style type="text/css">
+        .table thead th, .table tbody tr td {
+            min-width: 4rem;
+        }
+    </style>
+</head>
+
+<body>
+<div id="bg"></div>
+<nav class="navbar navbar-toggleable-md fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="../../static/image/favicon.svg"
+                     data-th-src="@{/static/image/favicon.svg}"
+                     width="30" height="30" class="d-inline-block align-top">项目管理系统
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid pt-md-3">
+    <div class="row">
+        <div class="col-md-3 offset-md-1">
+            <div class="list-group pt-md-0">
+                <a href="#" class="list-group-item active">
+                    我的菜单
+                </a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">基本信息</a>
+                <a href="#" class="list-group-item">个人信息</a>
+                <a href="#" class="list-group-item">密码修改</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">项目报告</a>
+                <a href="#" class="list-group-item">提交与查看</a>
+            </div>
+        </div>
+        <div class="col-md-7 pl-md-0">
+            <h2 style="text-align: center">评审结果</h2>
+            <p>考核结果:<span>优秀</span></p><!-- 数据待定 -->
+            <span>导师综合评审意见：<br></span>
+            <textarea rows="5" cols="10" placeholder="opinion"
+                      style="width:100%;/*自动适应父布局宽度*/overflow:auto;word-break:break-all;"></textarea><!-- 数据待定 -->
+            <span><br>创客空间意见：<br></span>
+            <textarea rows="5" cols="10" placeholder="opinion"
+                      style="width:100%;/*自动适应父布局宽度*/overflow:auto;word-break:break-all;"></textarea><!-- 数据待定 -->
+        </div>
+    </div>
+
+</div>
+
+
+<footer class="row clearfix" data-th-replace="~{footer::normal}">
+    <div class="col-md-10 offset-md-1 column">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#" data-th-text="#{footer.about}">关于我们</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="#" data-th-text="#{footer.help}">帮助中心</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="#" data-th-text="#{footer.us}">联系我们</a>
+            </li>
+            <li class="breadcrumb-item active">
+                All rights reserved
+            </li>
+        </ul>
+    </div>
+</footer>
+
+<script src="../../webjars/jquery/dist/jquery.min.js" data-th-src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+<script src="../../webjars/tether/dist/js/tether.min.js"
+        data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
+<script src="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"
+        data-th-src="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js}"></script>
+<!--suppress JSUnresolvedFunction -->
+<script>
+    $('body').bootstrapMaterialDesign();
+</script>
+</body>
+</html>
