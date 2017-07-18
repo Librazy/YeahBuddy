@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>导师项目评审</title>
+    <title>团队项目报告</title>
     <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
           data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
@@ -47,120 +47,36 @@
                 <a href="#" class="list-group-item active">
                     我的菜单
                 </a>
-                <a href="#" class="list-group-item">基本信息</a>
-                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseExample">项目报告</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">基本信息</a>
+                <a href="#" class="list-group-item">个人信息</a>
+                <a href="#" class="list-group-item">密码修改</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">项目报告</a>
+                <a href="#" class="list-group-item">提交与查看</a>
             </div>
         </div>
         <div class="col-md-7 pl-md-0">
-            <h2>项目报告</h2>
+            <h2 style="text-align: center">项目报告</h2>
             <table class="table table-responsive table-striped table-hover" id="main-table">
                 <thead>
                 <tr>
-                    <th>
-                        项目报告名称
-                    </th>
-                    <th>
-                        截止时间
-                    </th>
-                    <th>
-                        是否已提交
-                    </th>
-                    <th>
-                        考核结果
-                    </th>
-                    <th>
-                        评审结果
-                    </th>
+                    <th>项目报告名称</th>
+                    <th>截止时间</th>
+                    <th>是否提交</th>
+                    <th>考核结果</th>
+                    <th>评审结果</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>
-                        期末项目报告2
-                    </td>
-                    <td>
-                        2017年9月1日
-                    </td>
-                    <td>
-                        是
-                    </td>
-                    <td>
-                        优秀
-                    </td>
-                    <td>
-                        查看结果
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        期末项目报告1
-                    </td>
-                    <td>
-                        2017年9月1日
-                    </td>
-                    <td>
-                        否
-                    </td>
-                    <td>
-                        未评审
-                    </td>
-                    <td>
-                        未评审
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        期中项目报告3
-                    </td>
-                    <td>
-                        2017年7月1日
-                    </td>
-                    <td>
-                        是
-                    </td>
-                    <td>
-                        优秀
-                    </td>
-                    <td>
-                        查看结果
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        期中项目报告2
-                    </td>
-                    <td>
-                        2017年7月1日
-                    </td>
-                    <td>
-                        否
-                    </td>
-                    <td>
-                        未评审
-                    </td>
-                    <td>
-                        未评审
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        期中项目报告1
-                    </td>
-                    <td>
-                        2017年7月1日
-                    </td>
-                    <td>
-                        否
-                    </td>
-                    <td>
-                        未评审
-                    </td>
-                    <td>
-                        未评审
-                    </td>
+                <tr data-th-each="report:${reports}">
+                    <td><a href="#" data-th-text="${report.title}">2017年度期末报告</a></td>
+                    <td data-th-text="${report.stage.end}">2017-07-20 00:00</td>
+                    <td data-th-text="${report.submitted}">是</td>
+                    <td data-th-text="$">优秀</td><!-- 数据待定 -->
+                    <td><a href="#">查看结果</a></td>
                 </tr>
                 </tbody>
             </table>
+            <!-- 暂时没做分页效果
             <div class="row">
                 <div class="col-md-7 offset-md-5">
                     <nav>
@@ -176,6 +92,7 @@
                     </nav>
                 </div>
             </div>
+            -->
         </div>
     </div>
 
