@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title data-th-text="${readOnly} ? #{admin.profile.view_title} : #{admin.profile.title}">导师评审链接历史</title>
+    <title data-th-text="${readOnly} ? #{admin.profile.view_title} : #{admin.profile.title}">团队管理</title>
     <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
           data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
@@ -80,30 +80,38 @@
         </div>
         <div class="col-md-7 pl-md-0">
             <h2 style="text-align: center;">
-                导师评审链接历史
+                团队管理
             </h2>
+
+            <div class="form-group">
+                <button href="#" class="btn btn-primary">新增团队</button>
+            </div>
 
             <table class="table table-striped table-hover">
                 <thead>
                 <tr>
-                    <th>链接编号</th>
-                    <th>导师名</th>
-                    <th>开始时间</th>
-                    <th>截止时间</th>
-                    <th>相关团队</th>
+                    <th>团队编号</th>
+                    <th>团队名</th>
+                    <th>项目名</th>
+                    <th>手机</th>
+                    <th>邮箱</th>
+                    <th>修改操作</th>
+                    <th>删除操作</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-th-each="token : ${tokens}"><!-- 数据待定 -->
-                    <td data-th-text="${token.id}">2017072001</td>
-                    <td data-th-text="${token.tutor.displayName}">tutor Luo</td>
-                    <td data-th-text="${token.stage.start}">2017-07-10 12:00</td>
-                    <td data-th-text="${token.stage.end}">2017-07-20 24:00</td>
-                    <td><a href="#">详情</a></td>
+                <tr data-th-each="team : ${teams}"><!-- 数据待定 -->
+                    <td data-th-text="${team.id}">2017072001</td>
+                    <td data-th-text="${team.username}">yeah buddy</td>
+                    <td data-th-text="${team.projectName}">项目管理系统</td>
+                    <td data-th-text="${tutor.phone}">0000 0000</td>
+                    <td data-th-text="${tutor.email}">000000@xmu.edu.com</td>
+                    <td><button href="#" class="btn btn-primary">修改</button></td><!-- 数据待定 -->
+                    <td><button class="btn btn-primary">删除</button></td>
                 </tr>
                 </tbody>
             </table>
-            </form>
+
         </div>
     </div>
 
