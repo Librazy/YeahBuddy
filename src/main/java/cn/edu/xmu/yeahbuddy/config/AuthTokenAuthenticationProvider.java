@@ -44,7 +44,7 @@ public class AuthTokenAuthenticationProvider implements AuthenticationProvider {
     @Override
     public PreAuthenticatedAuthenticationToken authenticate(Authentication authentication) throws AuthenticationException {
         log.info("Trying to authenticate Token " + authentication.getCredentials());
-        final Pair<Tutor, Token> tutorTokenPair = tokenService.loadToken(authentication.getCredentials().toString());
+        final Pair<Tutor, Token> tutorTokenPair = tokenService.loadAndValidateToken(authentication.getCredentials().toString());
         log.info("Loaded Token " + authentication.getCredentials() + " for " + tutorTokenPair.getFirst().toString());
         return new PreAuthenticatedAuthenticationToken(tutorTokenPair.getFirst(), tutorTokenPair.getSecond());
     }

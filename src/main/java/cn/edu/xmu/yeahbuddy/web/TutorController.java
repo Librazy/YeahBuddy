@@ -3,7 +3,6 @@ package cn.edu.xmu.yeahbuddy.web;
 import cn.edu.xmu.yeahbuddy.domain.*;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
 import cn.edu.xmu.yeahbuddy.service.ReviewService;
-import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -35,15 +34,12 @@ public class TutorController {
 
     private final ReviewService reviewService;
 
-    private final TeamService teamService;
-
     private final MessageSource messageSource;
 
     @Autowired
-    public TutorController(TutorService tutorService, ReviewService reviewService, TeamService teamService, MessageSource messageSource) {
+    public TutorController(TutorService tutorService, ReviewService reviewService, MessageSource messageSource) {
         this.tutorService = tutorService;
         this.reviewService = reviewService;
-        this.teamService = teamService;
         this.messageSource = messageSource;
     }
 
@@ -68,13 +64,11 @@ public class TutorController {
     public ResponseEntity<List<Pair<Team, Pair<Stage, Review>>>> tutorReview(@PathVariable int tutorId, Model model) {
         Token token = (Token) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         List<Pair<Team, Pair<Stage, Review>>> resultList = new ArrayList<>();
-        for (int teamId : token.getTeamIds()) {
-            Optional<Team> team = teamService.findById(teamId);
-            if (!team.isPresent()) continue;
+        for (Team team : token.getTeams()) {
 
-            Optional<Review> review = reviewService.find(team.get(), token.getStage(), tutorService.loadById(tutorId));
+            Optional<Review> review = reviewService.find(team, token.getStage(), tutorService.loadById(tutorId));
             if (!review.isPresent()) continue;
-            Pair<Team, Pair<Stage, Review>> result = Pair.of(team.get(), Pair.of(token.getStage(), review.get()));
+            Pair<Team, Pair<Stage, Review>> result = Pair.of(team, Pair.of(token.getStage(), review.get()));
             resultList.add(result);
         }
         model.addAttribute("reportsReview", resultList);

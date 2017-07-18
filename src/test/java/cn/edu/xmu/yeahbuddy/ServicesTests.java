@@ -33,8 +33,10 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
+
     @Autowired
     private YbPasswordEncodeService ybPasswordEncodeService;
+
     @Autowired
     private AdministratorService administratorService;
 

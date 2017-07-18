@@ -1,10 +1,10 @@
 package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.domain.Stage;
+import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
-import cn.edu.xmu.yeahbuddy.utils.IdentifierNotExistsException;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,72 +59,59 @@ public class TokenService {
     }
 
     /**
-     * 按登录Token值查找导师与Token
+     * 按登录Token值查找并验证导师与Token
      *
      * @param tokenStr 查找的登录Token值
      * @return 导师与Token
      * @throws UsernameNotFoundException 找不到Token
+     * @throws BadCredentialsException   Token已经被吊销
      */
     @Transactional(readOnly = true)
-    public Pair<Tutor, Token> loadToken(@NonNls String tokenStr) throws UsernameNotFoundException {
+    public Pair<Tutor, Token> loadAndValidateToken(@NonNls String tokenStr) throws UsernameNotFoundException, BadCredentialsException {
         log.debug("Trying to load Token " + tokenStr);
         Optional<Token> tok = tokenRepository.findById(tokenStr);
         if (!tok.isPresent()) {
             log.info("Failed to load Token " + tokenStr + ": not found");
             throw new UsernameNotFoundException(tokenStr);
         }
-        try {
-            Token token = tok.get();
-            if (token.isRevoked()) {
-                log.info("Failed to load Token " + tokenStr + ": revoked");
-                throw new BadCredentialsException(tokenStr);
-            }
-            log.info("Loaded Token " + tokenStr + ", loading Tutor " + token.getTutorId());
-            Tutor tutor = tutorService.loadById(token.getTutorId());
-            return Pair.of(tutor, token);
-        } catch (Exception e) {
-            log.info("Failed to load Token " + tokenStr + ": " + e.getMessage(), e);
-            throw new UsernameNotFoundException(tokenStr, e);
+        Token token = tok.get();
+        if (token.isRevoked()) {
+            log.info("Failed to load Token " + tokenStr + ": revoked");
+            throw new BadCredentialsException(tokenStr);
         }
+        log.info("Loaded Token " + tokenStr + ", loading Tutor " + token.getTutorId());
+        Tutor tutor = tutorService.loadById(token.getTutorId());
+        return Pair.of(tutor, token);
     }
 
 
     /**
      * 创建Token
      *
-     * @param tutor   导师
-     * @param stage   阶段
-     * @param teamIds 待评价的团队ID
+     * @param tutor 导师
+     * @param stage 阶段
+     * @param teams 待评价的团队
      * @return Token值
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor')")
-    public String createToken(Tutor tutor, Stage stage, Collection<Integer> teamIds) {
+    public Token createToken(Tutor tutor, Stage stage, Collection<Team> teams) {
         String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         while (!tokenValue.matches("[a-zA-Z0-9]+")) {
             tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         }
-        Token result = tokenRepository.save(new Token(tokenValue, tutor, stage, teamIds));
+        Token result = tokenRepository.save(new Token(tokenValue, tutor, stage, teams));
         log.debug("Created Token " + result);
-        return result.getTokenValue();
+        return result;
     }
 
     /**
      * 吊销Token
      *
-     * @param tokenStr 查找的登录Token值
-     * @throws IdentifierNotExistsException 找不到Token
+     * @param token 登录Token
      */
     @Transactional
-    public void revokeToken(@NonNls String tokenStr) throws IdentifierNotExistsException {
-        log.debug("Trying to load Token " + tokenStr);
-        Optional<Token> tok = tokenRepository.queryByTokenValue(tokenStr);
-        if (!tok.isPresent()) {
-            log.info("Failed to load Token " + tokenStr + ": not found");
-            throw new IdentifierNotExistsException("token.not_found", tokenStr);
-        }
-
-        Token token = tok.get();
+    public void revokeToken(Token token) {
         token.setRevoked();
         tokenRepository.save(token);
     }

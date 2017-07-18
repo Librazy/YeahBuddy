@@ -105,7 +105,7 @@ public class Application extends SpringBootServletInitializer {
                                 .setDisplayName("Tutor 1")
                                 .setEmail("c@b.com")
                                 .setPhone("13988888888")));
-                String token = tokenService.createToken(tutor.get(), stage, Collections.singletonList(team.get().getId()));
+                String token = tokenService.createToken(tutor.get(), stage, Collections.singletonList(team.get())).getTokenValue();
 
                 SecurityContextHolder.getContext().setAuthentication(null);
 
