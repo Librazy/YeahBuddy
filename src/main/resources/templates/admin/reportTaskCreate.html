@@ -41,29 +41,57 @@
 
 
     <style type="text/css">
-        ul,li{margin:0;padding:0;}
+        ul, li {
+            margin: 0;
+            padding: 0;
+        }
 
-        ul li{ line-height:25px;}
+        ul li {
+            line-height: 25px;
+        }
 
-        #mybox{
-            overflow:hidden;
+        #mybox {
+            overflow: hidden;
             background: rgba(0, 0, 0, .05);
-            height:300px;
-            width:400px;
+            height: 300px;
+            width: 400px;
         }
     </style>
 
     <style type="text/css">
-        *{ margin:0; padding:0;}
+        * {
+            margin: 0;
+            padding: 0;
+        }
 
-        .con{ overflow:hidden; width:980px;}
+        .con {
+            overflow: hidden;
+            width: 980px;
+        }
 
-        .con:after{ display:block; visibility:hidden; font-size:0; line-height:0; clear:both; content:"";}
+        .con:after {
+            display: block;
+            visibility: hidden;
+            font-size: 0;
+            line-height: 0;
+            clear: both;
+            content: "";
+        }
 
-        .con .l,.con.r{margin-bottom:-9999px; padding-bottom:9999px;}
-        .con .l{ width:40%; float:left;}
+        .con .l, .con.r {
+            margin-bottom: -9999px;
+            padding-bottom: 9999px;
+        }
 
-        .con .r{ width: 60%; float:right;}
+        .con .l {
+            width: 40%;
+            float: left;
+        }
+
+        .con .r {
+            width: 60%;
+            float: right;
+        }
     </style>
 
 </head>
@@ -107,55 +135,56 @@
                 新建项目报告任务
             </h2>
             <div class="con">
-            <div class="l">
-                <h5>任务报告内容</h5>
-                <div class="input-group col-md-9">
-                    <label class="input-group-addon" data-th-text="#{start}">开始时间</label>
-                    <input type="time" class="form-control" id="start" required data-th-value="${stage.start}"/>
-                </div>
-                <div class="input-group col-md-9">
-                    <label class="input-group-addon" data-th-text="#{end}">结束时间</label>
-                    <input type="time" class="form-control" id="end" required data-th-value="${stage.end}"/>
-                </div>
-                <div class="input-group col-md-9">
-                    <label class="input-group-addon" data-th-text="#{title}">阶段标题</label>
-                    <input type="text" class="form-control" id="title" required data-th-value="${stage.title}"/>
-                </div>
-                <br>
-                <div class="form-group offset-md-4">
-                    <button type="submit" class="btn btn-primary align-middle" data-th-text="#{submit}"
-                            id="submit">新建
-                    </button>
-                </div>
-            </div>
-
-            <div class="r">
-            <form action="" method="get">
-                <h5>选择团队</h5>
-                <div id="mybox" style="overflow:scroll;color: rgba(0,0,0,0.59);">
-                    <input type="checkbox" name="checkAll" id="checkAll" onclick="checkAll()"/>全选</br>
-                    <div data-th-each="team:${teams}">
-                        <input type="checkbox" id="${team.id}" name="teamChosen" data-th-text="${team.displayName}"/>yeah buddy</br>
+                <div class="l">
+                    <h5>任务报告内容</h5>
+                    <div class="input-group col-md-9">
+                        <label class="input-group-addon" data-th-text="#{start}">开始时间</label>
+                        <input type="time" class="form-control" id="start" required data-th-value="${stage.start}"/>
                     </div>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
-                    <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                    <div class="input-group col-md-9">
+                        <label class="input-group-addon" data-th-text="#{end}">结束时间</label>
+                        <input type="time" class="form-control" id="end" required data-th-value="${stage.end}"/>
+                    </div>
+                    <div class="input-group col-md-9">
+                        <label class="input-group-addon" data-th-text="#{title}">阶段标题</label>
+                        <input class="form-control" id="title" required data-th-value="${stage.title}"/>
+                    </div>
+                    <br>
+                    <div class="form-group offset-md-4">
+                        <button type="submit" class="btn btn-primary align-middle" data-th-text="#{submit}"
+                                id="submit">新建
+                        </button>
+                    </div>
                 </div>
-            </form>
-            </div>
+
+                <div class="r">
+                    <form action="" method="get">
+                        <h5>选择团队</h5>
+                        <div id="mybox" style="overflow:scroll;color: rgba(0,0,0,0.59);">
+                            <input type="checkbox" name="checkAll" id="checkAll" onclick="checkAll()"/>全选</br>
+                            <div data-th-each="team:${teams}">
+                                <input type="checkbox" name="teamChosen" data-th-text="team.displayName"/>yeah
+                                buddy</br>
+                            </div>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                            <input type="checkbox" name="teamChosen"/>测试滚动添加的静态数据</br>
+                        </div>
+                    </form>
+                </div>
             </div>
             <hr>
             <p style="color: rgba(39,39,39,0.41);text-align: center">未关闭的项目报告任务</p>
@@ -214,13 +243,13 @@
         data-th-src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
 
 <script>
-    $(function() {
-        $("#checkAll").click(function() {
-            $('input[name="teamChosen"]').attr("checked",this.checked);
+    $(function () {
+        $("#checkAll").click(function () {
+            $('input[name="teamChosen"]').attr("checked", this.checked);
         });
         var $teamChosen = $("input[name='teamChosen']");
-        $teamChosen.click(function(){
-            $("#checkAll").attr("checked",$teamChosen.length == $("input[name='teamChosen']:checked").length ? true : false);
+        $teamChosen.click(function () {
+            $("#checkAll").attr("checked", $teamChosen.length == $("input[name='teamChosen']:checked").length ? true : false);
         });
     });
 </script>

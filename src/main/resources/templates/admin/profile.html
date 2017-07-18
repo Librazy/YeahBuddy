@@ -69,12 +69,12 @@
                 style="text-align: center;">
                 管理员信息管理
             </h1>
-            <form id="profileForm" class="form-horizontal" data-th-action="${formAction}" method="POST" role="form">
+            <form id="profileForm" class="form-horizontal" data-th-action="${formAction}" method="POST">
                 <input type="hidden" name="_method" value="PUT"/><!--@see {@link HiddenHttpMethodFilter}-->
                 <div class="form-group row mt-2">
                     <div class="input-group col-md-5">
                         <label for="username" class="input-group-addon" data-th-text="#{username}">用户名</label>
-                        <input type="text" class="form-control" id="username" name="username" required
+                        <input class="form-control" id="username" name="username" required
                                data-th-value="${admin.username}"/>
                     </div>
                     <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
@@ -86,7 +86,7 @@
                 <div class="form-group row mt-3">
                     <div class="input-group col-md-5">
                         <label for="displayName" class="input-group-addon" data-th-text="#{display_name}">姓名</label>
-                        <input type="text" class="form-control" id="displayName" name="displayName" required
+                        <input class="form-control" id="displayName" name="displayName" required
                                data-th-value="${admin.displayName}"/>
                     </div>
                     <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
@@ -95,7 +95,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block" data-th-text="#{submit}"
+                    <button class="btn btn-primary btn-block" data-th-text="#{submit}"
                             id="submit">提交
                     </button>
                 </div>
@@ -134,6 +134,7 @@
     $("input").attr("readonly", true);
     $("#submit").hide();
 </script>
+<!--suppress JSUnfilteredForInLoop, XmlDefaultAttributeValue, JSUnresolvedVariable -->
 <script>
     //https://stackoverflow.com/questions/5221633/select-submit-only-changed-form-fields-with-jquery
     function hashDiff(h1, h2) {

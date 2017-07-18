@@ -40,10 +40,11 @@
                     <h1 data-th-text="#{tutor.login.title}" style="text-align: center;">
                         导师登录
                     </h1>
-                    <form class="form-horizontal" data-th-action="@{/tutor/login}" method="post" role="form">
+                    <form class="form-horizontal" data-th-action="@{/tutor/login}" method="post">
                         <div data-th-if="${loginError}" class="alert alert-warning alert-dismissible show" role="alert"
                              style="text-align: center;background:#ff5722AA;" id="alert-incorrect">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <!--suppress XmlDefaultAttributeValue -->
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             <span data-th-text="#{login.incorrect}">用户名或密码错误</span>
@@ -51,14 +52,14 @@
 
                         <fieldset class="form-group">
                             <label for="username" class="bmd-label-floating" data-th-text="#{username}">用户名</label>
-                            <input type="text" class="form-control" id="username" name="username" required/>
+                            <input class="form-control" id="username" name="username" required/>
                         </fieldset>
                         <fieldset class="form-group">
                             <label for="password" class="bmd-label-floating" data-th-text="#{password}">密码</label>
                             <input type="password" class="form-control" id="password" name="password" required/>
                         </fieldset>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block" data-th-text="#{login}"
+                            <button class="btn btn-primary btn-block" data-th-text="#{login}"
                                     id="login-submit">登录
                             </button>
                         </div>
@@ -94,6 +95,7 @@
         data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
 <script src="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"
         data-th-src="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js}"></script>
+<!--suppress JSUnresolvedFunction -->
 <script>
     $('body').bootstrapMaterialDesign();
 </script>
