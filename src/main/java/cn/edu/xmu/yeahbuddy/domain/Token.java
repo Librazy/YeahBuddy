@@ -17,11 +17,13 @@ public class Token {
     @Column(name = "TokenValue", updatable = false, nullable = false)
     private String tokenValue;
 
-    @Column(name = "TokenTutorId", updatable = false, nullable = false)
-    private int tutorId;
+    @ManyToOne
+    @JoinColumn(name = "TokenTutorId", updatable = false, nullable = false)
+    private Tutor tutor;
 
-    @Column(name = "TokenStage", updatable = false, nullable = false)
-    private int stage;
+    @ManyToOne
+    @JoinColumn(name = "TokenStage", updatable = false, nullable = false)
+    private Stage stage;
 
     @CreationTimestamp
     @Column(name = "TokenTime", updatable = false, nullable = false)
@@ -37,9 +39,9 @@ public class Token {
     public Token() {
     }
 
-    public Token(String tokenValue, int tutorId, int stage, Collection<Integer> teamIds) {
+    public Token(String tokenValue, Tutor tutor, Stage stage, Collection<Integer> teamIds) {
         this.tokenValue = tokenValue;
-        this.tutorId = tutorId;
+        this.tutor = tutor;
         this.stage = stage;
         this.teamIds = teamIds;
     }
@@ -50,12 +52,17 @@ public class Token {
     }
 
     @Contract(pure = true)
-    public int getTutorId() {
-        return tutorId;
+    public Tutor getTutor() {
+        return tutor;
     }
 
     @Contract(pure = true)
-    public int getStage() {
+    public int getTutorId() {
+        return getTutor().getId();
+    }
+
+    @Contract(pure = true)
+    public Stage getStage() {
         return stage;
     }
 
@@ -80,6 +87,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return String.format("tokenValue:%s tutorId:%d stage:%d revoked:%b teamIds:[%s]", tokenValue, tutorId, stage, revoked, teamIds.stream().map(Object::toString).collect(Collectors.joining(", ")));
+        return String.format("tokenValue:%s tutor:%s stage:%s revoked:%b teamIds:[%s]", tokenValue, tutor, stage, revoked, teamIds.stream().map(Object::toString).collect(Collectors.joining(", ")));
     }
 }

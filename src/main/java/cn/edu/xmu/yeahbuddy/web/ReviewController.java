@@ -6,6 +6,7 @@ import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.ReviewDto;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
 import cn.edu.xmu.yeahbuddy.service.ReviewService;
+import cn.edu.xmu.yeahbuddy.service.StageService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -35,13 +36,16 @@ public class ReviewController {
 
     private final TeamService teamService;
 
+    private final StageService stageService;
+
     private final MessageSource messageSource;
 
     @Autowired
-    public ReviewController(ReviewService reviewService, ReportService reportService, TeamService teamService, MessageSource messageSource) {
+    public ReviewController(ReviewService reviewService, ReportService reportService, TeamService teamService, StageService stageService, MessageSource messageSource) {
         this.reviewService = reviewService;
         this.reportService = reportService;
         this.teamService = teamService;
+        this.stageService = stageService;
         this.messageSource = messageSource;
     }
 
@@ -53,7 +57,7 @@ public class ReviewController {
             throw new ResourceNotFoundException("tutor.review.not_found", reviewId);
         }
 
-        Optional<Report> report = reportService.find(review.get().getTeamId(), review.get().getStageId());
+        Optional<Report> report = reportService.find(review.get().getTeam(), review.get().getStage());
         if (!report.isPresent()) {
             throw new ResourceNotFoundException("team.report.not_found", String.format("%d, %d", review.get().getTeamId(), review.get().getStageId()));
         }
@@ -86,11 +90,9 @@ public class ReviewController {
     @GetMapping("/team/{teamId:\\d+}/reports/review/{stageId:\\d+}")
     //TODO
     public ResponseEntity<Model> showReportReview(@PathVariable int teamId, @PathVariable int stageId, Model model) {
-        List<Review> reviews = reviewService.findByTeamIdAndStageId(teamId, stageId);
+        List<Review> reviews = reviewService.findByTeamAndStage(teamService.loadById(teamId), stageService.loadById(stageId));
         model.addAttribute("reviews", reviews);
         model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stageId));
         return ResponseEntity.ok(model);
     }
-
-
 }

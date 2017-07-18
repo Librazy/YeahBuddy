@@ -31,7 +31,7 @@ public class YbPasswordEncodeService implements PasswordEncoder {
     /**
      * 匹配密码
      *
-     * @param rawPassword 待匹配明文
+     * @param rawPassword     待匹配明文
      * @param encodedPassword 编码后的密码密文
      * @return 是否匹配
      */

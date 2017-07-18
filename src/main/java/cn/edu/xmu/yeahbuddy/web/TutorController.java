@@ -1,9 +1,6 @@
 package cn.edu.xmu.yeahbuddy.web;
 
-import cn.edu.xmu.yeahbuddy.domain.Review;
-import cn.edu.xmu.yeahbuddy.domain.Team;
-import cn.edu.xmu.yeahbuddy.domain.Token;
-import cn.edu.xmu.yeahbuddy.domain.Tutor;
+import cn.edu.xmu.yeahbuddy.domain.*;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
 import cn.edu.xmu.yeahbuddy.service.ReviewService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
@@ -68,16 +65,16 @@ public class TutorController {
     @GetMapping("/tutor/{tutorId:\\d+}/reviews")
     @PreAuthorize("hasRole('TUTOR')")
     //TODO
-    public ResponseEntity<List<Pair<Team, Pair<Integer, Integer>>>> tutorReview(@PathVariable int tutorId, Model model) {
+    public ResponseEntity<List<Pair<Team, Pair<Stage, Review>>>> tutorReview(@PathVariable int tutorId, Model model) {
         Token token = (Token) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        List<Pair<Team, Pair<Integer, Integer>>> resultList = new ArrayList<>();
+        List<Pair<Team, Pair<Stage, Review>>> resultList = new ArrayList<>();
         for (int teamId : token.getTeamIds()) {
             Optional<Team> team = teamService.findById(teamId);
             if (!team.isPresent()) continue;
 
-            Optional<Review> review = reviewService.find(teamId, token.getStage(), tutorId, false);
+            Optional<Review> review = reviewService.find(team.get(), token.getStage(), tutorService.loadById(tutorId));
             if (!review.isPresent()) continue;
-            Pair<Team, Pair<Integer, Integer>> result = Pair.of(team.get(), Pair.of(token.getStage(), review.get().getId()));
+            Pair<Team, Pair<Stage, Review>> result = Pair.of(team.get(), Pair.of(token.getStage(), review.get()));
             resultList.add(result);
         }
         model.addAttribute("reportsReview", resultList);
@@ -88,7 +85,7 @@ public class TutorController {
     public String profile(@PathVariable int tutorId, Model model) {
         Optional<Tutor> tutor = tutorService.findById(tutorId);
         if (!tutor.isPresent()) {
-            throw new ResourceNotFoundException("team.id.not_found", tutorId);
+            throw new ResourceNotFoundException("tutor.id.not_found", tutorId);
         }
 
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Tutor) {
@@ -119,7 +116,7 @@ public class TutorController {
         try {
             tutorService.updateTutorPassword(tutorId, oldPassword, newPassword);
             model.addAttribute("success", true);
-        } catch (BadCredentialsException e){
+        } catch (BadCredentialsException e) {
             model.addAttribute("passwordError", true);
         }
         model.addAttribute("formAction", String.format("/tutor/%d/password", tutorId));

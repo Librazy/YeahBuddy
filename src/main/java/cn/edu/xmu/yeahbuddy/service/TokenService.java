@@ -1,5 +1,6 @@
 package cn.edu.xmu.yeahbuddy.service;
 
+import cn.edu.xmu.yeahbuddy.domain.Stage;
 import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
@@ -98,12 +99,12 @@ public class TokenService {
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor')")
-    public String createToken(Tutor tutor, int stage, Collection<Integer> teamIds) {
+    public String createToken(Tutor tutor, Stage stage, Collection<Integer> teamIds) {
         String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         while (!tokenValue.matches("[a-zA-Z0-9]+")) {
             tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         }
-        Token result = tokenRepository.save(new Token(tokenValue, tutor.getId(), stage, teamIds));
+        Token result = tokenRepository.save(new Token(tokenValue, tutor, stage, teamIds));
         log.debug("Created Token " + result);
         return result.getTokenValue();
     }

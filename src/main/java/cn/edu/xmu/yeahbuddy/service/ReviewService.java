@@ -1,6 +1,9 @@
 package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.domain.Review;
+import cn.edu.xmu.yeahbuddy.domain.Stage;
+import cn.edu.xmu.yeahbuddy.domain.Team;
+import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.model.ReviewDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
@@ -52,50 +55,48 @@ public class ReviewService {
     /**
      * 查找评审报告
      *
-     * @param teamId        团队ID
-     * @param stage         阶段
-     * @param viewer        审核ID
-     * @param viewerIsAdmin 审核者是否是管理员
+     * @param team   团队
+     * @param stage  阶段
+     * @param viewer 审核者
      * @return 评审报告
      */
     @Transactional(readOnly = true)
-    public Optional<Review> find(int teamId, int stage, int viewer, boolean viewerIsAdmin) {
+    public Optional<Review> find(Team team, Stage stage, Tutor viewer) {
         log.debug("Finding Review");
-        return reviewRepository.find(teamId, stage, viewer, viewerIsAdmin);
+        return reviewRepository.find(team, stage, viewer);
     }
 
     /**
      * 查找某个团队项目报告的所有评审报告
      *
-     * @param teamId  团队ID
-     * @param stageId 阶段ID
+     * @param team  团队
+     * @param stage 阶段
      * @return 所有评审报告
      */
     @Transactional
-    public List<Review> findByTeamIdAndStageId(int teamId, int stageId) {
-        return reviewRepository.findByTeamIdAndStageId(teamId, stageId);
+    public List<Review> findByTeamAndStage(Team team, Stage stage) {
+        return reviewRepository.findByTeamAndStage(team, stage);
     }
 
     /**
      * 新建评审报告
      *
-     * @param teamId        团队ID
-     * @param stage         阶段
-     * @param viewer        审核ID
-     * @param viewerIsAdmin 审核者是否是管理员
+     * @param team   团队
+     * @param stage  阶段
+     * @param viewer 审核ID
      * @return 新注册的评审报告
      */
     @Transactional
-    public Review createReview(int teamId, int stage, int viewer, boolean viewerIsAdmin) throws IdentifierAlreadyExistsException {
-        log.debug(String.format("Trying to create Review: %d %d %d %b", teamId, stage, viewer, viewerIsAdmin));
-        if (reviewRepository.find(teamId, stage, viewer, viewerIsAdmin).isPresent()) {
-            log.info(String.format("Fail to create Review with id: %d %d %d %b: id already exist", teamId, stage, viewer, viewerIsAdmin));
+    public Review createReview(Team team, Stage stage, Tutor viewer) throws IdentifierAlreadyExistsException {
+        log.debug(String.format("Trying to create Review: %s %s %s", team, stage, viewer));
+        if (reviewRepository.find(team, stage, viewer).isPresent()) {
+            log.info(String.format("Fail to create Review with id: %s %s %s: id already exist", team, stage, viewer));
             throw new IdentifierAlreadyExistsException("review.id.exist", null);
         }
 
-        Review review = new Review(teamId, stage, viewer, viewerIsAdmin);
+        Review review = new Review(team, stage, viewer);
         reviewRepository.save(review);
-        log.debug(String.format("Created new Review with id: %d %d %d %b", teamId, stage, viewer, viewerIsAdmin));
+        log.debug(String.format("Created new Review with id: %s %s %s", team, stage, viewer));
         return review;
     }
 

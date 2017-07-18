@@ -74,7 +74,7 @@ public class RepositoriesConcurrentTests {
         final CyclicBarrier gate = new CyclicBarrier(4);
         Runnable r = () -> transactionTemplate.execute((status) -> {
 
-            if(usingInnoDB)em.createNativeQuery("set innodb_lock_wait_timeout = 1;").executeUpdate();
+            if (usingInnoDB) em.createNativeQuery("set innodb_lock_wait_timeout = 1;").executeUpdate();
             try {
                 gate.await();
             } catch (InterruptedException | BrokenBarrierException e) {

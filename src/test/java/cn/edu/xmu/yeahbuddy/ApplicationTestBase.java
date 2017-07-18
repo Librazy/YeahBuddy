@@ -1,11 +1,12 @@
 package cn.edu.xmu.yeahbuddy;
 
-import cn.edu.xmu.yeahbuddy.domain.Administrator;
-import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
-import cn.edu.xmu.yeahbuddy.domain.Team;
-import cn.edu.xmu.yeahbuddy.domain.Tutor;
+import cn.edu.xmu.yeahbuddy.domain.*;
+import cn.edu.xmu.yeahbuddy.domain.repo.StageRepository;
+import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
+import cn.edu.xmu.yeahbuddy.model.StageDto;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
+import cn.edu.xmu.yeahbuddy.service.StageService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.service.TokenService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -43,18 +45,20 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
 
     @Autowired
     TeamService teamService;
-
     @NonNls
     String token;
-
     Tutor tutor;
-
     Team team1;
-
     Team team2;
-
+    @Autowired
+    private TokenRepository tokenRepository;
+    @Autowired
+    private StageRepository stageRepository;
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private StageService stageService;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -65,6 +69,13 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
+
+            Stage stage = stageService.createStage(201701, new StageDto()
+                                                                   .setTitle("2017 01")
+                                                                   .setStart(Timestamp.valueOf("2017-01-01 20:00:00"))
+                                                                   .setEnd(Timestamp.valueOf("2017-03-01 20:00:00")));
+
+
             team1 = teamService.registerNewTeam(
                     new TeamDto()
                             .setUsername("testteam")
@@ -88,7 +99,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
                             .setDisplayName("testtutor")
                             .setEmail("c@b.com")
                             .setPhone("13988888888"));
-            token = tokenService.createToken(tutor, 2017, Collections.singletonList(team1.getId()));
+            token = tokenService.createToken(tutor, stage, Collections.singletonList(team1.getId()));
 
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;
@@ -101,9 +112,12 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
+            tokenRepository.deleteAll();
             teamService.deleteTeam(teamService.loadUserByUsername("testteam").getId());
             teamService.deleteTeam(teamService.loadUserByUsername("test2team").getId());
             tutorService.deleteTutor(tutorService.loadUserByUsername("testtutor").getId());
+            stageRepository.deleteAllInBatch();
+
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;
         });

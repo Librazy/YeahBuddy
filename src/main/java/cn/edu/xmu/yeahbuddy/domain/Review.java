@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Table(
         uniqueConstraints =
-        @UniqueConstraint(columnNames = {"ReviewTeamId", "ReviewStage", "ReviewViewer", "ReviewViewerIsAdmin"})
+        @UniqueConstraint(columnNames = {"ReviewTeamId", "ReviewStageId", "ReviewViewer"})
 )
 @Entity
 public class Review {
@@ -19,20 +19,19 @@ public class Review {
     private int id = Integer.MIN_VALUE;
 
     @NaturalId
-    @Column(name = "ReviewTeamId", updatable = false, nullable = false)
-    private int teamId;
+    @ManyToOne
+    @JoinColumn(name = "ReviewTeamId", updatable = false, nullable = false)
+    private Team team;
 
     @NaturalId
-    @Column(name = "ReviewStage", updatable = false, nullable = false)
-    private int stageId;
+    @ManyToOne
+    @JoinColumn(name = "ReviewStageId", updatable = false, nullable = false)
+    private Stage stage;
 
     @NaturalId
-    @Column(name = "ReviewViewer", updatable = false, nullable = false)
-    private int viewer;
-
-    @NaturalId
-    @Column(name = "ReviewViewerIsAdmin", updatable = false, nullable = false)
-    private boolean viewerIsAdmin;
+    @ManyToOne
+    @JoinColumn(name = "ReviewViewer", updatable = false, nullable = false)
+    private Tutor viewer;
 
     @Column(name = "ReviewRank", nullable = false)
     private int rank = -1;
@@ -47,11 +46,10 @@ public class Review {
     public Review() {
     }
 
-    public Review(int teamId, int stageId, int viewer, boolean viewerIsAdmin) {
-        this.teamId = teamId;
-        this.stageId = stageId;
+    public Review(Team team, Stage stage, Tutor viewer) {
+        this.team = team;
+        this.stage = stage;
         this.viewer = viewer;
-        this.viewerIsAdmin = viewerIsAdmin;
     }
 
     @Contract(pure = true)
@@ -60,23 +58,28 @@ public class Review {
     }
 
     @Contract(pure = true)
+    public Team getTeam() {
+        return team;
+    }
+
+    @Contract(pure = true)
+    public Stage getStage() {
+        return stage;
+    }
+
+    @Contract(pure = true)
     public int getTeamId() {
-        return teamId;
+        return getTeam().getId();
     }
 
     @Contract(pure = true)
     public int getStageId() {
-        return stageId;
+        return getStage().getId();
     }
 
     @Contract(pure = true)
-    public int getViewer() {
+    public Tutor getViewer() {
         return viewer;
-    }
-
-    @Contract(pure = true)
-    public boolean isViewerIsAdmin() {
-        return viewerIsAdmin;
     }
 
     @Contract(pure = true)

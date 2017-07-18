@@ -28,7 +28,7 @@ public class RestTemplateTest extends ApplicationTestBase {
         ResponseEntity<String> response = testRestTemplate.getForEntity(new URI("http", null, "localhost", port, "/tutor/token", String.format("auth_token=%s", token), null), String.class);
         Assert.assertEquals(response.getStatusCode(), HttpStatus.FOUND);
         @NonNls URI redirect = response.getHeaders().getLocation();
-        if(redirect == null)throw new RuntimeException();
+        if (redirect == null) throw new RuntimeException();
         Assert.assertTrue(redirect.getPath().equals(String.format("/tutor/%d/review", tutor.getId())));
     }
 }

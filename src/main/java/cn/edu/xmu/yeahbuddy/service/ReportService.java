@@ -1,6 +1,8 @@
 package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.domain.Report;
+import cn.edu.xmu.yeahbuddy.domain.Stage;
+import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReportRepository;
 import cn.edu.xmu.yeahbuddy.model.ReportDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
@@ -23,7 +25,6 @@ public class ReportService {
 
     @NonNls
     private static Log log = LogFactory.getLog(ReportService.class);
-
     private ReportRepository reportRepository;
 
     /**
@@ -52,14 +53,14 @@ public class ReportService {
     /**
      * 查找团队项目报告
      *
-     * @param teamId  团队ID
-     * @param stageId 阶段
+     * @param team  团队
+     * @param stage 阶段
      * @return 团队项目报告
      */
     @Transactional
-    public Optional<Report> find(int teamId, int stageId) {
-        log.debug("Finding Report " + teamId + ", " + stageId);
-        return reportRepository.find(teamId, stageId);
+    public Optional<Report> find(Team team, Stage stage) {
+        log.debug("Finding Report " + team + ", " + stage);
+        return reportRepository.find(team, stage);
     }
 
     /**
@@ -71,7 +72,7 @@ public class ReportService {
     @Transactional
     public List<Report> findByTeamId(int teamId) {
         log.debug("Finding all reports of Team " + teamId);
-        return reportRepository.findByTeamId(teamId);
+        return reportRepository.findByTeam_Id(teamId);
     }
 
     /**
@@ -87,24 +88,24 @@ public class ReportService {
     /**
      * 新建团队项目报告
      *
-     * @param teamId  团队ID
-     * @param stageId 阶段
-     * @param title   团队项目报告标题
+     * @param team  团队I
+     * @param stage 阶段
+     * @param title 团队项目报告标题
      * @return 新注册的团队项目报告
      */
     @Transactional
-    public Report createReport(int teamId, int stageId, String title) throws IdentifierAlreadyExistsException {
-        log.debug("Trying to create Report with id " + teamId + ", " + stageId);
-        if (reportRepository.find(teamId, stageId).isPresent()) {
-            log.info("Fail to create Report with id " + teamId + ", " + stageId + ": id already exist");
-            throw new IdentifierAlreadyExistsException("report.id.exist", String.format("%d, %d", teamId, stageId));
+    public Report createReport(Team team, Stage stage, String title) throws IdentifierAlreadyExistsException {
+        log.debug("Trying to create Report with  " + team + ", " + stage);
+        if (reportRepository.find(team, stage).isPresent()) {
+            log.info("Fail to create Report with id " + team + ", " + stage + ": id already exist");
+            throw new IdentifierAlreadyExistsException("report.id.exist", String.format("%s, %s", team, stage));
         }
 
-        Report report = new Report(teamId, stageId);
+        Report report = new Report(team, stage);
         report.setSubmitted(false);
         report.setTitle(title);
         reportRepository.save(report);
-        log.debug("Created new Report with id " + teamId + ", " + stageId);
+        log.debug("Created new Report with id " + team + ", " + stage);
         return report;
     }
 

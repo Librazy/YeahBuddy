@@ -1,6 +1,8 @@
 package cn.edu.xmu.yeahbuddy.domain.repo;
 
+import cn.edu.xmu.yeahbuddy.domain.Stage;
 import cn.edu.xmu.yeahbuddy.domain.Token;
+import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -12,10 +14,10 @@ import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<Token, String> {
 
-    List<Token> findByTutorId(int tutorId);
+    List<Token> findByTutor(Tutor tutor);
 
     @NotNull
-    Optional<Token> findByTutorIdAndStage(int tutorId, int stage);
+    Optional<Token> findByTutorAndStage(Tutor tutor, Stage stage);
 
     List<Token> findByTimeBefore(Time time);
 

@@ -133,5 +133,4 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
                                       .map(AdministratorPermission::name)
                                       .collect(Collectors.toSet())));
     }
-
 }

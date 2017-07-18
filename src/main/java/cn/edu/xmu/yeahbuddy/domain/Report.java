@@ -20,12 +20,14 @@ public class Report {
     private int id = Integer.MIN_VALUE;
 
     @NaturalId
-    @Column(name = "ReportTeamId", updatable = false, nullable = false)
-    private int teamId;
+    @ManyToOne
+    @JoinColumn(name = "ReportTeamId", updatable = false, nullable = false)
+    private Team team;
 
     @NaturalId
-    @Column(name = "ReportStageId", updatable = false, nullable = false)
-    private int stageId;
+    @ManyToOne
+    @JoinColumn(name = "ReportStageId", updatable = false, nullable = false)
+    private Stage stage;
 
     @Column(name = "ReportSubmitted", nullable = false)
     private boolean submitted;
@@ -44,9 +46,9 @@ public class Report {
     public Report() {
     }
 
-    public Report(int teamId, int stageId) {
-        this.teamId = teamId;
-        this.stageId = stageId;
+    public Report(Team team, Stage stage) {
+        this.team = team;
+        this.stage = stage;
     }
 
     @Contract(pure = true)
@@ -56,12 +58,22 @@ public class Report {
 
     @Contract(pure = true)
     public int getTeamId() {
-        return teamId;
+        return getTeam().getId();
+    }
+
+    @Contract(pure = true)
+    public Team getTeam() {
+        return team;
     }
 
     @Contract(pure = true)
     public int getStageId() {
-        return stageId;
+        return getStage().getId();
+    }
+
+    @Contract(pure = true)
+    public Stage getStage() {
+        return stage;
     }
 
     @Contract(pure = true)

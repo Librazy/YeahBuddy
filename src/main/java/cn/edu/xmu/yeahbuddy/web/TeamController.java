@@ -6,6 +6,7 @@ import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
 import cn.edu.xmu.yeahbuddy.service.ReviewService;
+import cn.edu.xmu.yeahbuddy.service.StageService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -38,14 +39,17 @@ public class TeamController {
 
     private final ReportService reportService;
 
+    private final StageService stageService;
+
     private final MessageSource messageSource;
 
     private final ReviewService reviewService;
 
     @Autowired
-    public TeamController(TeamService teamService, ReportService reportService, MessageSource messageSource, ReviewService reviewService) {
+    public TeamController(TeamService teamService, ReportService reportService, StageService stageService, MessageSource messageSource, ReviewService reviewService) {
         this.teamService = teamService;
         this.reportService = reportService;
+        this.stageService = stageService;
         this.messageSource = messageSource;
         this.reviewService = reviewService;
     }
@@ -109,7 +113,7 @@ public class TeamController {
         try {
             teamService.updateTeamPassword(teamId, oldPassword, newPassword);
             model.addAttribute("success", true);
-        } catch (BadCredentialsException e){
+        } catch (BadCredentialsException e) {
             model.addAttribute("passwordError", true);
         }
         model.addAttribute("formAction", String.format("/team/%d/password", teamId));
@@ -141,7 +145,7 @@ public class TeamController {
     @GetMapping("/team/{teamId:\\d+}/review/{stageId:\\d+}")
     //TODO
     public ResponseEntity<Model> showReviewByTeamAndStage(@PathVariable int teamId, @PathVariable int stageId, Model model) {
-        List<Review> reviews = reviewService.findByTeamIdAndStageId(teamId, stageId);
+        List<Review> reviews = reviewService.findByTeamAndStage(teamService.loadById(teamId), stageService.loadById(stageId));
         model.addAttribute("reviews", reviews);
         model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stageId));
         return ResponseEntity.ok(model);
@@ -149,7 +153,7 @@ public class TeamController {
 
     @GetMapping("/team/{teamId:\\d+}/report/{stageId:\\d+}")
     public RedirectView showSelectedReport(@PathVariable int teamId, @PathVariable int stageId, RedirectAttributes redirectAttributes) {
-        Optional<Report> report = reportService.find(teamId, stageId);
+        Optional<Report> report = reportService.find(teamService.loadById(teamId), stageService.loadById(stageId));
         if (!report.isPresent()) {
             throw new ResourceNotFoundException("report.team_stage.not_found", String.format("%d, %d", teamId, stageId));
         }

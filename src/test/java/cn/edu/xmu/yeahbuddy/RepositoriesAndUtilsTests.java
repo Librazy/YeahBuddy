@@ -1,9 +1,13 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
-import cn.edu.xmu.yeahbuddy.domain.Review;
+import cn.edu.xmu.yeahbuddy.domain.Report;
+import cn.edu.xmu.yeahbuddy.domain.Stage;
+import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.repo.AdministratorRepository;
-import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
+import cn.edu.xmu.yeahbuddy.domain.repo.ReportRepository;
+import cn.edu.xmu.yeahbuddy.domain.repo.StageRepository;
+import cn.edu.xmu.yeahbuddy.domain.repo.TeamRepository;
 import cn.edu.xmu.yeahbuddy.utils.PasswordUtils;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -17,8 +21,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -34,7 +37,13 @@ public class RepositoriesAndUtilsTests extends AbstractTransactionalJUnit4Spring
     private AdministratorRepository administratorRepository;
 
     @Autowired
-    private ReviewRepository reviewRepository;
+    private TeamRepository teamRepository;
+
+    @Autowired
+    private StageRepository stageRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     @Test
     public void administratorRepositoryTest() throws Exception {
@@ -62,34 +71,6 @@ public class RepositoriesAndUtilsTests extends AbstractTransactionalJUnit4Spring
     }
 
     @Test
-    public void reviewRepositoryTest() throws Exception {
-
-        // 创建9条记录
-        Review review1 = new Review(1, 201701, 1, false);
-        Map<Integer, String> content = new HashMap<>();
-        content.put(0, "test text");
-        review1.setContent(content);
-        reviewRepository.save(review1);
-        reviewRepository.save(new Review(1, 201701, 2, false));
-        reviewRepository.save(new Review(1, 201701, 3, false));
-        reviewRepository.save(new Review(2, 201701, 1, false));
-        reviewRepository.save(new Review(2, 201701, 2, false));
-        reviewRepository.save(new Review(2, 201701, 3, false));
-        reviewRepository.save(new Review(2, 201701, 1, true));
-        reviewRepository.save(new Review(2, 201702, 2, false));
-        reviewRepository.save(new Review(2, 201702, 3, false));
-
-        // 测试findAll, 查询所有记录
-        Assert.assertEquals(9, reviewRepository.findAll().size());
-
-        Optional<Review> review2 = reviewRepository.find(1, 201701, 1, false);
-
-        Assert.assertTrue(review2.isPresent());
-
-        Assert.assertEquals("test text", review2.get().getContent().get(0));
-    }
-
-    @Test
     public void passwordUtilsTest() throws Exception {
         byte[] salt = PasswordUtils.generateSalt();
 
@@ -98,5 +79,32 @@ public class RepositoriesAndUtilsTests extends AbstractTransactionalJUnit4Spring
         byte[] hash = PasswordUtils.hash("password".toCharArray(), salt);
 
         Assert.assertTrue(PasswordUtils.isExpectedPassword("password".toCharArray(), salt, hash));
+    }
+
+    @Test
+    public void reportRepositoryTest() throws Exception {
+        Team team1 = new Team("Team1", "Team2");
+        Team team2 = new Team("Team2", "Team2");
+        Stage stage1 = new Stage(201701, Timestamp.valueOf("2017-01-01 10:00:00"), Timestamp.valueOf("2017-01-31 23:00:00"));
+        Stage stage2 = new Stage(201702, Timestamp.valueOf("2017-02-01 10:00:00"), Timestamp.valueOf("2017-02-28 23:00:00"));
+
+        team1 = teamRepository.save(team1);
+        teamRepository.save(team2);
+
+        stageRepository.save(stage1);
+        stage2 = stageRepository.save(stage2);
+
+        Assert.assertNotEquals(team1.getId(), Integer.MIN_VALUE);
+
+        Report report = new Report(team1, stage2);
+        report.setTitle("Title");
+
+        int id = reportRepository.save(report).getId();
+
+        Optional<Report> read = reportRepository.queryById(id);
+
+        Assert.assertTrue(read.isPresent());
+        Assert.assertEquals(team1.getId(), read.get().getTeam().getId());
+        Assert.assertEquals(team1.getId(), read.get().getTeamId());
     }
 }

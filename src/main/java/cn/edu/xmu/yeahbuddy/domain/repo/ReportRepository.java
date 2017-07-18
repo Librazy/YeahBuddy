@@ -1,6 +1,8 @@
 package cn.edu.xmu.yeahbuddy.domain.repo;
 
 import cn.edu.xmu.yeahbuddy.domain.Report;
+import cn.edu.xmu.yeahbuddy.domain.Stage;
+import cn.edu.xmu.yeahbuddy.domain.Team;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -10,14 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReportRepository extends JpaRepository<Report, Integer> {
-    List<Report> findByTeamId(int teamId);
+    List<Report> findByTeam_Id(int teamId);
 
     @NotNull
-    Optional<Report> findByTeamIdAndStageId(int teamId, int stageId);
+    Optional<Report> findByTeamAndStage(Team team, Stage stage);
 
     @NotNull
-    default Optional<Report> find(int teamId, int stageId) {
-        return findByTeamIdAndStageId(teamId, stageId);
+    default Optional<Report> find(Team team, Stage stage) {
+        return findByTeamAndStage(team, stage);
     }
 
     @NotNull
