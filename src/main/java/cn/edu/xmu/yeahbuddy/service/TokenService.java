@@ -58,6 +58,22 @@ public class TokenService {
     }
 
     /**
+     * 查找所有失效的Token
+     *
+     * @return 所有失效的Token
+     */
+    @Transactional(readOnly = true)
+    public List<Token> findByRevokedIsTrue() {return tokenRepository.findByRevokedIsTrue(); }
+
+    /**
+     * 查找所有未失效的Token
+     *
+     * @return 所有未失效的Token
+     */
+    @Transactional(readOnly = true)
+    public List<Token> findByRevokedIsFalse() {return tokenRepository.findByRevokedIsFalse(); }
+
+    /**
      * 按登录Token值查找并验证导师与Token
      *
      * @param tokenStr 查找的登录Token值

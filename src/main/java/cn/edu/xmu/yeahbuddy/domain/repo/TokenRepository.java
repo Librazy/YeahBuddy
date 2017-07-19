@@ -19,6 +19,10 @@ public interface TokenRepository extends JpaRepository<Token, String> {
 
     List<Token> findByTimeBefore(Time time);
 
+    List<Token> findByRevokedIsTrue();
+
+    List<Token> findByRevokedIsFalse();
+
     @NotNull
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Token> queryByTokenValue(String value);
