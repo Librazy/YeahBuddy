@@ -95,26 +95,24 @@ public class Application extends SpringBootServletInitializer {
                             .setStart(Timestamp.valueOf("2017-01-01 20:00:00"))
                             .setEnd(Timestamp.valueOf("2017-03-01 20:00:00")));
 
-            Optional<Tutor> tutor;
-            if (!(tutor = tutorService.findByUsername("tutor")).isPresent()) {
+            Report report = reportService.createReport(team.get(), stage, "Report");
+
+            if (!tutorService.findByUsername("tutor").isPresent()) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
-                tutor = Optional.of(tutorService.registerNewTutor(
+                Optional<Tutor> tutor = Optional.of(tutorService.registerNewTutor(
                         new TutorDto()
                                 .setUsername("tutor")
                                 .setPassword("tutor")
                                 .setDisplayName("Tutor 1")
                                 .setEmail("c@b.com")
                                 .setPhone("13988888888")));
-                String token = tokenService.createToken(tutor.get(), stage, Collections.singletonList(team.get())).getTokenValue();
+                Review review = reviewService.createReview(report, tutor.get());
+                String token = tokenService.createToken(tutor.get(), Collections.singletonList(review)).getTokenValue();
 
                 SecurityContextHolder.getContext().setAuthentication(null);
 
                 log.info("Token created: " + token);
             }
-
-            reportService.createReport(team.get(), stage, "Report");
-
-            reviewService.createReview(team.get(), stage, tutor.get());
         };
     }
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Table(
         uniqueConstraints =
-        @UniqueConstraint(columnNames = {"ReviewTeamId", "ReviewStageId", "ReviewViewer"})
+        @UniqueConstraint(columnNames = {"ReviewReportId", "ReviewViewer"})
 )
 @Entity
 public class Review {
@@ -20,13 +20,8 @@ public class Review {
 
     @NaturalId
     @ManyToOne
-    @JoinColumn(name = "ReviewTeamId", updatable = false, nullable = false)
-    private Team team;
-
-    @NaturalId
-    @ManyToOne
-    @JoinColumn(name = "ReviewStageId", updatable = false, nullable = false)
-    private Stage stage;
+    @JoinColumn(name = "ReviewReportId", updatable = false, nullable = false)
+    private Report report;
 
     @NaturalId
     @ManyToOne
@@ -46,9 +41,8 @@ public class Review {
     public Review() {
     }
 
-    public Review(Team team, Stage stage, Tutor viewer) {
-        this.team = team;
-        this.stage = stage;
+    public Review(Report report, Tutor viewer) {
+        this.report = report;
         this.viewer = viewer;
     }
 
@@ -58,13 +52,18 @@ public class Review {
     }
 
     @Contract(pure = true)
+    public Report getReport() {
+        return report;
+    }
+
+    @Contract(pure = true)
     public Team getTeam() {
-        return team;
+        return getReport().getTeam();
     }
 
     @Contract(pure = true)
     public Stage getStage() {
-        return stage;
+        return getReport().getStage();
     }
 
     @Contract(pure = true)

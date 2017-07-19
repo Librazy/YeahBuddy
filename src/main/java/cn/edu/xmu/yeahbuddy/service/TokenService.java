@@ -1,7 +1,6 @@
 package cn.edu.xmu.yeahbuddy.service;
 
-import cn.edu.xmu.yeahbuddy.domain.Stage;
-import cn.edu.xmu.yeahbuddy.domain.Team;
+import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
@@ -89,18 +88,17 @@ public class TokenService {
      * 创建Token
      *
      * @param tutor 导师
-     * @param stage 阶段
-     * @param teams 待评价的团队
+     * @param reviews 待填写的评议
      * @return Token值
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor')")
-    public Token createToken(Tutor tutor, Stage stage, Collection<Team> teams) {
+    public Token createToken(Tutor tutor, Collection<Review> reviews) {
         String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         while (!tokenValue.matches("[a-zA-Z0-9]+")) {
             tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         }
-        Token result = tokenRepository.save(new Token(tokenValue, tutor, stage, teams));
+        Token result = tokenRepository.save(new Token(tokenValue, tutor, reviews));
         log.debug("Created Token " + result);
         return result;
     }

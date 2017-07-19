@@ -70,6 +70,8 @@ public class AdministratorController {
     }
 
     @GetMapping("/admin/{adminId:\\d+}")
+    @PreAuthorize("hasAuthority('ManageAdministrator') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.AdministratorService).isAdministrator(principal) && T(cn.edu.xmu.yeahbuddy.service.AdministratorService).asAdministrator(principal).id == #adminId)")
     public String profile(@PathVariable int adminId, Model model) {
         Optional<Administrator> administrator = administratorService.findById(adminId);
         if (!administrator.isPresent()) {
@@ -82,6 +84,8 @@ public class AdministratorController {
     }
 
     @PutMapping(value = "/admin/{adminId:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ManageAdministrator') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.AdministratorService).isAdministrator(principal) && T(cn.edu.xmu.yeahbuddy.service.AdministratorService).asAdministrator(principal).id == #adminId)")
     public ResponseEntity<Map<String, String>> update(@PathVariable int adminId, AdministratorDto administratorDto) {
         log.debug("Update administrator " + adminId + ": " + administratorDto);
         administratorService.updateAdministrator(adminId, administratorDto);
@@ -92,7 +96,9 @@ public class AdministratorController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/admin/report/history")
+    //TODO:
+    @GetMapping("/history")
+    @PreAuthorize("hasAuthority('ViewReport')")
     public String allReports(Model model) {
         List<Report> reports = reportService.findAllReports();
         Set<Team> teams = reports.stream().map(Report::getTeamId).distinct().map(teamService::loadById).collect(Collectors.toSet());
@@ -101,7 +107,8 @@ public class AdministratorController {
         return "admin/ReportHistory";
     }
 
-    @GetMapping("/admin/token/history")
+    @GetMapping("/token")
+    @PreAuthorize("hasAuthority('ManageToken')")
     public String allTokens(Model model) {
         List<Token> tokens = tokenService.findAllTokens();
         model.addAttribute("tokens", tokens);
@@ -134,6 +141,6 @@ public class AdministratorController {
         }
         model.addAttribute("admin", administrator.get());
         model.addAttribute("formAction", String.format("/admin/%d/password", adminId));
-        return "tutor/password";
+        return "admin/password";
     }
 }

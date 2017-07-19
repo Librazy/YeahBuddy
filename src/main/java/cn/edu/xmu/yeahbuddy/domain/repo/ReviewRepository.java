@@ -1,8 +1,7 @@
 package cn.edu.xmu.yeahbuddy.domain.repo;
 
+import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.Review;
-import cn.edu.xmu.yeahbuddy.domain.Stage;
-import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,14 +12,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
-    List<Review> findByTeamAndStage(Team team, Stage stage);
+
+    List<Review> findByReport(Report report);
 
     @NotNull
-    Optional<Review> findByTeamAndStageAndViewer(Team team, Stage stage, Tutor viewer);
+    Optional<Review> findByReportAndViewer(Report report, Tutor viewer);
 
     @NotNull
-    default Optional<Review> find(Team team, Stage stage, Tutor viewer) {
-        return findByTeamAndStageAndViewer(team, stage, viewer);
+    default Optional<Review> find(Report report, Tutor viewer) {
+        return findByReportAndViewer(report, viewer);
     }
 
     @NotNull

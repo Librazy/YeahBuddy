@@ -1,8 +1,7 @@
 package cn.edu.xmu.yeahbuddy.service;
 
+import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.Review;
-import cn.edu.xmu.yeahbuddy.domain.Stage;
-import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.domain.repo.ReviewRepository;
 import cn.edu.xmu.yeahbuddy.model.ReviewDto;
@@ -55,48 +54,45 @@ public class ReviewService {
     /**
      * 查找评审报告
      *
-     * @param team   团队
-     * @param stage  阶段
+     * @param report 报告
      * @param viewer 审核者
      * @return 评审报告
      */
     @Transactional(readOnly = true)
-    public Optional<Review> find(Team team, Stage stage, Tutor viewer) {
+    public Optional<Review> find(Report report, Tutor viewer) {
         log.debug("Finding Review");
-        return reviewRepository.find(team, stage, viewer);
+        return reviewRepository.find(report, viewer);
     }
 
     /**
      * 查找某个团队项目报告的所有评审报告
      *
-     * @param team  团队
-     * @param stage 阶段
+     * @param report 项目报告
      * @return 所有评审报告
      */
     @Transactional
-    public List<Review> findByTeamAndStage(Team team, Stage stage) {
-        return reviewRepository.findByTeamAndStage(team, stage);
+    public List<Review> findByReport(Report report) {
+        return reviewRepository.findByReport(report);
     }
 
     /**
      * 新建评审报告
      *
-     * @param team   团队
-     * @param stage  阶段
-     * @param viewer 审核ID
+     * @param report 目标报告
+     * @param viewer 审核导师
      * @return 新注册的评审报告
      */
     @Transactional
-    public Review createReview(Team team, Stage stage, Tutor viewer) throws IdentifierAlreadyExistsException {
-        log.debug(String.format("Trying to create Review: %s %s %s", team, stage, viewer));
-        if (reviewRepository.find(team, stage, viewer).isPresent()) {
-            log.info(String.format("Fail to create Review with id: %s %s %s: id already exist", team, stage, viewer));
+    public Review createReview(Report report, Tutor viewer) throws IdentifierAlreadyExistsException {
+        log.debug(String.format("Trying to create Review: %s %s", report, viewer));
+        if (reviewRepository.find(report, viewer).isPresent()) {
+            log.info(String.format("Fail to create Review with id: %s %s: id already exist", report, viewer));
             throw new IdentifierAlreadyExistsException("review.id.exist", null);
         }
 
-        Review review = new Review(team, stage, viewer);
-        reviewRepository.save(review);
-        log.debug(String.format("Created new Review with id: %s %s %s", team, stage, viewer));
+        Review review = new Review(report, viewer);
+        review = reviewRepository.save(review);
+        log.debug(String.format("Created new Review with id: %s %s", report, viewer));
         return review;
     }
 

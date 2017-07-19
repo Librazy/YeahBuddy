@@ -1,6 +1,5 @@
 package cn.edu.xmu.yeahbuddy.domain.repo;
 
-import cn.edu.xmu.yeahbuddy.domain.Stage;
 import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import org.jetbrains.annotations.NotNull;
@@ -15,9 +14,6 @@ import java.util.Optional;
 public interface TokenRepository extends JpaRepository<Token, String> {
 
     List<Token> findByTutor(Tutor tutor);
-
-    @NotNull
-    Optional<Token> findByTutorAndStage(Tutor tutor, Stage stage);
 
     List<Token> findByTimeBefore(Time time);
 

@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class ReviewController {
@@ -50,7 +53,7 @@ public class ReviewController {
     }
 
     @GetMapping("/review/{reviewId:\\d+}")
-    //TODO
+
     public ResponseEntity<Model> tutorReviewReport(@PathVariable int reviewId, Model model) {
         Optional<Review> review = reviewService.findById(reviewId);
         if (!review.isPresent()) {
@@ -85,14 +88,5 @@ public class ReviewController {
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
         result.put("message", messageSource.getMessage("review.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/team/{teamId:\\d+}/reports/review/{stageId:\\d+}")
-    //TODO
-    public ResponseEntity<Model> showReportReview(@PathVariable int teamId, @PathVariable int stageId, Model model) {
-        List<Review> reviews = reviewService.findByTeamAndStage(teamService.loadById(teamId), stageService.loadById(stageId));
-        model.addAttribute("reviews", reviews);
-        model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stageId));
-        return ResponseEntity.ok(model);
     }
 }

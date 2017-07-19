@@ -20,7 +20,7 @@ public class TutorTokenAuthTest extends ApplicationTestBase {
 
         mvc.perform(get("/tutor/token?auth_token=" + token))
            .andExpect(status().is3xxRedirection())
-           .andExpect(redirectedUrl(String.format("/tutor/%d/review", tutor.getId())))
+           .andExpect(redirectedUrl(String.format("/tutor/%d/review", tutor1.getId())))
            .andExpect(authenticated().withAuthenticationPrincipal(tutorService.findByUsername("testtutor").get()));
     }
 }

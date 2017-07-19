@@ -21,10 +21,6 @@ public class Token {
     @JoinColumn(name = "TokenTutorId", updatable = false, nullable = false)
     private Tutor tutor;
 
-    @ManyToOne
-    @JoinColumn(name = "TokenStage", updatable = false, nullable = false)
-    private Stage stage;
-
     @CreationTimestamp
     @Column(name = "TokenTime", updatable = false, nullable = false)
     private Time time;
@@ -33,16 +29,15 @@ public class Token {
     private boolean revoked;
 
     @OneToMany
-    private Collection<Team> teams;
+    private Collection<Review> reviews;
 
     public Token() {
     }
 
-    public Token(String tokenValue, Tutor tutor, Stage stage, Collection<Team> teams) {
+    public Token(String tokenValue, Tutor tutor, Collection<Review> reviews) {
         this.tokenValue = tokenValue;
         this.tutor = tutor;
-        this.stage = stage;
-        this.teams = teams;
+        this.reviews = reviews;
     }
 
     @Contract(pure = true)
@@ -61,11 +56,6 @@ public class Token {
     }
 
     @Contract(pure = true)
-    public Stage getStage() {
-        return stage;
-    }
-
-    @Contract(pure = true)
     public Time getTime() {
         return time;
     }
@@ -80,12 +70,12 @@ public class Token {
     }
 
     @Contract(pure = true)
-    public Collection<Team> getTeams() {
-        return teams;
+    public Collection<Review> getReviews() {
+        return reviews;
     }
 
     @Override
     public String toString() {
-        return String.format("tokenValue:%s tutor:%s stage:%s revoked:%b teamIds:[%s]", tokenValue, tutor, stage, revoked, teams.stream().map(Object::toString).collect(Collectors.joining(", ")));
+        return String.format("tokenValue:%s tutor:%s revoked:%b reviews:[%s]", tokenValue, tutor, revoked, reviews.stream().map(Object::toString).collect(Collectors.joining(", ")));
     }
 }

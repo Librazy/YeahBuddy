@@ -1,7 +1,6 @@
 package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.Report;
-import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
@@ -139,15 +138,6 @@ public class TeamController {
         List<Report> reports = reportService.findByTeamId(teamId);
         model.addAttribute("reports", reports);
         model.addAttribute("formAction", String.format("/team/%d/reports", teamId));
-        return ResponseEntity.ok(model);
-    }
-
-    @GetMapping("/team/{teamId:\\d+}/review/{stageId:\\d+}")
-    //TODO
-    public ResponseEntity<Model> showReviewByTeamAndStage(@PathVariable int teamId, @PathVariable int stageId, Model model) {
-        List<Review> reviews = reviewService.findByTeamAndStage(teamService.loadById(teamId), stageService.loadById(stageId));
-        model.addAttribute("reviews", reviews);
-        model.addAttribute("formAction", String.format("/team/%d/reports/review/%d", teamId, stageId));
         return ResponseEntity.ok(model);
     }
 

@@ -55,14 +55,24 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
     @Autowired
     AdministratorService administratorService;
 
+    @Autowired
+    ReportService reportService;
+
+    @Autowired
+    ReviewService reviewService;
+
     @NonNls
     String token;
 
-    Tutor tutor;
+    Tutor tutor1;
 
     Team team1;
 
     Team team2;
+
+    Report report;
+
+    Review review;
 
     @Autowired
     private TokenRepository tokenRepository;
@@ -112,14 +122,19 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
                             .setEmail("a2@b.com")
                             .setPhone("18288888888")
                             .setProjectName("nyaacat"));
-            tutor = tutorService.registerNewTutor(
+            tutor1 = tutorService.registerNewTutor(
                     new TutorDto()
                             .setUsername("testtutor")
                             .setPassword("testtutor")
                             .setDisplayName("testtutor")
                             .setEmail("c@b.com")
                             .setPhone("13988888888"));
-            token = tokenService.createToken(tutor, stage, Collections.singletonList(team1)).getTokenValue();
+
+            report = reportService.createReport(team1, stage, "Report");
+
+            review = reviewService.createReview(report, tutor1);
+
+            token = tokenService.createToken(tutor1, Collections.singletonList(review)).getTokenValue();
 
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;
@@ -133,6 +148,8 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             tokenRepository.deleteAll();
+            reviewService.deleteReview(review.getId());
+            reportService.deleteReport(report.getId());
             teamService.deleteTeam(teamService.loadUserByUsername("testteam").getId());
             teamService.deleteTeam(teamService.loadUserByUsername("test2team").getId());
             tutorService.deleteTutor(tutorService.loadUserByUsername("testtutor").getId());

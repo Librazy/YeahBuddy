@@ -1,6 +1,7 @@
 package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.Report;
+import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.ReportDto;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,10 +39,11 @@ public class ReportController {
         this.messageSource = messageSource;
     }
 
-    @GetMapping("/report/{reportId:\\d+}")
-    //TODO
-    public ResponseEntity<Map<String, Object>> showSelectedReport(@PathVariable int reportId, @ModelAttribute("report") Report report) {
 
+    //TODO: 报告编辑页面
+    @GetMapping("/report/{reportId:\\d+}")
+    @PreAuthorize("hasRole('TEAM') && reportService.findById(#reportId).get().team.id == T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id")
+    public ResponseEntity<Map<String, Object>> report(@PathVariable int reportId, @ModelAttribute("report") Report report) {
         if (report.getId() == Integer.MIN_VALUE) {
             Optional<Report> r = reportService.findById(reportId);
             if (!r.isPresent()) {
@@ -50,11 +54,14 @@ public class ReportController {
         Map<String, Object> m = new HashMap<>();
         m.put("formAction", String.format("/reports/%d", reportId));
         m.put("report", report);
-
+        if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Team)) {
+            m.put("readOnly", true);
+        }
         return ResponseEntity.ok(m);
     }
 
     @PutMapping("/report/{reportId:\\d+}")
+    @PreAuthorize("hasRole('TEAM') && reportService.findById(#reportId).get().team.id == T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id")
     public ResponseEntity<Map<String, String>> updateReport(@PathVariable int reportId, ReportDto reportDto) {
         log.debug("Update report ");
 

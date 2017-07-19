@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 public enum AdministratorPermission implements GrantedAuthority {
     CreateTask,
     CloseSubmit,
-    CreateLink,
     CloseTutorReview,
     ViewReport,
     ViewReview,
@@ -14,6 +13,7 @@ public enum AdministratorPermission implements GrantedAuthority {
     ResetPassword,
     ManageAdministrator,
     ManageTeam,
+    ManageToken,
     ManageTutor;
 
     @Contract(pure = true)

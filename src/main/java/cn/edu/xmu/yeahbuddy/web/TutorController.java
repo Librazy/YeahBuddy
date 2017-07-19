@@ -1,8 +1,8 @@
 package cn.edu.xmu.yeahbuddy.web;
 
-import cn.edu.xmu.yeahbuddy.domain.*;
+import cn.edu.xmu.yeahbuddy.domain.Token;
+import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
-import cn.edu.xmu.yeahbuddy.service.ReviewService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +21,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 public class TutorController {
@@ -32,14 +34,11 @@ public class TutorController {
 
     private final TutorService tutorService;
 
-    private final ReviewService reviewService;
-
     private final MessageSource messageSource;
 
     @Autowired
-    public TutorController(TutorService tutorService, ReviewService reviewService, MessageSource messageSource) {
+    public TutorController(TutorService tutorService, MessageSource messageSource) {
         this.tutorService = tutorService;
-        this.reviewService = reviewService;
         this.messageSource = messageSource;
     }
 
@@ -61,18 +60,10 @@ public class TutorController {
     @GetMapping("/tutor/{tutorId:\\d+}/reviews")
     @PreAuthorize("hasRole('TUTOR')")
     //TODO
-    public ResponseEntity<List<Pair<Team, Pair<Stage, Review>>>> tutorReview(@PathVariable int tutorId, Model model) {
+    public ResponseEntity<Model> tutorReview(@PathVariable int tutorId, Model model) {
         Token token = (Token) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        List<Pair<Team, Pair<Stage, Review>>> resultList = new ArrayList<>();
-        for (Team team : token.getTeams()) {
-
-            Optional<Review> review = reviewService.find(team, token.getStage(), tutorService.loadById(tutorId));
-            if (!review.isPresent()) continue;
-            Pair<Team, Pair<Stage, Review>> result = Pair.of(team, Pair.of(token.getStage(), review.get()));
-            resultList.add(result);
-        }
-        model.addAttribute("reportsReview", resultList);
-        return ResponseEntity.ok(resultList);
+        model.addAttribute("reportsReview", token.getReviews());
+        return ResponseEntity.ok(model);
     }
 
     @GetMapping("/tutor/{tutorId:\\d+}")

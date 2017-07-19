@@ -104,7 +104,7 @@ public class ReportService {
         Report report = new Report(team, stage);
         report.setSubmitted(false);
         report.setTitle(title);
-        reportRepository.save(report);
+        report = reportRepository.save(report);
         log.debug("Created new Report with id " + team + ", " + stage);
         return report;
     }
@@ -115,7 +115,7 @@ public class ReportService {
      * @param id 团队项目报告ID
      */
     @Transactional
-    public void deleteTeamReport(int id) {
+    public void deleteReport(int id) {
         log.debug("Delete Report with id" + id);
         reportRepository.deleteById(id);
     }

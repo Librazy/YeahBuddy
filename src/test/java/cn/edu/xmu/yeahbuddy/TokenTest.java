@@ -1,7 +1,8 @@
 package cn.edu.xmu.yeahbuddy;
 
+import cn.edu.xmu.yeahbuddy.domain.Report;
+import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.Stage;
-import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.model.StageDto;
 import org.junit.Assert;
@@ -31,11 +32,12 @@ public class TokenTest extends ApplicationTestBase {
     @Transactional
     public void tokenReadTest() throws Exception {
         Token t = tokenService.loadAndValidateToken(token).getSecond();
-        Assert.assertEquals(1, t.getTeams().size());
-        Assert.assertTrue(t.getTeams().stream().findFirst().isPresent());
-        Assert.assertTrue(t.getTeams().stream().findFirst().get().equals(team1));
+        Assert.assertEquals(1, t.getReviews().size());
+        Assert.assertTrue(t.getReviews().stream().findFirst().isPresent());
+        Assert.assertTrue(t.getReviews().stream().findFirst().get().getTeam().equals(team1));
+        Assert.assertEquals("2017 01", t.getReviews().stream().findFirst().map(Review::getStage).map(Stage::getTitle).orElseThrow(AssertionError::new));
 
-        Collection<Token> tokens = tutorService.loadById(tutor.getId()).getTokens();
+        Collection<Token> tokens = tutorService.loadById(tutor1.getId()).getTokens();
         Assert.assertEquals(1, tokens.size());
     }
 
@@ -47,14 +49,18 @@ public class TokenTest extends ApplicationTestBase {
                                                                .setTitle("2017 02")
                                                                .setStart(Timestamp.valueOf("2017-02-01 20:00:00"))
                                                                .setEnd(Timestamp.valueOf("2017-04-01 20:00:00")));
-        Set<Team> teamSet = new HashSet<>();
-        teamSet.add(team1);
-        teamSet.add(team2);
+        Set<Review> reviewSet = new HashSet<>();
 
-        Token t = tokenService.createToken(tutor, stage, teamSet);
-        Assert.assertTrue(tokenService.loadAndValidateToken(t.getTokenValue()).getFirst().equals(tutor));
-        Assert.assertEquals(2, tokenService.loadAndValidateToken(t.getTokenValue()).getSecond().getTeams().size());
-        Assert.assertEquals("2017 02", t.getStage().getTitle());
+        Report report = reportService.createReport(team1, stage, "Report");
+
+        Review review2 = reviewService.createReview(report, tutor1);
+
+        reviewSet.add(review);
+        reviewSet.add(review2);
+
+        Token t = tokenService.createToken(tutor1, reviewSet);
+        Assert.assertTrue(tokenService.loadAndValidateToken(t.getTokenValue()).getFirst().equals(tutor1));
+        Assert.assertEquals(2, tokenService.loadAndValidateToken(t.getTokenValue()).getSecond().getReviews().size());
 
         tokenService.revokeToken(t);
 
