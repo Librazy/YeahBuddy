@@ -1,7 +1,6 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
-import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
@@ -53,7 +52,7 @@ public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringCo
     public void setUp() {
         new TransactionTemplate(transactionManager).execute(status -> {
             Administrator ultimate = new Administrator();
-            ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+            ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             teamService.registerNewTeam(
                     new TeamDto()
@@ -81,7 +80,7 @@ public class TeamAuthenticationTests extends AbstractTransactionalJUnit4SpringCo
     public void tearDown() {
         new TransactionTemplate(transactionManager).execute(status -> {
             Administrator ultimate = new Administrator();
-            ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+            ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             teamService.deleteTeam(teamService.loadUserByUsername("someteam").getId());
             teamService.deleteTeam(teamService.loadUserByUsername("otherteam").getId());

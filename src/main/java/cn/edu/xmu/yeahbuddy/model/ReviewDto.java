@@ -2,9 +2,12 @@ package cn.edu.xmu.yeahbuddy.model;
 
 import org.jetbrains.annotations.Contract;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class ReviewDto {
+public class ReviewDto implements Serializable {
+
+    private static final long serialVersionUID = -5112892474273121041L;
 
     private Integer rank;
 

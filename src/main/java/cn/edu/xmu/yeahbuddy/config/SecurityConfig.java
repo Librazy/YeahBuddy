@@ -20,21 +20,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Spring Security 配置
+ */
 @EnableWebSecurity
 @EnableTransactionManagement
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+    /**
+     * 根目录与管理员用户的安全配置
+     */
     @Order(3)
     @Configuration
-    public static class AdministratorSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class RootAndAdministratorSecurityConfig extends WebSecurityConfigurerAdapter {
 
         private final AdministratorService administratorService;
 
         private Environment environment;
 
+        /**
+         * @param administratorService Autowired
+         * @param environment          Autowired
+         */
         @Autowired
-        public AdministratorSecurityConfig(AdministratorService administratorService, Environment environment) {
+        public RootAndAdministratorSecurityConfig(AdministratorService administratorService, Environment environment) {
             this.administratorService = administratorService;
             this.environment = environment;
         }
@@ -92,12 +102,18 @@ public class SecurityConfig {
         }
     }
 
+    /**
+     * 团队用户的安全配置
+     */
     @Order(1)
     @Configuration
     public static class TeamSecurityConfig extends WebSecurityConfigurerAdapter {
 
         private final TeamService teamService;
 
+        /**
+         * @param teamService Autowired
+         */
         @Autowired
         public TeamSecurityConfig(TeamService teamService) {
             this.teamService = teamService;
@@ -138,6 +154,9 @@ public class SecurityConfig {
         }
     }
 
+    /**
+     * 导师用户的安全配置
+     */
     @Order(2)
     @Configuration
     public static class TutorSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -146,6 +165,10 @@ public class SecurityConfig {
 
         private final AuthTokenAuthenticationProvider authTokenAuthenticationProvider;
 
+        /**
+         * @param tutorService                    Autowired
+         * @param authTokenAuthenticationProvider Autowired
+         */
         @Autowired
         public TutorSecurityConfig(TutorService tutorService, AuthTokenAuthenticationProvider authTokenAuthenticationProvider) {
             this.tutorService = tutorService;
@@ -195,6 +218,11 @@ public class SecurityConfig {
             auth.authenticationProvider(preAuthenticatedAuthenticationProvider()).authenticationProvider(authTokenAuthenticationProvider).userDetailsService(tutorService).passwordEncoder(new YbPasswordEncodeService());
         }
 
+        /**
+         * 注入PreAuthenticatedAuthenticationProvider, 用于提供token登录后的身份验证
+         *
+         * @return PreAuthenticatedAuthenticationProvider
+         */
         @Bean
         public PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider() {
             PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider = new PreAuthenticatedAuthenticationProvider();

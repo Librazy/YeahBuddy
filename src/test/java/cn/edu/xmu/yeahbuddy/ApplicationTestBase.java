@@ -87,7 +87,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
     public void setUp() throws Exception {
         new TransactionTemplate(transactionManager).execute(status -> {
             Administrator ultimate = new Administrator();
-            ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+            ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
 
             administratorService.registerNewAdministrator(
@@ -96,8 +96,8 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
                             .setPassword("one")
                             .setDisplayName("some")
                             .setAuthorities(
-                                    Stream.of(AdministratorPermission.values())
-                                          .map(AdministratorPermission::name)
+                                    Stream.of(Administrator.AdministratorPermission.values())
+                                          .map(Administrator.AdministratorPermission::name)
                                           .collect(Collectors.toSet())));
 
             Stage stage = stageService.createStage(201701, new StageDto()
@@ -145,7 +145,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
     public void tearDown() {
         new TransactionTemplate(transactionManager).execute(status -> {
             Administrator ultimate = new Administrator();
-            ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+            ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             tokenRepository.deleteAll();
             reviewService.deleteReview(review.getId());

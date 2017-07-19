@@ -84,6 +84,4 @@ public class StageService {
         log.debug(String.format("Created new Stage with id: %d", stageId));
         return result;
     }
-
-
 }

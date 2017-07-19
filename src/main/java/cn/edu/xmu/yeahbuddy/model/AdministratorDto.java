@@ -1,6 +1,6 @@
 package cn.edu.xmu.yeahbuddy.model;
 
-import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
+import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
@@ -19,7 +19,7 @@ public class AdministratorDto implements Serializable {
 
     private String displayName;
 
-    private Collection<AdministratorPermission> authorities;
+    private Collection<Administrator.AdministratorPermission> authorities;
 
     private String phone;
 
@@ -56,12 +56,12 @@ public class AdministratorDto implements Serializable {
     }
 
     @Contract(pure = true)
-    public Collection<AdministratorPermission> getAuthorities() {
+    public Collection<Administrator.AdministratorPermission> getAuthorities() {
         return authorities;
     }
 
     public AdministratorDto setAuthorities(Collection<String> authorities) {
-        this.authorities = authorities.stream().map(AdministratorPermission::valueOf).collect(Collectors.toSet());
+        this.authorities = authorities.stream().map(Administrator.AdministratorPermission::valueOf).collect(Collectors.toSet());
         return this;
     }
 

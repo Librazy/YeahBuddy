@@ -2,9 +2,12 @@ package cn.edu.xmu.yeahbuddy.model;
 
 import org.jetbrains.annotations.Contract;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class StageDto {
+public class StageDto implements Serializable {
+
+    private static final long serialVersionUID = -3446952457606537438L;
 
     private Timestamp start;
 

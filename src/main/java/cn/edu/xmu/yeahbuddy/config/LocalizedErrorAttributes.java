@@ -46,6 +46,8 @@ import java.util.Map;
 
 /**
  * 本地化错误标签
+ *
+ * @see org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorAttributes
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)

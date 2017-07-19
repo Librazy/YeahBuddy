@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -193,6 +194,26 @@ public final class Administrator implements UserDetails, Authentication {
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (!isAuthenticated) {
             throw new IllegalArgumentException();
+        }
+    }
+
+    public enum AdministratorPermission implements GrantedAuthority {
+        CreateTask,
+        CloseSubmit,
+        CloseTutorReview,
+        ViewReport,
+        ViewReview,
+        FinalReview,
+        ResetPassword,
+        ManageAdministrator,
+        ManageTeam,
+        ManageToken,
+        ManageTutor;
+
+        @Contract(pure = true)
+        @Override
+        public String getAuthority() {
+            return name();
         }
     }
 }

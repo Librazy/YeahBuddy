@@ -1,7 +1,6 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
-import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
 import cn.edu.xmu.yeahbuddy.service.YbPasswordEncodeService;
@@ -43,9 +42,9 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void administratorServiceTest1() throws Exception {
         Administrator ultimate = new Administrator();
-        ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+        ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
-        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("AAA").setPassword("BBB").setDisplayName("AAA").setAuthorities(Collections.singleton(AdministratorPermission.ManageAdministrator.getAuthority())));
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("AAA").setPassword("BBB").setDisplayName("AAA").setAuthorities(Collections.singleton(Administrator.AdministratorPermission.ManageAdministrator.getAuthority())));
         SecurityContextHolder.getContext().setAuthentication(admin1);
         Administrator admin2 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("BBB").setPassword("CCC").setDisplayName("BBB").setAuthorities(new HashSet<>()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
@@ -64,7 +63,7 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void administratorServiceTest2() throws Exception {
         Administrator ultimate = new Administrator();
-        ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+        ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
         Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("DDD").setPassword("BBB").setDisplayName("DDD").setAuthorities(new HashSet<>()));
         Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
@@ -77,9 +76,9 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
     @Test
     public void administratorServiceTest3() throws Exception {
         Administrator ultimate = new Administrator();
-        ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+        ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
         SecurityContextHolder.getContext().setAuthentication(ultimate);
-        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("DDD").setPassword("BBB").setDisplayName("DDD").setAuthorities(Collections.singleton(AdministratorPermission.ManageAdministrator.getAuthority())));
+        Administrator admin1 = administratorService.registerNewAdministrator(new AdministratorDto().setUsername("DDD").setPassword("BBB").setDisplayName("DDD").setAuthorities(Collections.singleton(Administrator.AdministratorPermission.ManageAdministrator.getAuthority())));
         Assert.assertTrue(ybPasswordEncodeService.matches("BBB", admin1.getPassword()));
 
         administratorService.updateAdministrator(admin1.getId(), new AdministratorDto().setDisplayName("FFF"));
@@ -87,6 +86,6 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
 
         SecurityContextHolder.getContext().setAuthentication(admin1);
         exception.expect(AccessDeniedException.class);
-        administratorService.registerNewAdministrator(new AdministratorDto().setUsername("EEE").setPassword("BBB").setDisplayName("EEE").setAuthorities(Arrays.asList(AdministratorPermission.CreateTask.getAuthority(), AdministratorPermission.ManageAdministrator.getAuthority())));
+        administratorService.registerNewAdministrator(new AdministratorDto().setUsername("EEE").setPassword("BBB").setDisplayName("EEE").setAuthorities(Arrays.asList(Administrator.AdministratorPermission.CreateTask.getAuthority(), Administrator.AdministratorPermission.ManageAdministrator.getAuthority())));
     }
 }

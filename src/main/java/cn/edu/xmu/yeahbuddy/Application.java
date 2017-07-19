@@ -26,21 +26,48 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Spring Boot 入口类
+ */
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
 
     @NonNls
     private static Log log = LogFactory.getLog(MainController.class);
 
+    /**
+     * 标准Jar入口点
+     *
+     * @param args 命令行参数
+     */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
+    /**
+     * WAR入口点配置
+     *
+     * @param application SpringApplicationBuilder
+     * @return SpringApplicationBuilder
+     * @see <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/howto-traditional-deployment.html">Spring Boot Reference Guide Part IX. ‘How-to’ guides	 85. Traditional deployment</a>
+     */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(Application.class);
     }
 
+    /**
+     * 生成调试用预置数据
+     *
+     * @param administratorService Autowire
+     * @param teamService          Autowire
+     * @param tutorService         Autowire
+     * @param tokenService         Autowire
+     * @param reportService        Autowire
+     * @param stageService         Autowire
+     * @param reviewService        Autowire
+     * @return CommandLineRunner
+     */
     @Bean
     @TestOnly
     @ConditionalOnProperty(name = "debug")
@@ -53,7 +80,7 @@ public class Application extends SpringBootServletInitializer {
                            final ReviewService reviewService) {
         return args -> {
             Administrator ultimate = new Administrator();
-            ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+            ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
             if (!administratorService.findByUsername("admin").isPresent()) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);
                 administratorService.registerNewAdministrator(
@@ -62,8 +89,8 @@ public class Application extends SpringBootServletInitializer {
                                 .setPassword("admin")
                                 .setDisplayName("Admin 1")
                                 .setAuthorities(
-                                        Arrays.stream(AdministratorPermission.values())
-                                              .map(AdministratorPermission::name)
+                                        Arrays.stream(Administrator.AdministratorPermission.values())
+                                              .map(Administrator.AdministratorPermission::name)
                                               .collect(Collectors.toSet())));
                 SecurityContextHolder.getContext().setAuthentication(null);
             }

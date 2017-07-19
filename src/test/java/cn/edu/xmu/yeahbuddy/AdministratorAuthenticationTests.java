@@ -1,7 +1,6 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.Administrator;
-import cn.edu.xmu.yeahbuddy.domain.AdministratorPermission;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.service.AdministratorService;
 import cn.edu.xmu.yeahbuddy.service.YbPasswordEncodeService;
@@ -54,7 +53,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
     public void setUp() {
         new TransactionTemplate(transactionManager).execute(status -> {
             Administrator ultimate = new Administrator();
-            ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+            ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             administratorService.registerNewAdministrator(
                     new AdministratorDto()
@@ -62,8 +61,8 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
                             .setPassword("one")
                             .setDisplayName("some")
                             .setAuthorities(
-                                    Stream.of(AdministratorPermission.values())
-                                          .map(AdministratorPermission::name)
+                                    Stream.of(Administrator.AdministratorPermission.values())
+                                          .map(Administrator.AdministratorPermission::name)
                                           .collect(Collectors.toSet())));
             administratorService.registerNewAdministrator(
                     new AdministratorDto()
@@ -80,7 +79,7 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
     public void tearDown() {
         new TransactionTemplate(transactionManager).execute(status -> {
             Administrator ultimate = new Administrator();
-            ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
+            ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
             administratorService.deleteAdministrator(administratorService.loadUserByUsername("some").getId());
             administratorService.deleteAdministrator(administratorService.loadUserByUsername("other").getId());
@@ -98,8 +97,8 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
                         .setPassword("admin2")
                         .setDisplayName("admin2")
                         .setAuthorities(
-                                Stream.of(AdministratorPermission.ViewReport)
-                                      .map(AdministratorPermission::getAuthority)
+                                Stream.of(Administrator.AdministratorPermission.ViewReport)
+                                      .map(Administrator.AdministratorPermission::getAuthority)
                                       .collect(Collectors.toSet())));
     }
 
@@ -112,8 +111,8 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
                         .setPassword("admin3")
                         .setDisplayName("admin3")
                         .setAuthorities(
-                                Stream.of(AdministratorPermission.ViewReport)
-                                      .map(AdministratorPermission::name)
+                                Stream.of(Administrator.AdministratorPermission.ViewReport)
+                                      .map(Administrator.AdministratorPermission::name)
                                       .collect(Collectors.toSet())));
         Assert.assertTrue(ybPasswordEncodeService.matches("admin3", admin3.getPassword()));
         admin3 = administratorService.resetAdministratorPassword(admin3.getId(), "admin");
@@ -129,8 +128,8 @@ public class AdministratorAuthenticationTests extends AbstractTransactionalJUnit
                         .setUsername("admin3")
                         .setPassword("admin3")
                         .setAuthorities(
-                                Stream.of(AdministratorPermission.ViewReport)
-                                      .map(AdministratorPermission::name)
+                                Stream.of(Administrator.AdministratorPermission.ViewReport)
+                                      .map(Administrator.AdministratorPermission::name)
                                       .collect(Collectors.toSet())));
     }
 }
