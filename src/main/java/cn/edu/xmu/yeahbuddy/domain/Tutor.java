@@ -9,10 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -47,6 +44,9 @@ public class Tutor implements UserDetails {
     @Column(name = "TutorEmail")
     private String email;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tutor")
+    private Collection<Token> tokens;
+
     public Tutor() {
     }
 
@@ -54,11 +54,17 @@ public class Tutor implements UserDetails {
         this.password = password;
         this.username = username;
         this.displayName = username;
+        this.tokens = null;
     }
 
     @Contract(pure = true)
     public int getId() {
         return id;
+    }
+
+    @Contract(pure = true)
+    public Collection<Token> getTokens() {
+        return tokens;
     }
 
     @Contract(pure = true)

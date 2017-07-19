@@ -32,18 +32,17 @@ public class Token {
     @Column(name = "TokenRevoked", nullable = false)
     private boolean revoked;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "TokenTeamIds")
-    private Collection<Integer> teamIds;
+    @OneToMany
+    private Collection<Team> teams;
 
     public Token() {
     }
 
-    public Token(String tokenValue, Tutor tutor, Stage stage, Collection<Integer> teamIds) {
+    public Token(String tokenValue, Tutor tutor, Stage stage, Collection<Team> teams) {
         this.tokenValue = tokenValue;
         this.tutor = tutor;
         this.stage = stage;
-        this.teamIds = teamIds;
+        this.teams = teams;
     }
 
     @Contract(pure = true)
@@ -81,12 +80,12 @@ public class Token {
     }
 
     @Contract(pure = true)
-    public Collection<Integer> getTeamIds() {
-        return teamIds;
+    public Collection<Team> getTeams() {
+        return teams;
     }
 
     @Override
     public String toString() {
-        return String.format("tokenValue:%s tutor:%s stage:%s revoked:%b teamIds:[%s]", tokenValue, tutor, stage, revoked, teamIds.stream().map(Object::toString).collect(Collectors.joining(", ")));
+        return String.format("tokenValue:%s tutor:%s stage:%s revoked:%b teamIds:[%s]", tokenValue, tutor, stage, revoked, teams.stream().map(Object::toString).collect(Collectors.joining(", ")));
     }
 }

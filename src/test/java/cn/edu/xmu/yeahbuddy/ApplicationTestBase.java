@@ -3,13 +3,11 @@ package cn.edu.xmu.yeahbuddy;
 import cn.edu.xmu.yeahbuddy.domain.*;
 import cn.edu.xmu.yeahbuddy.domain.repo.StageRepository;
 import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
+import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.model.StageDto;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
-import cn.edu.xmu.yeahbuddy.service.StageService;
-import cn.edu.xmu.yeahbuddy.service.TeamService;
-import cn.edu.xmu.yeahbuddy.service.TokenService;
-import cn.edu.xmu.yeahbuddy.service.TutorService;
+import cn.edu.xmu.yeahbuddy.service.*;
 import org.jetbrains.annotations.NonNls;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @RunWith(SpringRunner.class)
@@ -45,20 +45,30 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
 
     @Autowired
     TeamService teamService;
-    @NonNls
-    String token;
-    Tutor tutor;
-    Team team1;
-    Team team2;
-    @Autowired
-    private TokenRepository tokenRepository;
-    @Autowired
-    private StageRepository stageRepository;
-    @Autowired
-    private TokenService tokenService;
 
     @Autowired
-    private StageService stageService;
+    TokenService tokenService;
+
+    @Autowired
+    StageService stageService;
+
+    @Autowired
+    AdministratorService administratorService;
+
+    @NonNls
+    String token;
+
+    Tutor tutor;
+
+    Team team1;
+
+    Team team2;
+
+    @Autowired
+    private TokenRepository tokenRepository;
+
+    @Autowired
+    private StageRepository stageRepository;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -69,6 +79,16 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
+
+            administratorService.registerNewAdministrator(
+                    new AdministratorDto()
+                            .setUsername("some")
+                            .setPassword("one")
+                            .setDisplayName("some")
+                            .setAuthorities(
+                                    Stream.of(AdministratorPermission.values())
+                                          .map(AdministratorPermission::name)
+                                          .collect(Collectors.toSet())));
 
             Stage stage = stageService.createStage(201701, new StageDto()
                                                                    .setTitle("2017 01")
@@ -99,7 +119,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
                             .setDisplayName("testtutor")
                             .setEmail("c@b.com")
                             .setPhone("13988888888"));
-            token = tokenService.createToken(tutor, stage, Collections.singletonList(team1.getId()));
+            token = tokenService.createToken(tutor, stage, Collections.singletonList(team1)).getTokenValue();
 
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;
@@ -117,7 +137,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
             teamService.deleteTeam(teamService.loadUserByUsername("test2team").getId());
             tutorService.deleteTutor(tutorService.loadUserByUsername("testtutor").getId());
             stageRepository.deleteAllInBatch();
-
+            administratorService.deleteAdministrator(administratorService.loadUserByUsername("some").getId());
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;
         });
