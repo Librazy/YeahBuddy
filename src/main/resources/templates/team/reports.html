@@ -60,6 +60,7 @@
                 <thead>
                 <tr>
                     <th>项目报告名称</th>
+                    <th>阶段名称</th>
                     <th>截止时间</th>
                     <th>是否提交</th>
                     <th>考核结果</th>
@@ -68,8 +69,10 @@
                 </thead>
                 <tbody>
                 <tr data-th-each="result:${results}">
-                    <td><a href="#" data-th-text="${result.report.title}">2017年度期末报告</a></td>
-                    <td data-th-text="${result.report.stage.end}">2017-07-20 00:00</td>
+                    <td><a href="report.html" data-th-href="'/report/' + ${result.report.id}"
+                           data-th-text="${result.report.title}">2017年度期末报告</a></td>
+                    <td data-th-text="${result.report.stage.title}">2017年度期末</td>
+                    <td data-th-text="${#dates.format(result.report.stage.end, 'yyyy-MM-dd')}">2017-07-20 00:00</td>
                     <td data-th-text="${result.report.submitted} ? #{yes} : #{no}">是</td>
                     <td data-th-text="${result.brief}">优秀</td>
                     <td><a href="#">查看结果</a></td>

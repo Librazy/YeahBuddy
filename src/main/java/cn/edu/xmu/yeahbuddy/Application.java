@@ -1,10 +1,7 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.*;
-import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
-import cn.edu.xmu.yeahbuddy.model.StageDto;
-import cn.edu.xmu.yeahbuddy.model.TeamDto;
-import cn.edu.xmu.yeahbuddy.model.TutorDto;
+import cn.edu.xmu.yeahbuddy.model.*;
 import cn.edu.xmu.yeahbuddy.service.*;
 import cn.edu.xmu.yeahbuddy.web.MainController;
 import org.apache.commons.logging.Log;
@@ -21,9 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -123,6 +118,12 @@ public class Application extends SpringBootServletInitializer {
                             .setEnd(Timestamp.valueOf("2017-03-01 20:00:00")));
 
             Report report = reportService.createReport(team.get(), stage, "Report");
+            List<String> content = new ArrayList<>();
+            content.add("报告内容1");
+            content.add("报告内容2");
+            content.add("报告内容3");
+            reportService.updateReport(report.getId(), new ReportDto().setContent(content));
+
 
             if (!tutorService.findByUsername("tutor").isPresent()) {
                 SecurityContextHolder.getContext().setAuthentication(ultimate);

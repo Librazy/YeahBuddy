@@ -1,7 +1,6 @@
 package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.Report;
-import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.ReportDto;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
@@ -11,10 +10,11 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,7 +29,9 @@ public class ReportController {
 
     @NonNls
     private static Log log = LogFactory.getLog(ReportController.class);
+
     private final MessageSource messageSource;
+
     private ReportService reportService;
 
     @Autowired
@@ -41,23 +43,22 @@ public class ReportController {
 
     //TODO: 报告编辑页面
     @GetMapping("/report/{reportId:\\d+}")
-    @PreAuthorize("hasRole('TEAM') && reportService.findById(#reportId).get().team.id == T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id")
-    public ResponseEntity<Map<String, Object>> report(@PathVariable int reportId) {
-        Optional<Report> r = reportService.findById(reportId);
-        if (!r.isPresent()) {
+    @PreAuthorize("hasRole('TEAM') && @reportService.findById(#reportId).get().team.id == T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id")
+    public String report(@PathVariable int reportId, Model model) {
+        Optional<Report> report = reportService.findById(reportId);
+        if (!report.isPresent()) {
             throw new ResourceNotFoundException("report.id.not_found", reportId);
         }
-        Map<String, Object> m = new HashMap<>();
-        m.put("formAction", String.format("/reports/%d", reportId));
-        m.put("report", r.get());
-        if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Team)) {
-            m.put("readOnly", true);
+        model.addAttribute("formAction", String.format("/report/%d", reportId));
+        model.addAttribute("report", report.get());
+        if (report.get().isSubmitted()) {
+            model.addAttribute("readOnly", true);
         }
-        return ResponseEntity.ok(m);
+        return "team/report";
     }
 
     @PutMapping("/report/{reportId:\\d+}")
-    @PreAuthorize("hasRole('TEAM') && reportService.findById(#reportId).get().team.id == T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id")
+    @PreAuthorize("hasRole('TEAM') && @reportService.findById(#reportId).get().team.id == T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id")
     public ResponseEntity<Map<String, String>> updateReport(@PathVariable int reportId, ReportDto reportDto) {
         log.debug("Update report ");
 
@@ -66,9 +67,18 @@ public class ReportController {
             throw new ResourceNotFoundException("report.id.not_found", reportId);
         }
 
-        reportService.updateReport(reportId, reportDto);
         Map<String, String> result = new HashMap<>();
         Locale locale = LocaleContextHolder.getLocale();
+
+        if (report.get().isSubmitted()) {
+            result.put("status", "409");
+            result.put("error", messageSource.getMessage("http.status.409", new Object[]{}, locale));
+            result.put("message", messageSource.getMessage("report.already.submitted", new Object[]{}, locale));
+            return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+        }
+
+        reportService.updateReport(reportId, reportDto);
+
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
         result.put("message", messageSource.getMessage("report.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);

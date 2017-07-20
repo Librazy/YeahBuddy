@@ -3,8 +3,8 @@ package cn.edu.xmu.yeahbuddy.model;
 import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
 public class ReportDto implements Serializable {
 
@@ -14,9 +14,9 @@ public class ReportDto implements Serializable {
 
     private String title;
 
-    private Map<Integer, String> content;
+    private List<String> content;
 
-    private Collection<String> files;
+    private Set<String> files;
 
     @Contract(pure = true)
     public Boolean getSubmitted() {
@@ -39,21 +39,21 @@ public class ReportDto implements Serializable {
     }
 
     @Contract(pure = true)
-    public Map<Integer, String> getContent() {
+    public List<String> getContent() {
         return content;
     }
 
-    public ReportDto setContent(Map<Integer, String> content) {
+    public ReportDto setContent(List<String> content) {
         this.content = content;
         return this;
     }
 
     @Contract(pure = true)
-    public Collection<String> getFiles() {
+    public Set<String> getFiles() {
         return files;
     }
 
-    public ReportDto setFiles(Collection<String> files) {
+    public ReportDto setFiles(Set<String> files) {
         this.files = files;
         return this;
     }

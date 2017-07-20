@@ -50,8 +50,10 @@
                     data-th-text="${report.stage.title}">
                     2017年度期末报告
                 </h2>
-                <form data-th-action="${formAction}" method="POST">
+                <form id="reportForm" data-th-action="${formAction}" method="POST">
                     <input type="hidden" name="_method" value="PUT"/>
+                    <input type="hidden" id="submitted" name="submitted" value="false"
+                           data-th-value="${report.submitted}"/>
                     <div class="form-group">
                         <label for="title" class="bmd-label-floating">报告标题：</label>
                         <input class="form-control" id="title" name="title"
@@ -72,18 +74,17 @@
                         <textarea class="form-control" rows="8"
                                   data-th-text="${report.content[2]}" id="content2" name="content"></textarea>
                     </div>
-                    <div class="row">
+                    <div class="row" id="submits">
                         <div class="col-md-7 offset-md-5">
                             <nav>
-                                <button class="btn btn-primary" type="button" data-th-text="#{submit}">提交</button>
-                                <button class="btn btn-default" type="button">暂存</button>
+                                <button id="submit" class="btn btn-primary" data-th-text="#{submit}">提交</button>
+                                <button id="save" class="btn btn-default">暂存</button>
                             </nav>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-
     </div>
     <footer class="row clearfix" data-th-replace="~{footer::normal}">
         <div class="col-md-10 offset-md-1 column">
@@ -107,15 +108,56 @@
         </div>
     </footer>
 </div>
-
-
 <script src="../../webjars/jquery/dist/jquery.min.js" data-th-src="@{/webjars/jquery/dist/jquery.min.js}"></script>
 <script src="../../webjars/tether/dist/js/tether.min.js"
         data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
 <script src="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js"
         data-th-src="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.iife.min.js}"></script>
+<!--suppress JSUnresolvedFunction -->
 <script>
     $('body').bootstrapMaterialDesign();
+</script>
+<script data-th-if="${readOnly}">
+    var $form = $('#reportForm');
+    $form.find("input").attr("readonly", true);
+    $form.find("textarea").attr("readonly", true);
+    $("#submits").hide();
+</script>
+<!--suppress JSUnfilteredForInLoop, XmlDefaultAttributeValue, JSUnresolvedVariable -->
+<script>
+
+    $(function () {
+        var $form = $('#reportForm');
+        var $submitted = $("#submitted");
+        $("#submit").click(function () {
+            $submitted.val(true);
+            return true;
+        });
+        $("#save").click(function () {
+            $submitted.val(false);
+            return true;
+        });
+        $form.on("submit", function () {
+            $.ajax({
+                method: "PUT",
+                url: $form.attr('action'),
+                data: $form.serializeArray(),
+                dataType: "json",
+                success: function (data) {
+                    $form.prepend('<div class="row"><div class="alert alert-success alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + data.status + '</strong>' + data.message + '</div></div>');
+                    if ($submitted.val()) {
+                        $form.find("input").attr("readonly", true);
+                        $form.find("textarea").attr("readonly", true);
+                        $("#submits").hide();
+                    }
+                },
+                error: function (jqXHR) {
+                    $form.prepend('<div class="row"><div class="alert alert-warning alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + jqXHR.responseJSON.error + '</strong>' + jqXHR.responseJSON.message + '</div></div>');
+                }
+            });
+            return false;
+        });
+    });
 </script>
 </body>
 </html>

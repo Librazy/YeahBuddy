@@ -4,8 +4,8 @@ import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
 @Table(
         uniqueConstraints =
@@ -16,7 +16,7 @@ public class Report {
 
     @Id
     @GeneratedValue
-    @Column(name = "ReviewId", unique = true, updatable = false, nullable = false)
+    @Column(name = "ReportId", unique = true, updatable = false, nullable = false)
     private int id = Integer.MIN_VALUE;
 
     @NaturalId
@@ -37,11 +37,11 @@ public class Report {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "ReportContent")
-    private Map<Integer, String> content;
+    private List<String> content;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "ReportFiles")
-    private Collection<String> files;
+    private Set<String> files;
 
     public Report() {
     }
@@ -86,20 +86,20 @@ public class Report {
     }
 
     @Contract(pure = true)
-    public Map<Integer, String> getContent() {
+    public List<String> getContent() {
         return content;
     }
 
-    public void setContent(Map<Integer, String> content) {
+    public void setContent(List<String> content) {
         this.content = content;
     }
 
     @Contract(pure = true)
-    public Collection<String> getFiles() {
+    public Set<String> getFiles() {
         return files;
     }
 
-    public void setFiles(Collection<String> files) {
+    public void setFiles(Set<String> files) {
         this.files = files;
     }
 
