@@ -16,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -43,17 +42,14 @@ public class ReportController {
     //TODO: 报告编辑页面
     @GetMapping("/report/{reportId:\\d+}")
     @PreAuthorize("hasRole('TEAM') && reportService.findById(#reportId).get().team.id == T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id")
-    public ResponseEntity<Map<String, Object>> report(@PathVariable int reportId, @ModelAttribute("report") Report report) {
-        if (report.getId() == Integer.MIN_VALUE) {
-            Optional<Report> r = reportService.findById(reportId);
-            if (!r.isPresent()) {
-                throw new ResourceNotFoundException("report.id.not_found", reportId);
-            }
-            report = r.get();
+    public ResponseEntity<Map<String, Object>> report(@PathVariable int reportId) {
+        Optional<Report> r = reportService.findById(reportId);
+        if (!r.isPresent()) {
+            throw new ResourceNotFoundException("report.id.not_found", reportId);
         }
         Map<String, Object> m = new HashMap<>();
         m.put("formAction", String.format("/reports/%d", reportId));
-        m.put("report", report);
+        m.put("report", r.get());
         if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Team)) {
             m.put("readOnly", true);
         }

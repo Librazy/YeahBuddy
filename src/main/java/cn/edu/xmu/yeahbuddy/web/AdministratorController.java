@@ -107,7 +107,7 @@ public class AdministratorController {
     }
 
     //TODO:获取所有已经截止的项目报告任务(还没写)
-    @GetMapping("task/history")
+    @GetMapping("/task/history")
     public String taskHistory(Model model){
 
         return "admin/reportTaskHistory";

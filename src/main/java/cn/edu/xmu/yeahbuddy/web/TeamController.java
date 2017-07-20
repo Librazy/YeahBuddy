@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.*;
@@ -139,18 +137,5 @@ public class TeamController {
         model.addAttribute("reports", reports);
         model.addAttribute("formAction", String.format("/team/%d/reports", teamId));
         return ResponseEntity.ok(model);
-    }
-
-    @GetMapping("/team/{teamId:\\d+}/report/{stageId:\\d+}")
-    public RedirectView showSelectedReport(@PathVariable int teamId, @PathVariable int stageId, RedirectAttributes redirectAttributes) {
-        Optional<Report> report = reportService.find(teamService.loadById(teamId), stageService.loadById(stageId));
-        if (!report.isPresent()) {
-            throw new ResourceNotFoundException("report.team_stage.not_found", String.format("%d, %d", teamId, stageId));
-        }
-
-        redirectAttributes.addFlashAttribute("report", report.get());
-        final RedirectView redirectView = new RedirectView(String.format("/report/%d", report.get().getId()), false, false);
-        redirectView.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
-        return redirectView;
     }
 }
