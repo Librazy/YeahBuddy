@@ -48,7 +48,7 @@ public class TokenTest extends ApplicationTestBase {
         Stage stage = stageService.createStage(201702, new StageDto()
                                                                .setTitle("2017 02")
                                                                .setStart(Timestamp.valueOf("2017-02-01 20:00:00"))
-                                                               .setEnd(Timestamp.valueOf("2017-04-01 20:00:00")));
+                                                               .setEnd(Timestamp.valueOf("2017-09-01 20:00:00")));
         Set<Review> reviewSet = new HashSet<>();
 
         Report report = reportService.createReport(team1, stage, "Report");

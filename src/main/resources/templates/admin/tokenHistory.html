@@ -10,35 +10,6 @@
     <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
           data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
     <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
-    <style type="text/css">
-        .input-group-addon {
-            color: rgba(100, 114, 116, 0.2);
-        }
-
-        .form-control:focus {
-            color: #ceeccf;
-        }
-
-        #submit {
-            background: rgba(0, 0, 0, .12);
-        }
-
-        #submit:hover {
-            background: rgba(0, 0, 128, .22);
-        }
-
-        .alert-dismissible .close {
-            position: relative;
-            right: -1.25rem;
-            padding: .75rem 1.25rem;
-            color: inherit;
-        }
-
-        .alert strong {
-            margin-right: 1rem;
-        }
-    </style>
-
 </head>
 <body>
 <div id="bg"></div>
@@ -95,7 +66,8 @@
                 </thead>
                 <tbody>
                 <tr data-th-each="token : ${tokens}"><!-- 数据待定 -->
-                    <td data-th-text="${token.id}">2017072001</td>
+                    <td><a href="#" data-th-href="'/tutor/token?auth_token' + ${token.tokenValue}"
+                           data-th-text="${token.tokenValue}">rGHVewFYdser</a></td>
                     <td data-th-text="${token.tutor.displayName}">tutor Luo</td>
                     <td data-th-text="${token.stage.start}">2017-07-10 12:00</td>
                     <td data-th-text="${token.stage.end}">2017-07-20 24:00</td>
@@ -103,7 +75,6 @@
                 </tr>
                 </tbody>
             </table>
-            </form>
         </div>
     </div>
 

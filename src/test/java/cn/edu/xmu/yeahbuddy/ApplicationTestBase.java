@@ -107,7 +107,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
             Stage stage = stageService.createStage(201701, new StageDto()
                                                                    .setTitle("2017 01")
                                                                    .setStart(Timestamp.valueOf("2017-01-01 20:00:00"))
-                                                                   .setEnd(Timestamp.valueOf("2017-03-01 20:00:00")));
+                                                                   .setEnd(Timestamp.valueOf("2017-09-01 20:00:00")));
 
 
             team1 = teamService.registerNewTeam(

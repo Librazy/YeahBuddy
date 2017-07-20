@@ -1,5 +1,6 @@
 package cn.edu.xmu.yeahbuddy.domain;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jetbrains.annotations.Contract;
 
 import javax.persistence.Column;
@@ -75,4 +76,19 @@ public class Stage {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Contract(pure = true)
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).
+                                                  append(id).
+                                                                    toHashCode();
+    }
+
+    @Contract(value = "null -> false", pure = true)
+    @Override
+    public boolean equals(Object rhs) {
+        return rhs instanceof Stage && id == ((Stage) rhs).getId();
+    }
+
 }

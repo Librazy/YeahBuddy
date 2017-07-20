@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,9 +28,6 @@ public class Token {
 
     @Column(name = "TokenEndTime", nullable = false)
     private Timestamp end;
-
-    @Column(name = "TokenRevoked", nullable = false)
-    private boolean revoked;
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Review> reviews;
@@ -66,11 +64,11 @@ public class Token {
 
     @Contract(pure = true)
     public boolean isRevoked() {
-        return revoked;
+        return end.before(Timestamp.from(Instant.now()));
     }
 
     public void setRevoked() {
-        this.revoked = true;
+        setEnd(Timestamp.from(Instant.now()));
     }
 
     @Contract(pure = true)
@@ -89,8 +87,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return String.format("tokenValue:%s tutor:%s revoked:%b reviews:[%s]", tokenValue, tutor, revoked, reviews.stream().map(Object::toString).collect(Collectors.joining(", ")));
+        return String.format("tokenValue:%s tutor:%s reviews:[%s]", tokenValue, tutor, reviews.stream().map(Object::toString).collect(Collectors.joining(", ")));
     }
-
-
 }

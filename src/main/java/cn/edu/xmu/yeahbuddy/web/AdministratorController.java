@@ -3,6 +3,7 @@ package cn.edu.xmu.yeahbuddy.web;
 import cn.edu.xmu.yeahbuddy.domain.*;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.model.ResultDto;
+import cn.edu.xmu.yeahbuddy.model.TokenCreationDto;
 import cn.edu.xmu.yeahbuddy.service.*;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -23,8 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 public class AdministratorController {
@@ -148,32 +151,53 @@ public class AdministratorController {
 
 
     //TODO:创建token+显示所有没有失效的token（OK）
-    @GetMapping("/token/create")
+    @GetMapping("/token/create/{stageId:\\d+}")
     @PreAuthorize("hasAuthority('ManageToken')")
-    public String createToken(Model model) {
-        List<Report> reports = reportService.findAllReports();
-        for (Report report : reports) {
-            Optional<Result> result = resultService.findByReport(report);
-            if (!result.isPresent())
-                reports.remove(report);
-            else if (result.get().isSubmitted())
-                reports.remove(report);
-        }
-        List<Tutor> tutors = tutorService.findAllTutors();
-        List<Token> tokens = tokenService.findByRevokedIsFalse();
+    public String createToken(@PathVariable("stageId") int stageId, Model model) {
+        Stage stage = stageService.loadById(stageId);
+        List<Team> teams = resultService.findBySubmittedFalse()
+                                        .stream().filter(result -> result.getStage().equals(stage))
+                                        .filter(result -> reviewService.findByReport(result.getReport()).isEmpty())
+                                        .map(Result::getTeam)
+                                        .collect(Collectors.toList());
 
-        model.addAttribute("reports", reports);
-        model.addAttribute("tutors", tutors);
-        model.addAttribute("tokens", tokens);
+        model.addAttribute("stage", stage);
+        model.addAttribute("teams", teams);
+        model.addAttribute("tutors", tutorService.findAllTutors());
+        model.addAttribute("formAction", String.format("/token/create/%d", stageId));
+
         return "admin/tokenCreate";
     }
 
+    @PostMapping("/token/create/{stageId:\\d+}")
+    @PreAuthorize("hasAuthority('ManageToken')")
+    public RedirectView createToken(@PathVariable("stageId") int stageId, TokenCreationDto dto, Model model) {
+        Stage stage = stageService.loadById(stageId);
+        List<Team> teams = dto.getTeamChosen().stream().map(teamService::loadById).collect(Collectors.toList());
+        List<Report> reports = teams.stream().map(team -> reportService.find(team, stage)).flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty)).collect(Collectors.toList());
+        List<Tutor> tutors = dto.getTutorChosen().stream().map(tutorService::loadById).collect(Collectors.toList());
+        List<Pair<Tutor, Set<Review>>> list = tutors.stream().map(
+                tutor -> Pair.of(tutor, reports.stream().map(report -> reviewService.createReview(report, tutor)).collect(Collectors.toSet()))
+        ).collect(Collectors.toList());
+        list.forEach(
+                pair -> tokenService.createToken(pair.getFirst(), pair.getSecond(), dto.getEnd())
+        );
+        return new RedirectView(String.format("/token/create/%d", stageId), false, false);
+    }
+
+    @GetMapping("/token/current")
+    @PreAuthorize("hasAuthority('ManageToken')")
+    public String currentTokens(Model model) {
+        model.addAttribute("tokens", tokenService.findByNotRevoked());
+        model.addAttribute("stages", stageService.findByEndAfter(Timestamp.from(Instant.now())));
+        return "admin/tokenCurrent";
+    }
+
     //TODO:获取所有已截止的token（OK）
-    @GetMapping("/token")
+    @GetMapping("/token/history")
     @PreAuthorize("hasAuthority('ManageToken')")
     public String allTokens(Model model) {
-        List<Token> tokens = tokenService.findByRevokedIsTrue();
-        model.addAttribute("tokens", tokens);
+        model.addAttribute("tokens", tokenService.findByRevoked());
         return "admin/tokenHistory";
     }
 

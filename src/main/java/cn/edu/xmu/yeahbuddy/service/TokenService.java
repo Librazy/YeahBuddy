@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -64,8 +65,8 @@ public class TokenService {
      * @return 所有失效的Token
      */
     @Transactional(readOnly = true)
-    public List<Token> findByRevokedIsTrue() {
-        return tokenRepository.findByRevokedIsTrue();
+    public List<Token> findByRevoked() {
+        return tokenRepository.findByEndBefore(Timestamp.from(Instant.now()));
     }
 
     /**
@@ -74,8 +75,8 @@ public class TokenService {
      * @return 所有未失效的Token
      */
     @Transactional(readOnly = true)
-    public List<Token> findByRevokedIsFalse() {
-        return tokenRepository.findByRevokedIsFalse();
+    public List<Token> findByNotRevoked() {
+        return tokenRepository.findByEndAfter(Timestamp.from(Instant.now()));
     }
 
     /**

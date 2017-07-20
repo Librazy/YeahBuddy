@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.LockModeType;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +17,9 @@ public interface TokenRepository extends JpaRepository<Token, String> {
 
     List<Token> findByTutor(Tutor tutor);
 
-    List<Token> findByRevokedIsTrue();
+    List<Token> findByEndBefore(Timestamp t);
 
-    List<Token> findByRevokedIsFalse();
+    List<Token> findByEndAfter(Timestamp t);
 
     @NotNull
     @Lock(LockModeType.PESSIMISTIC_WRITE)
