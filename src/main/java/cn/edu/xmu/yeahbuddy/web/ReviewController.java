@@ -39,8 +39,6 @@ public class ReviewController {
 
     private final TeamService teamService;
 
-    private final StageService stageService;
-
     private final MessageSource messageSource;
 
     @Autowired
@@ -48,7 +46,6 @@ public class ReviewController {
         this.reviewService = reviewService;
         this.reportService = reportService;
         this.teamService = teamService;
-        this.stageService = stageService;
         this.messageSource = messageSource;
     }
 

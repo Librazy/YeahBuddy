@@ -105,8 +105,8 @@ public class ResultService {
         Optional<Result> r = resultRepository.queryById(id);
 
         if (!r.isPresent()) {
-            log.info("Failed to load Report " + id + ": not found");
-            throw new IdentifierNotExistsException("review.id.not_found", id);
+            log.info("Failed to load Result " + id + ": not found");
+            throw new IdentifierNotExistsException("result.id.not_found", id);
         }
         Result result = r.get();
         if (dto.getSubmitted() != null) {

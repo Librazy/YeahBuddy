@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Table(
         uniqueConstraints =
-        @UniqueConstraint(columnNames = {"ReviewReportId", "ReviewViewer"})
+        @UniqueConstraint(columnNames = {"ResultReportId", "ResultViewer"})
 )
 @Entity
 public class Result {
@@ -20,22 +20,22 @@ public class Result {
 
     @NaturalId
     @ManyToOne
-    @JoinColumn(name = "ReviewReportId", updatable = false, nullable = false)
+    @JoinColumn(name = "ResultReportId", updatable = false, nullable = false)
     private Report report;
 
     @NaturalId
     @ManyToOne
-    @JoinColumn(name = "ReviewViewer", updatable = false, nullable = false)
+    @JoinColumn(name = "ResultViewer", updatable = false, nullable = false)
     private Administrator administrator;
 
-    @Column(name = "ReviewResult", nullable = false)
+    @Column(name = "ResultResult", nullable = false)
     private int rank = -1;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "ReviewContent")
     private Map<Integer, String> content;
 
-    @Column(name = "ReviewSubmitted", nullable = false)
+    @Column(name = "ResultSubmitted", nullable = false)
     private boolean submitted;
 
     public Result(){ }
