@@ -10,6 +10,21 @@
     <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
           data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
     <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
+    <style type="text/css">
+        #main-table {
+            display: table;
+        }
+
+        @media screen and (max-width: 768px) {
+            #main-table {
+                display: inline-block;
+            }
+        }
+
+        .table thead th, .table tbody tr td {
+            min-width: 4rem;
+        }
+    </style>
 </head>
 <body>
 <div id="bg"></div>
@@ -53,28 +68,28 @@
             <h2 style="text-align: center;">
                 团队项目报告
             </h2>
-            <table class="table table-striped table-hover">
+            <table class="table table-responsive table-striped table-hover" id="main-table">
                 <thead>
-                    <tr>
-                        <th>报告编号</th>
-                        <th>项目名</th>
-                        <th>团队名</th>
-                        <th>阶段</th><!-- 截止时间？ -->
-                        <th>是否提交</th>
-                        <th>导师评审</th>
-                        <th>综合评审</th>
-                    </tr>
+                <tr>
+                    <th>项目报告名称</th>
+                    <th>阶段名称</th>
+                    <th>截止时间</th>
+                    <th>已提交报告</th>
+                    <th>导师评审状态</th>
+                    <th>考核结果</th>
+                    <th>综合评审</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr data-th-each="report : ${reports}"><!-- 数据待定 -->
-                        <td data-th-text="${report.id}">2017072001</td>
-                        <td data-th-text="${report.team.projectName}">项目报告系统</td>
-                        <td data-th-text="${report.team.displayName}">Yeah Buddy</td>
-                        <td data-th-text="${report.stage}">2017-07-20 24:00</td>
-                        <td data-th-text="${report.submitted}? #{true} : #{false}">是</td>
-                        <td>2/3</td><!-- 数据待定 -->
-                        <td>未评审</td><!-- 数据待定 -->
-                    </tr>
+                <tr data-th-each="result:${results}">
+                    <td data-th-text="${result.report.title}">2017年度期末报告</td>
+                    <td data-th-text="${result.report.stage.title}">2017年度期末</td>
+                    <td data-th-text="${#dates.format(result.report.stage.end, 'yyyy-MM-dd')}">2017-07-20 00:00</td>
+                    <td data-th-text="${result.submitted} ? #{yes} : #{no}">是</td>
+                    <td data-th-text="${reviewStat[result.id]}">2/3</td>
+                    <td data-th-text="${result.brief}">优秀</td>
+                    <td><a href="../admin/result.html" data-th-href="'/result/' + ${result.id}">综合评审</a></td>
+                </tr>
                 </tbody>
             </table>
         </div>

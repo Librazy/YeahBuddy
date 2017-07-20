@@ -86,6 +86,6 @@ public class ServicesTests extends AbstractTransactionalJUnit4SpringContextTests
 
         SecurityContextHolder.getContext().setAuthentication(admin1);
         exception.expect(AccessDeniedException.class);
-        administratorService.registerNewAdministrator(new AdministratorDto().setUsername("EEE").setPassword("BBB").setDisplayName("EEE").setAuthorities(Arrays.asList(Administrator.AdministratorPermission.CreateTask.getAuthority(), Administrator.AdministratorPermission.ManageAdministrator.getAuthority())));
+        administratorService.registerNewAdministrator(new AdministratorDto().setUsername("EEE").setPassword("BBB").setDisplayName("EEE").setAuthorities(Arrays.asList(Administrator.AdministratorPermission.ManageTask.getAuthority(), Administrator.AdministratorPermission.ManageAdministrator.getAuthority())));
     }
 }

@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Integer> {
-    List<Report> findByTeam_Id(int teamId);
 
     List<Report> findByStage(Stage stage);
 

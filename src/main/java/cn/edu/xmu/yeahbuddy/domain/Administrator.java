@@ -198,12 +198,12 @@ public final class Administrator implements UserDetails, Authentication {
     }
 
     public enum AdministratorPermission implements GrantedAuthority {
-        CreateTask,
+        ManageTask,
         CloseSubmit,
         CloseTutorReview,
         ViewReport,
         ViewReview,
-        FinalReview,
+        SetResult,
         ResetPassword,
         ManageAdministrator,
         ManageTeam,

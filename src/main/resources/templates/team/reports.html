@@ -64,7 +64,7 @@
                     <th>截止时间</th>
                     <th>是否提交</th>
                     <th>考核结果</th>
-                    <th>评审结果</th>
+                    <th>考核详情</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,7 @@
                     <td data-th-text="${#dates.format(result.report.stage.end, 'yyyy-MM-dd')}">2017-07-20 00:00</td>
                     <td data-th-text="${result.report.submitted} ? #{yes} : #{no}">是</td>
                     <td data-th-text="${result.brief}">优秀</td>
-                    <td><a href="#">查看结果</a></td>
+                    <td><a href="../admin/result.html" data-th-href="'/result/' + ${result.id}">查看结果</a></td>
                 </tr>
                 </tbody>
             </table>

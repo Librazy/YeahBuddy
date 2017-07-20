@@ -3,7 +3,6 @@ package cn.edu.xmu.yeahbuddy.web;
 import cn.edu.xmu.yeahbuddy.domain.*;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.model.ResultDto;
-import cn.edu.xmu.yeahbuddy.model.StageDto;
 import cn.edu.xmu.yeahbuddy.service.*;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -88,7 +87,7 @@ public class AdministratorController {
             throw new ResourceNotFoundException("administrator.id.not_found", adminId);
         }
 
-        model.addAttribute("administrator", administrator);
+        model.addAttribute("admin", administrator.get());
         model.addAttribute("formAction", String.format("/admin/%d", adminId));
         return "admin/profile";
     }
@@ -108,7 +107,7 @@ public class AdministratorController {
 
     //TODO:创建任务＋显示所有没有截止的项目报告任务(OK)
     @GetMapping("/task/create")
-    @PreAuthorize("hasAuthority('CreateTask')")
+    @PreAuthorize("hasAuthority('ManageTask')")
     public String createTask(Model model) {
         List<Team> teams = teamService.findAllTeams();
 
@@ -121,6 +120,7 @@ public class AdministratorController {
 
     //TODO:获取所有已经截止的项目报告任务(OK)
     @GetMapping("/task/history")
+    @PreAuthorize("hasAuthority('ManageTask')")
     public String taskHistory(Model model) {
         Timestamp current = new Timestamp(System.currentTimeMillis());
         List<Stage> stages = stageService.findByEndBefore(current);
@@ -131,6 +131,7 @@ public class AdministratorController {
 
     //TODO: 来自taskCreate中的 详情 和 修改 按钮(详情与修改链接到的一样)（OK）
     @GetMapping("/task/{stageId:\\d+}/detail")
+    @PreAuthorize("hasAuthority('ManageTask')")
     public String taskDetail(@PathVariable int stageId, Model model) {
         Optional<Stage> stage = stageService.findById(stageId);
         if (!stage.isPresent()) {
@@ -148,6 +149,7 @@ public class AdministratorController {
 
     //TODO:创建token+显示所有没有失效的token（OK）
     @GetMapping("/token/create")
+    @PreAuthorize("hasAuthority('ManageToken')")
     public String createToken(Model model) {
         List<Report> reports = reportService.findAllReports();
         for (Report report : reports) {
@@ -175,17 +177,24 @@ public class AdministratorController {
         return "admin/tokenHistory";
     }
 
-    //TODO:获取所有未综合评审完的项目报告(OK)
-    @GetMapping("/report/result")
+    @GetMapping("/result/current")
+    @PreAuthorize("hasAuthority('ViewReview')")
     public String reportViewAndResult(Model model) {
         List<Result> results = resultService.findBySubmittedFalse();
+        Map<Integer, String> stat = new HashMap<>();
+        results.stream()
+               .map(result -> Pair.of(result, reviewService.findByReport(result.getReport())))
+               .forEach(pair -> {
+                   String status = String.format("%d/%d", pair.getSecond().stream().filter(Review::isSubmitted).count(), pair.getSecond().size());
+                   stat.put(pair.getFirst().getId(), status);
 
+               });
         model.addAttribute("results", results);
-        return "admin/reportViewAndResult";
+        model.addAttribute("reviewStat", stat);
+        return "admin/results";
     }
 
-    //TODO:获取所有综合评审完的项目报告(OK)
-    @GetMapping("/report/history")
+    @GetMapping("/result/history")
     @PreAuthorize("hasAuthority('ViewReport')")
     public String reportHistory(Model model) {
         List<Result> results = resultService.findBySubmittedTrue();
@@ -193,25 +202,27 @@ public class AdministratorController {
         return "admin/reportHistory";
     }
 
-    //TODO:获取某个项目报告的内容和所有评审结果(OK)
-    @GetMapping("/report/{resultId:\\d+}/info")
-    public String reportResult(@PathVariable int resultId, Model model) {
+    @GetMapping("/result/{resultId:\\d+}")
+    @PreAuthorize("hasAuthority('SetResult')")
+    public String result(@PathVariable int resultId, Model model) {
         Optional<Result> result = resultService.findById(resultId);
         if (!result.isPresent()) {
             throw new ResourceNotFoundException("result.id.not_found", resultId);
         }
 
-        List<Review> reviews = reviewService.findByReport(result.get().getReport());
+        List<Review> reviews = reviewService.findByReport(result.get().getReport()).stream().filter(Review::isSubmitted).collect(Collectors.toList());
 
         model.addAttribute("reviews", reviews);
         model.addAttribute("result", result.get());
-        model.addAttribute("formAction", String.format("/report/%d/info", resultId));
-        return "admin/reportResult";
+        model.addAttribute("report", result.get().getReport());
+        model.addAttribute("team", result.get().getTeam());
+        model.addAttribute("formAction", String.format("/result/%d", resultId));
+        return "admin/result";
     }
 
-    //TODO:管理员进行综合评审
-    @PutMapping("/report/{resultId:\\d+}/info")
-    public ResponseEntity<Map<String, String>> updateReportResult(@PathVariable int resultId, ResultDto resultDto, Model model) {
+    @PutMapping("/result/{resultId:\\d+}")
+    @PreAuthorize("hasAuthority('SetResult')")
+    public ResponseEntity<Map<String, String>> updateResult(@PathVariable int resultId, ResultDto resultDto, Model model) {
         log.debug("Update result ");
 
         Optional<Result> reportResult = resultService.findById(resultId);

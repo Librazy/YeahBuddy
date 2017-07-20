@@ -68,18 +68,6 @@ public class ReportService {
     }
 
     /**
-     * 查找某团队的所有项目报告
-     *
-     * @param teamId 团队ID
-     * @return 所有团队项目报告
-     */
-    @Transactional
-    public List<Report> findByTeamId(int teamId) {
-        log.debug("Finding all reports of Team " + teamId);
-        return reportRepository.findByTeam_Id(teamId);
-    }
-
-    /**
      * 查找所有项目报告
      *
      * @return 所有项目报告

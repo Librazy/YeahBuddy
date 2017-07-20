@@ -145,7 +145,7 @@
                 dataType: "json",
                 success: function (data) {
                     $form.prepend('<div class="row"><div class="alert alert-success alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + data.status + '</strong>' + data.message + '</div></div>');
-                    if ($submitted.val()) {
+                    if (($submitted.val() + "") !== "false") {
                         $form.find("input").attr("readonly", true);
                         $form.find("textarea").attr("readonly", true);
                         $("#submits").hide();
