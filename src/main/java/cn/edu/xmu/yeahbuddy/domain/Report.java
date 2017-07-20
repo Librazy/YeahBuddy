@@ -4,6 +4,7 @@ import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ public class Report {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "ReportContent")
-    private List<String> content;
+    private List<String> content = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "ReportFiles")
@@ -49,6 +50,9 @@ public class Report {
     public Report(Team team, Stage stage) {
         this.team = team;
         this.stage = stage;
+        this.content.add("");
+        this.content.add("");
+        this.content.add("");
     }
 
     @Contract(pure = true)

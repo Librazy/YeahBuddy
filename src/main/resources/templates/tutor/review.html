@@ -4,25 +4,19 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>导师项目评审</title>
+    <title>导师评审</title>
     <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
           data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
           data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
     <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
     <style type="text/css">
-        #main-table {
-            display: table;
+        .input-group input, .input-group label, .is-focused .input-group input, .is-focused .input-group label, .form-group textarea, .form-group textarea:focus {
+            color: black;
         }
 
-        @media screen and (max-width: 768px) {
-            #main-table {
-                display: inline-block;
-            }
-        }
-
-        .table thead th, .table tbody tr td {
-            min-width: 4rem;
+        #team-info .input-group input.form-control, #report .form-group input.form-control, #report .form-group textarea {
+            background: none;
         }
     </style>
 </head>
@@ -54,126 +48,98 @@
             </div>
         </div>
         <div class="col-md-7 pl-md-0">
-            <h2>项目报告</h2>
-            <table class="table table-responsive table-striped table-hover" id="main-table">
-                <thead>
-                <tr>
-                    <th>
-                        团队编号
-                    </th>
-                    <th>
-                        项目名
-                    </th>
-                    <th>
-                        团队名
-                    </th>
-                    <th>
-                        阶段
-                    </th>
-                    <th>
-                        排名
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        评审
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        2
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        3
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        3
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        2
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        4
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        5
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        5
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        xxx
-                    </td>
-                    <td>
-                        4
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <div class="row">
-                <div class="col-md-7 offset-md-5">
-                    <nav>
-                        <button class="btn btn-mini btn-primary" type="button">提交</button>
-                    </nav>
+            <div class="card pr-3 pl-3 pb-3" style="background-color: rgba(255,255,255, 0.7);">
+                <div id="team-info">
+                    <h2 class="text-center pt-3">
+                        团队信息
+                    </h2>
+                    <div class="form-group row">
+                        <div class="input-group col-md-5">
+                            <label for="projectName" class="input-group-addon"
+                                   data-th-text="#{project_name}">项目名</label>
+                            <input class="form-control" id="projectName" name="projectName" readonly
+                                   data-th-value="${team.projectName}" value="YeahBuddy"/>
+                        </div>
+                        <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                            <label for="email" class="input-group-addon" data-th-text="#{email}">电子邮件</label>
+                            <input type="email" class="form-control" id="email" name="email" readonly
+                                   data-th-value="${team.email}" value="123456@qq.com"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="input-group col-md-5">
+                            <label for="displayName" class="input-group-addon"
+                                   data-th-text="#{display_name}">团队名</label>
+                            <input class="form-control" id="displayName" name="displayName" readonly
+                                   data-th-value="${team.displayName}" value="YeahBuddy"/>
+                        </div>
+                        <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                            <label for="phone" class="input-group-addon" data-th-text="#{phone}">手机号码</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" readonly
+                                   data-th-value="${team.phone}" value="18999999999"/>
+                        </div>
+                    </div>
                 </div>
+                <div id="report">
+                    <h2 class="text-center pt-3">
+                        报告详情
+                    </h2>
+                    <div class="form-group">
+                        <label for="title" class="bmd-label-floating">报告标题：</label>
+                        <input class="form-control" id="title" name="title" readonly
+                               data-th-value="${report.title}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-content0" class="bmd-label-floating">项目综述：</label>
+                        <textarea class="form-control" rows="8" readonly
+                                  data-th-text="${report.content[0]}" id="report-content0"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-content1" class="bmd-label-floating">项目进展情况及已取得的成果：</label>
+                        <textarea class="form-control" rows="8" readonly
+                                  data-th-text="${report.content[1]}" id="report-content1"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="report-content2" class="bmd-label-floating">下一阶段计划及时间表：</label>
+                        <textarea class="form-control" rows="8" readonly
+                                  data-th-text="${report.content[2]}" id="report-content2"></textarea>
+                    </div>
+                </div>
+                <form id="reviewForm" data-th-action="${formAction}" method="POST">
+                    <h2 class="text-center pt-3">
+                        报告评审
+                    </h2>
+                    <input type="hidden" name="_method" value="PUT"/>
+                    <input type="hidden" id="submitted" name="submitted" value="false"
+                           data-th-value="${review.submitted}"/>
+                    <div class="form-group">
+                        <label for="content0" class="bmd-label-floating">评审评价：</label>
+                        <textarea class="form-control" rows="8" required
+                                  data-th-text="${review.content[0]}" id="content0" name="content"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="content1" class="bmd-label-floating">评审意见：</label>
+                        <textarea class="form-control" rows="8" required
+                                  data-th-text="${review.content[1]}" id="content1" name="content"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="rank" class="bmd-label-floating">评审排名：</label>
+                        <input class="form-control" type="number"
+                               data-th-value="${review.rank} == -1 ? '' : ${review.rank}" required id="rank"
+                               name="rank"/>
+                    </div>
+                    <div class="row" id="submits">
+                        <div class="col-md-7 offset-md-5">
+                            <nav>
+                                <button id="submit" class="btn btn-primary" data-th-text="#{submit}">提交</button>
+                                <button id="save" class="btn btn-default">暂存</button>
+                            </nav>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
     <footer class="row clearfix" data-th-replace="~{footer::normal}">
         <div class="col-md-10 offset-md-1 column">
             <ul class="breadcrumb">
@@ -196,6 +162,7 @@
         </div>
     </footer>
 </div>
+
 <script src="../../webjars/jquery/dist/jquery.min.js" data-th-src="@{/webjars/jquery/dist/jquery.min.js}"></script>
 <script src="../../webjars/tether/dist/js/tether.min.js"
         data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
@@ -204,6 +171,48 @@
 <!--suppress JSUnresolvedFunction -->
 <script>
     $('body').bootstrapMaterialDesign();
+</script>
+<script data-th-if="${readOnly}">
+    var $form = $('#reportForm');
+    $form.find("input").attr("readonly", true);
+    $form.find("textarea").attr("readonly", true);
+    $("#submits").hide();
+</script>
+<!--suppress JSUnfilteredForInLoop, XmlDefaultAttributeValue, JSUnresolvedVariable -->
+<script>
+
+    $(function () {
+        var $form = $('#reviewForm');
+        var $submitted = $("#submitted");
+        $("#submit").click(function () {
+            $submitted.val(true);
+            return true;
+        });
+        $("#save").click(function () {
+            $submitted.val(false);
+            return true;
+        });
+        $form.on("submit", function () {
+            $.ajax({
+                method: "PUT",
+                url: $form.attr('action'),
+                data: $form.serializeArray(),
+                dataType: "json",
+                success: function (data) {
+                    $form.prepend('<div class="row"><div class="alert alert-success alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + data.status + '</strong>' + data.message + '</div></div>');
+                    if (($submitted.val() + "") !== "false") {
+                        $form.find("input").attr("readonly", true);
+                        $form.find("textarea").attr("readonly", true);
+                        $("#submits").hide();
+                    }
+                },
+                error: function (jqXHR) {
+                    $form.prepend('<div class="row"><div class="alert alert-warning alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + jqXHR.responseJSON.error + '</strong>' + jqXHR.responseJSON.message + '</div></div>');
+                }
+            });
+            return false;
+        });
+    });
 </script>
 </body>
 </html>

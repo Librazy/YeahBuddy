@@ -2,13 +2,13 @@ package cn.edu.xmu.yeahbuddy.model;
 
 import org.jetbrains.annotations.Contract;
 
-import java.util.Map;
+import java.util.List;
 
 public class ResultDto {
 
     private String brief;
 
-    private Map<Integer, String> content;
+    private List<String> content;
 
     private Boolean submitted;
 
@@ -23,11 +23,11 @@ public class ResultDto {
     }
 
     @Contract(pure = true)
-    public Map<Integer, String> getContent() {
+    public List<String> getContent() {
         return content;
     }
 
-    public ResultDto setContent(Map<Integer, String> content) {
+    public ResultDto setContent(List<String> content) {
         this.content = content;
         return this;
     }

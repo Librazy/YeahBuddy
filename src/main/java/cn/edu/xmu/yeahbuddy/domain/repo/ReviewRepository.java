@@ -17,12 +17,14 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     List<Review> findByReport(Report report);
 
-    @NotNull
-    Optional<Review> findByReportAndViewer(Report report, Tutor viewer);
+    List<Review> findByTutor(Tutor tutor);
 
     @NotNull
-    default Optional<Review> find(Report report, Tutor viewer) {
-        return findByReportAndViewer(report, viewer);
+    Optional<Review> findByReportAndTutor(Report report, Tutor tutor);
+
+    @NotNull
+    default Optional<Review> find(Report report, Tutor tutor) {
+        return findByReportAndTutor(report, tutor);
     }
 
     @NotNull

@@ -4,7 +4,8 @@ import org.hibernate.annotations.NaturalId;
 import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(
         uniqueConstraints =
@@ -19,21 +20,21 @@ public class Review {
     private int id = Integer.MIN_VALUE;
 
     @NaturalId
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ReviewReportId", updatable = false, nullable = false)
     private Report report;
 
     @NaturalId
     @ManyToOne
     @JoinColumn(name = "ReviewViewer", updatable = false, nullable = false)
-    private Tutor viewer;
+    private Tutor tutor;
 
     @Column(name = "ReviewRank", nullable = false)
     private int rank = -1;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "ReviewContent")
-    private Map<Integer, String> content;
+    private List<String> content = new ArrayList<>();
 
     @Column(name = "ReviewSubmitted", nullable = false)
     private boolean submitted;
@@ -41,9 +42,11 @@ public class Review {
     public Review() {
     }
 
-    public Review(Report report, Tutor viewer) {
+    public Review(Report report, Tutor tutor) {
         this.report = report;
-        this.viewer = viewer;
+        this.tutor = tutor;
+        this.content.add("");
+        this.content.add("");
     }
 
     @Contract(pure = true)
@@ -77,8 +80,8 @@ public class Review {
     }
 
     @Contract(pure = true)
-    public Tutor getViewer() {
-        return viewer;
+    public Tutor getTutor() {
+        return tutor;
     }
 
     @Contract(pure = true)
@@ -91,11 +94,11 @@ public class Review {
     }
 
     @Contract(pure = true)
-    public Map<Integer, String> getContent() {
+    public List<String> getContent() {
         return content;
     }
 
-    public void setContent(Map<Integer, String> content) {
+    public void setContent(List<String> content) {
         this.content = content;
     }
 

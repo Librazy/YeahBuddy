@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -31,13 +31,13 @@ public class Token {
     @Column(name = "TokenRevoked", nullable = false)
     private boolean revoked;
 
-    @OneToMany
-    private Collection<Review> reviews;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Review> reviews;
 
     public Token() {
     }
 
-    public Token(String tokenValue, Tutor tutor, Collection<Review> reviews, Timestamp end) {
+    public Token(String tokenValue, Tutor tutor, Set<Review> reviews, Timestamp end) {
         this.tokenValue = tokenValue;
         this.tutor = tutor;
         this.reviews = reviews;
@@ -74,7 +74,7 @@ public class Token {
     }
 
     @Contract(pure = true)
-    public Collection<Review> getReviews() {
+    public Set<Review> getReviews() {
         return reviews;
     }
 

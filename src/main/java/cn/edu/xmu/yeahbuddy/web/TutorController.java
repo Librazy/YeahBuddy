@@ -1,8 +1,10 @@
 package cn.edu.xmu.yeahbuddy.web;
 
+import cn.edu.xmu.yeahbuddy.domain.Review;
 import cn.edu.xmu.yeahbuddy.domain.Token;
 import cn.edu.xmu.yeahbuddy.domain.Tutor;
 import cn.edu.xmu.yeahbuddy.model.TutorDto;
+import cn.edu.xmu.yeahbuddy.service.ReviewService;
 import cn.edu.xmu.yeahbuddy.service.TutorService;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -21,10 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class TutorController {
@@ -32,12 +31,15 @@ public class TutorController {
     @NonNls
     private static Log log = LogFactory.getLog(TutorController.class);
 
+    private final ReviewService reviewService;
+
     private final TutorService tutorService;
 
     private final MessageSource messageSource;
 
     @Autowired
-    public TutorController(TutorService tutorService, MessageSource messageSource) {
+    public TutorController(ReviewService reviewService, TutorService tutorService, MessageSource messageSource) {
+        this.reviewService = reviewService;
         this.tutorService = tutorService;
         this.messageSource = messageSource;
     }
@@ -54,16 +56,28 @@ public class TutorController {
     @PreAuthorize("hasRole('TUTOR')")
     public RedirectView index() {
         int id = ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        return new RedirectView(String.format("/team/%d", id), false, false);
+        return new RedirectView(String.format("/tutor/%d", id), false, false);
+    }
+
+    @GetMapping("/tutor/{tutorId:\\d+}/review")
+    @PreAuthorize("hasRole('TUTOR')")
+    public String tokenReview(@PathVariable int tutorId, Model model) {
+        try {
+            Token token = (Token) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+            Collection<Review> reviews = token.getReviews();
+            model.addAttribute("reviews", reviews);
+            return "tutor/reviews";
+        } catch (Exception e) {
+            return String.format("redirect:/tutor/%d/reviews", tutorId);
+        }
     }
 
     @GetMapping("/tutor/{tutorId:\\d+}/reviews")
     @PreAuthorize("hasRole('TUTOR')")
-    //TODO
-    public ResponseEntity<Model> tutorReview(@PathVariable int tutorId, Model model) {
-        Token token = (Token) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        model.addAttribute("reportsReview", token.getReviews());
-        return ResponseEntity.ok(model);
+    public String tutorReview(@PathVariable int tutorId, Model model) {
+        List<Review> reviews = reviewService.findByTutor((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        model.addAttribute("reviews", reviews);
+        return "tutor/reviews";
     }
 
     @GetMapping("/tutor/{tutorId:\\d+}")

@@ -1,8 +1,6 @@
 package cn.edu.xmu.yeahbuddy.web;
 
-import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.Review;
-import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.ReviewDto;
 import cn.edu.xmu.yeahbuddy.service.ReportService;
 import cn.edu.xmu.yeahbuddy.service.ReviewService;
@@ -15,7 +13,9 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,53 +35,52 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    private final ReportService reportService;
-
-    private final TeamService teamService;
-
     private final MessageSource messageSource;
 
     @Autowired
     public ReviewController(ReviewService reviewService, ReportService reportService, TeamService teamService, StageService stageService, MessageSource messageSource) {
         this.reviewService = reviewService;
-        this.reportService = reportService;
-        this.teamService = teamService;
         this.messageSource = messageSource;
     }
 
     @GetMapping("/review/{reviewId:\\d+}")
-
-    public ResponseEntity<Model> tutorReviewReport(@PathVariable int reviewId, Model model) {
+    @PreAuthorize("hasRole('TUTOR') && @reviewService.findById(#reviewId).get().tutor.id == T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id")
+    public String review(@PathVariable int reviewId, Model model) {
         Optional<Review> review = reviewService.findById(reviewId);
         if (!review.isPresent()) {
             throw new ResourceNotFoundException("tutor.review.not_found", reviewId);
         }
 
-        Optional<Report> report = reportService.find(review.get().getTeam(), review.get().getStage());
-        if (!report.isPresent()) {
-            throw new ResourceNotFoundException("team.report.not_found", String.format("%d, %d", review.get().getTeamId(), review.get().getStageId()));
-        }
-
-        Team team = teamService.loadById(report.get().getTeamId());
-
-        model.addAttribute("team", team);
-        model.addAttribute("report", report.get());
+        model.addAttribute("team", review.get().getTeam());
+        model.addAttribute("report", review.get().getReport());
         model.addAttribute("review", review.get());
-        return ResponseEntity.ok(model);
+        if (review.get().isSubmitted()) {
+            model.addAttribute("readOnly", true);
+        }
+        return "tutor/review";
     }
 
     @PutMapping("/review/{reviewId:\\d+}")
-    public ResponseEntity<Map<String, String>> updateReview(@PathVariable int reviewId, ReviewDto reviewDto) {
+    @PreAuthorize("hasRole('TUTOR') && @reviewService.findById(#reviewId).get().tutor.id == T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id")
+    public ResponseEntity<Map<String, String>> update(@PathVariable int reviewId, ReviewDto reviewDto) {
         log.debug("Update Review");
         Optional<Review> review = reviewService.findById(reviewId);
 
         if (!review.isPresent()) {
             throw new ResourceNotFoundException("tutor.review.not_found", reviewId);
         }
-
-        reviewService.updateReview(reviewId, reviewDto);
         Map<String, String> result = new HashMap<>();
         Locale locale = LocaleContextHolder.getLocale();
+
+        if (review.get().isSubmitted()) {
+            result.put("status", "409");
+            result.put("error", messageSource.getMessage("http.status.409", new Object[]{}, locale));
+            result.put("message", messageSource.getMessage("review.already.submitted", new Object[]{}, locale));
+            return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+        }
+
+        reviewService.updateReview(reviewId, reviewDto);
+
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
         result.put("message", messageSource.getMessage("review.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);

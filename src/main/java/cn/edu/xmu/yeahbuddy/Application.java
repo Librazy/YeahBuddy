@@ -135,7 +135,7 @@ public class Application extends SpringBootServletInitializer {
                                 .setEmail("c@b.com")
                                 .setPhone("13988888888")));
                 Review review = reviewService.createReview(report, tutor.get());
-                String token = tokenService.createToken(tutor.get(), Collections.singletonList(review), stage.getEnd()).getTokenValue();
+                String token = tokenService.createToken(tutor.get(), Collections.singleton(review), stage.getEnd()).getTokenValue();
 
                 SecurityContextHolder.getContext().setAuthentication(null);
 

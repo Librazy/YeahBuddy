@@ -70,9 +70,20 @@ public class ReviewService {
      * @param report 项目报告
      * @return 所有评审报告
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Review> findByReport(Report report) {
         return reviewRepository.findByReport(report);
+    }
+
+    /**
+     * 查找某导师的所有评审报告
+     *
+     * @param tutor 项目报告
+     * @return 所有评审报告
+     */
+    @Transactional(readOnly = true)
+    public List<Review> findByTutor(Tutor tutor) {
+        return reviewRepository.findByTutor(tutor);
     }
 
     /**

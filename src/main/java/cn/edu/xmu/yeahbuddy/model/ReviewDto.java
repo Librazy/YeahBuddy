@@ -3,7 +3,7 @@ package cn.edu.xmu.yeahbuddy.model;
 import org.jetbrains.annotations.Contract;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 public class ReviewDto implements Serializable {
 
@@ -11,7 +11,7 @@ public class ReviewDto implements Serializable {
 
     private Integer rank;
 
-    private Map<Integer, String> content;
+    private List<String> content;
 
     private Boolean submitted;
 
@@ -26,11 +26,11 @@ public class ReviewDto implements Serializable {
     }
 
     @Contract(pure = true)
-    public Map<Integer, String> getContent() {
+    public List<String> getContent() {
         return content;
     }
 
-    public ReviewDto getContent(Map<Integer, String> content) {
+    public ReviewDto getContent(List<String> content) {
         this.content = content;
         return this;
     }

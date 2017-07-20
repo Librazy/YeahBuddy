@@ -19,10 +19,10 @@ import java.util.Collections;
 @Entity
 public class Team implements UserDetails {
 
+    private static final long serialVersionUID = -7619090069297505818L;
+
     @NonNls
     private static final String ROLE_TEAM = "ROLE_TEAM";
-
-    private static final long serialVersionUID = -7619090069297505818L;
 
     @Id
     @GeneratedValue

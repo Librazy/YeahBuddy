@@ -1,6 +1,7 @@
 package cn.edu.xmu.yeahbuddy;
 
 import cn.edu.xmu.yeahbuddy.domain.*;
+import cn.edu.xmu.yeahbuddy.domain.repo.ResultRepository;
 import cn.edu.xmu.yeahbuddy.domain.repo.StageRepository;
 import cn.edu.xmu.yeahbuddy.domain.repo.TokenRepository;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
@@ -81,6 +82,9 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
     private StageRepository stageRepository;
 
     @Autowired
+    private ResultRepository resultRepository;
+
+    @Autowired
     private PlatformTransactionManager transactionManager;
 
     @BeforeTransaction
@@ -134,7 +138,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
 
             review = reviewService.createReview(report, tutor1);
 
-            token = tokenService.createToken(tutor1, Collections.singletonList(review), stage.getEnd()).getTokenValue();
+            token = tokenService.createToken(tutor1, Collections.singleton(review), stage.getEnd()).getTokenValue();
 
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;
@@ -147,6 +151,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
             Administrator ultimate = new Administrator();
             ultimate.setAuthorities(Arrays.asList(Administrator.AdministratorPermission.values()));
             SecurityContextHolder.getContext().setAuthentication(ultimate);
+            resultRepository.deleteAll();
             tokenRepository.deleteAll();
             reviewService.deleteReview(review.getId());
             reportService.deleteReport(report.getId());

@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="col-md-7">
-            <div class="card pr-3 pl-3" style="background-color: rgba(255,255,255, 0.7);">
+            <div class="card pr-3 pl-3 pb-3" style="background-color: rgba(255,255,255, 0.7);">
                 <h2 class="text-center pt-3"
                     data-th-text="${report.stage.title}">
                     2017年度期末报告
@@ -56,22 +56,22 @@
                            data-th-value="${report.submitted}"/>
                     <div class="form-group">
                         <label for="title" class="bmd-label-floating">报告标题：</label>
-                        <input class="form-control" id="title" name="title"
+                        <input class="form-control" id="title" name="title" required
                                data-th-value="${report.title}"/>
                     </div>
                     <div class="form-group">
                         <label for="content0" class="bmd-label-floating">项目综述：</label>
-                        <textarea class="form-control" rows="8"
+                        <textarea class="form-control" rows="8" required
                                   data-th-text="${report.content[0]}" id="content0" name="content"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="content1" class="bmd-label-floating">项目进展情况及已取得的成果：</label>
-                        <textarea class="form-control" rows="8"
+                        <textarea class="form-control" rows="8" required
                                   data-th-text="${report.content[1]}" id="content1" name="content"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="content2" class="bmd-label-floating">下一阶段计划及时间表：</label>
-                        <textarea class="form-control" rows="8"
+                        <textarea class="form-control" rows="8" required
                                   data-th-text="${report.content[2]}" id="content2" name="content"></textarea>
                     </div>
                     <div class="row" id="submits">

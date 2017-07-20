@@ -18,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 导师登录Token服务
@@ -64,7 +64,9 @@ public class TokenService {
      * @return 所有失效的Token
      */
     @Transactional(readOnly = true)
-    public List<Token> findByRevokedIsTrue() {return tokenRepository.findByRevokedIsTrue(); }
+    public List<Token> findByRevokedIsTrue() {
+        return tokenRepository.findByRevokedIsTrue();
+    }
 
     /**
      * 查找所有未失效的Token
@@ -72,7 +74,9 @@ public class TokenService {
      * @return 所有未失效的Token
      */
     @Transactional(readOnly = true)
-    public List<Token> findByRevokedIsFalse() {return tokenRepository.findByRevokedIsFalse(); }
+    public List<Token> findByRevokedIsFalse() {
+        return tokenRepository.findByRevokedIsFalse();
+    }
 
     /**
      * 按登录Token值查找并验证导师与Token
@@ -110,7 +114,7 @@ public class TokenService {
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor')")
-    public Token createToken(Tutor tutor, Collection<Review> reviews, Timestamp end) {
+    public Token createToken(Tutor tutor, Set<Review> reviews, Timestamp end) {
         String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         while (!tokenValue.matches("[a-zA-Z0-9]+")) {
             tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
