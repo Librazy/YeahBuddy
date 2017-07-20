@@ -58,6 +58,7 @@
                 <thead>
                 <tr>
                     <th>任务编号</th>
+                    <th>开始时间</th>
                     <th>截止时间</th>
                     <th>阶段标题</th>
                     <th>相关团队</th>
@@ -66,6 +67,7 @@
                 <tbody>
                 <tr data-th-each="stage : ${stages}"><!-- 数据待定 -->
                     <td data-th-text="${stage.id}">2016072001</td>
+                    <td data-th-text="${stage.start}">2017-06-19 0:00</td>
                     <td data-th-text="${stage.end}">2016-07-20 0:00</td>
                     <td data-th-text="${stage.title}">2016年度期末报告</td>
                     <td><a href="#">详情</a></td><!-- 数据待定 -->

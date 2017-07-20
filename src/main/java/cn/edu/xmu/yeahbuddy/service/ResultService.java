@@ -61,6 +61,15 @@ public class ResultService {
     }
 
     /**
+     * 查找评审报告
+     *
+     * @return 评审报告
+     */
+    @Transactional(readOnly = true)
+    public List<Result> findBySubmittedFalse(){ return resultRepository.findBySubmittedFalse(); }
+
+
+    /**
      * 按团队查找评审报告
      *
      * @param team 团队

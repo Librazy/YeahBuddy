@@ -90,6 +90,14 @@ public class ReportService {
     }
 
     /**
+     * 查找某个任务／阶段的项目报告
+     *
+     * @return 项目报告
+     */
+    @Transactional
+    public List<Report> findByStage(Stage stage) { return reportRepository.findByStage(stage);}
+
+    /**
      * 新建团队项目报告
      *
      * @param team  团队I

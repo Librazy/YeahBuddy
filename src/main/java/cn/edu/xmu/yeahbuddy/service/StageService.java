@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +42,17 @@ public class StageService {
     public Optional<Stage> findById(int id) {
         log.debug("Finding Stage with key " + id);
         return stageRepository.findById(id);
+    }
+
+    /**
+     * 查找所有阶段
+     *
+     * @return 阶段
+     */
+    @Transactional
+    public List<Stage> findAllStages(){
+        log.debug("Finding all Stages");
+        return stageRepository.findAll();
     }
 
     /**

@@ -4,6 +4,7 @@ import cn.edu.xmu.yeahbuddy.domain.*;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
 import cn.edu.xmu.yeahbuddy.service.*;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
+import com.sun.xml.internal.ws.client.sei.ResponseBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
@@ -20,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,16 +43,22 @@ public class AdministratorController {
 
     private final ReviewService reviewService;
 
+    private final ResultService resultService;
+
+    private final StageService stageService;
+
     private final MessageSource messageSource;
 
     @Autowired
-    public AdministratorController(AdministratorService administratorService, ReportService reportService, TokenService tokenService, TeamService teamService, TutorService tutorService, ReviewService reviewService, MessageSource messageSource) {
+    public AdministratorController(AdministratorService administratorService, ReportService reportService, TokenService tokenService, TeamService teamService, TutorService tutorService, ReviewService reviewService,ResultService resultService,StageService stageService, MessageSource messageSource) {
         this.administratorService = administratorService;
         this.reportService = reportService;
         this.tokenService = tokenService;
         this.teamService = teamService;
         this.tutorService = tutorService;
         this.reviewService = reviewService;
+        this.resultService = resultService;
+        this.stageService = stageService;
         this.messageSource = messageSource;
     }
 
@@ -103,30 +111,61 @@ public class AdministratorController {
         List<Team> teams = teamService.findAllTeams();
 
         model.addAttribute("teams",teams);
-        return "admin/reportTaskCreate";
+        return "admin/taskCreate";
     }
 
-    //TODO:获取所有已经截止的项目报告任务(还没写)
+    //TODO:获取所有已经截止的项目报告任务
     @GetMapping("/task/history")
     public String taskHistory(Model model){
+        List<Stage> stages = stageService.findAllStages();
+        Timestamp current = new Timestamp(System.currentTimeMillis());
+        for(Stage stage: stages)
+            if(stage.getEnd().getTime() < current.getTime())stages.remove(stage);
 
-        return "admin/reportTaskHistory";
+        model.addAttribute("stages",stages);
+        return "admin/taskHistory";
     }
 
-    //TODO:reportTaskDetail.html 未写, reportTaskCreate中的 详情 与 修改 按钮需要更改，有待商榷
-    @GetMapping("/task/{stageId:\\d+}")
+    //TODO:taskDetail.html 未写（查看某任务的团队）, 来自taskCreate中的 详情 按钮
+    @GetMapping("/task/{stageId:\\d+}/details")
     public String taskDetail(@PathVariable int stageId, Model model){
-
-        return "admin/reportTaskDetail";
+        Optional<Stage> stage = stageService.findById(stageId);
+        if(!stage.isPresent()){
+            throw new ResourceNotFoundException("stage.id.not_found", stageId);
+        }
+        
+        List<Report> reports = reportService.findByStage(stage.get());
+        model.addAttribute("reports",reports);
+        return "admin/taskDetail";
     }
 
-    //TODO:创建token+显示所有没有失效的token(还没有写需要导师来评审的报告,即没有被综合评审好的报告)
+    //TODO:taskDetail.html 未写（修改某任务的截止时间）, 来自taskCreate中的 修改 按钮
+    @GetMapping("/task/{stageId:\\d+}/modify")
+    public String taskModify(@PathVariable int stageId, Model model){
+        Optional<Stage> stage = stageService.findById(stageId);
+        if(!stage.isPresent()){
+            throw new ResourceNotFoundException("stage.id.not_found", stageId);
+        }
+
+        model.addAttribute("stage",stage.get());
+        return "admin/taskModify";
+    }
+
+    //TODO:创建token+显示所有没有失效的token
     @GetMapping("/token/create")
     public String createToken(Model model){
-
+        List<Report> reports = reportService.findAllReports();
+        for(Report report: reports){
+            Optional<Result> result = resultService.findByReport(report);
+            if(!result.isPresent())
+                reports.remove(report);
+            else if(result.get().isSubmitted())
+                reports.remove(report);
+        }
         List<Tutor> tutors = tutorService.findAllTutors();
         List<Token> tokens = tokenService.findByRevokedIsFalse();
 
+        model.addAttribute("reports",reports);
         model.addAttribute("tutors",tutors);
         model.addAttribute("tokens",tokens);
         return "admin/tokenCreate";
@@ -141,17 +180,12 @@ public class AdministratorController {
         return "admin/tokenHistory";
     }
 
-    //TODO:reportTokenDetail.html 未写, tokenCreate中的 详情 与 修改 按钮需要更改，有待商榷
-    @GetMapping("/token/{tokenId:\\d+}")
-    public String tokenDetail(@PathVariable int tokenId, Model model){
-
-        return "admin/reportTaskDetail";
-    }
-
-    //TODO:获取所有未综合评审完的项目报告(和result有关，暂时没写)
+    //TODO:获取所有未综合评审完的项目报告
     @GetMapping("/report/result")
     public String reportViewAndResult(Model model){
+        List<Result> results = resultService.findBySubmittedFalse();
 
+        model.addAttribute("results",results);
         return "admin/reportViewAndResult";
     }
 
@@ -166,21 +200,23 @@ public class AdministratorController {
         return "admin/reportHistory";
     }
 
-    //TODO:获取某个项目报告的内容和所有评审结果(还没加上返回综合评审结果:result)
-    @GetMapping("/report/{reportId:\\d+}/info")
-    public String reportResult(@PathVariable int reportId, Model model){
-        Optional<Report> report = reportService.findById(reportId);
-        if(!report.isPresent()){
-            throw new ResourceNotFoundException("report.id.not_found", reportId);
+    //TODO:获取某个项目报告的内容和所有评审结果
+    @GetMapping("/report/{resultId:\\d+}/info")
+    public String reportResult(@PathVariable int resultId, Model model){
+        Optional<Result> result = resultService.findById(resultId);
+        if(!result.isPresent()){
+            throw new ResourceNotFoundException("result.id.not_found", resultId);
         }
 
-        List<Review> reviews = reviewService.findByReport(report.get());
+        List<Review> reviews = reviewService.findByReport(result.get().getReport());
 
-        model.addAttribute("report",report.get());
         model.addAttribute("reviews",reviews);
-        model.addAttribute("formAction", String.format("/report/%d", reportId));
+        model.addAttribute("result",result.get());
+        model.addAttribute("formAction", String.format("/report/%d/info", resultId));
         return "admin/reportResult";
     }
+
+
 
     @PostMapping(value = "/admin/{adminId:\\d+}/password", produces = MediaType.TEXT_HTML_VALUE)
     @PreAuthorize("hasAuthority('ManageAdministrator') " +
