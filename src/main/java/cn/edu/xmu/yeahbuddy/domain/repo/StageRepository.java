@@ -16,6 +16,8 @@ public interface StageRepository extends JpaRepository<Stage, Integer> {
 
     List<Stage> findByEndAfter(Timestamp timestamp);
 
+    List<Stage> findByEndBefore(Timestamp timestamp);
+
     @NotNull
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Stage> queryById(int id);

@@ -57,12 +57,20 @@ public class StageService {
     }
 
     /**
-     * 查找所有阶段
+     * 查找所有未截止阶段
      *
      * @return 阶段
      */
     @Transactional
     public List<Stage> findByEndAfter(Timestamp timestamp){ return stageRepository.findByEndAfter(timestamp); }
+
+    /**
+     * 查找所有已截止阶段
+     *
+     * @return 阶段
+     */
+    @Transactional
+    public List<Stage> findByEndBefore(Timestamp timestamp){ return stageRepository.findByEndBefore(timestamp); }
 
     /**
      * 按ID查找阶段

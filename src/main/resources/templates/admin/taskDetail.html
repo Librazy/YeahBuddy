@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title data-th-text="${readOnly} ? #{admin.profile.view_title} : #{admin.profile.title}">项目报告任务详情</title>
+    <link rel="stylesheet" href="../../webjars/bootstrap/dist/css/bootstrap.min.css"
+          data-th-href="@{/webjars/bootstrap/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css"
+          data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
+    <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
+</head>
+<body>
+<div id="bg"></div>
+<nav class="navbar navbar-toggleable-md fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img src="../../static/image/favicon.svg"
+                     data-th-src="@{/static/image/favicon.svg}"
+                     width="30" height="30" class="d-inline-block align-top">项目管理系统
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid pt-md-3">
+    <div class="row">
+        <div class="col-md-3 offset-md-1">
+            <div class="list-group pt-md-0">
+                <a href="#" class="list-group-item active">
+                    我的菜单
+                </a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">基本信息</a>
+                <a href="#" class="list-group-item">个人信息</a>
+                <a href="#" class="list-group-item">密码修改</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">项目报告任务</a>
+                <a href="#" class="list-group-item">新建任务</a>
+                <a href="#" class="list-group-item">历史任务</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">导师评审链接</a>
+                <a href="#" class="list-group-item">新建链接</a>
+                <a href="#" class="list-group-item">历史链接</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">团队项目报告</a>
+                <a href="#" class="list-group-item">查看与评审</a>
+                <a href="#" class="list-group-item">历史项目报告</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">用户管理</a>
+                <a href="#" class="list-group-item">导师管理</a>
+                <a href="#" class="list-group-item">团队管理</a>
+            </div>
+        </div>
+        <div class="col-md-7 pl-md-0">
+            <h2 style="text-align: center;">
+                项目报告任务详情
+            </h2>
+            <div class="input-group col-md-9">
+                <label class="input-group-addon" data-th-text="#{start}">开始时间</label>
+                <input type="time" class="form-control" id="start" required data-th-value="${stage.start}"/>
+            </div>
+            <div class="input-group col-md-9">
+                <label class="input-group-addon" data-th-text="#{end}">结束时间</label>
+                <input type="time" class="form-control" id="end" required data-th-value="${stage.end}"/>
+            </div>
+            <div class="input-group col-md-9">
+                <label class="input-group-addon" data-th-text="#{title}">阶段标题</label>
+                <input class="form-control" id="title" required data-th-value="${stage.title}"/>
+            </div>
+            <br>
+            <div class="form-group offset-md-4">
+                <button type="submit" class="btn btn-primary align-middle" data-th-text="#{submit}"
+                        id="submit">修改
+                </button>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>报告编号</th>
+                    <th>项目名</th>
+                    <th>团队名</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-th-each="report : ${reports}"><!-- 数据待定 -->
+                    <td data-th-text="${report.id}">2017072001</td>
+                    <td data-th-text="${report.team.projectName}">项目报告系统</td>
+                    <td data-th-text="${report.team.displayName}">Yeah Buddy</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="row clearfix" data-th-replace="~{footer::normal}">
+        <div class="col-md-10 offset-md-1 column">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.about}">关于我们</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.feedback}">意见反馈</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.help}">帮助中心</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#" data-th-text="#{footer.us}">联系我们</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    All rights reserved
+                </li>
+            </ul>
+        </div>
+    </footer>
+</div>
+<script src="../../webjars/jquery/dist/jquery.min.js" data-th-src="@{/webjars/jquery/dist/jquery.min.js}"></script>
+<script src="../../webjars/tether/dist/js/tether.min.js"
+        data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
+<script src="../../webjars/bootstrap/dist/js/bootstrap.min.js"
+        data-th-src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

@@ -61,12 +61,20 @@ public class ResultService {
     }
 
     /**
-     * 查找评审报告
+     * 查找未评审完的评审报告
      *
      * @return 评审报告
      */
     @Transactional(readOnly = true)
     public List<Result> findBySubmittedFalse(){ return resultRepository.findBySubmittedFalse(); }
+
+    /**
+     * 查找评审完的评审报告
+     *
+     * @return 评审报告
+     */
+    @Transactional(readOnly = true)
+    public List<Result> findBySubmittedTrue(){ return resultRepository.findBySubmittedTrue(); }
 
 
     /**

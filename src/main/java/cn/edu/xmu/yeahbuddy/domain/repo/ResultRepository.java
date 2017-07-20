@@ -20,6 +20,8 @@ public interface ResultRepository extends JpaRepository<Result, Integer> {
 
     List<Result> findBySubmittedFalse();
 
+    List<Result> findBySubmittedTrue();
+
     default List<Result> findByTeam(Team team) {
         return findByReport_Team(team);
     }

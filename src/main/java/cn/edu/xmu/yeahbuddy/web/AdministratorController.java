@@ -2,6 +2,8 @@ package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.*;
 import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
+import cn.edu.xmu.yeahbuddy.model.ResultDto;
+import cn.edu.xmu.yeahbuddy.model.StageDto;
 import cn.edu.xmu.yeahbuddy.service.*;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -10,6 +12,7 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -103,28 +106,31 @@ public class AdministratorController {
         return ResponseEntity.ok(result);
     }
 
-    //TODO:创建任务＋显示所有没有截止的项目报告任务
+    //TODO:创建任务＋显示所有没有截止的项目报告任务(OK)
     @GetMapping("/task/create")
     @PreAuthorize("hasAuthority('CreateTask')")
     public String createTask(Model model) {
         List<Team> teams = teamService.findAllTeams();
 
+        Timestamp current = new Timestamp(System.currentTimeMillis());
+        List<Stage> stages = stageService.findByEndAfter(current);
         model.addAttribute("teams", teams);
+        model.addAttribute("stages", stages);
         return "admin/taskCreate";
     }
 
-    //TODO:获取所有已经截止的项目报告任务
+    //TODO:获取所有已经截止的项目报告任务(OK)
     @GetMapping("/task/history")
     public String taskHistory(Model model) {
         Timestamp current = new Timestamp(System.currentTimeMillis());
-        List<Stage> stages = stageService.findByEndAfter(current);
+        List<Stage> stages = stageService.findByEndBefore(current);
 
         model.addAttribute("stages", stages);
         return "admin/taskHistory";
     }
 
-    //TODO:taskDetail.html 未写（查看某任务的团队）, 来自taskCreate中的 详情 按钮
-    @GetMapping("/task/{stageId:\\d+}/details")
+    //TODO: 来自taskCreate中的 详情 和 修改 按钮(详情与修改链接到的一样)（OK）
+    @GetMapping("/task/{stageId:\\d+}/detail")
     public String taskDetail(@PathVariable int stageId, Model model) {
         Optional<Stage> stage = stageService.findById(stageId);
         if (!stage.isPresent()) {
@@ -132,23 +138,15 @@ public class AdministratorController {
         }
 
         List<Report> reports = reportService.findByStage(stage.get());
+        model.addAttribute("stage", stage.get());
         model.addAttribute("reports", reports);
         return "admin/taskDetail";
     }
 
-    //TODO:taskModify.html 未写（修改某任务的截止时间）, 来自taskCreate中的 修改 按钮
-    @GetMapping("/task/{stageId:\\d+}/modify")
-    public String taskModify(@PathVariable int stageId, Model model) {
-        Optional<Stage> stage = stageService.findById(stageId);
-        if (!stage.isPresent()) {
-            throw new ResourceNotFoundException("stage.id.not_found", stageId);
-        }
+    //TODO:修改任务的信息:stageService的更新未写
 
-        model.addAttribute("stage", stage.get());
-        return "admin/taskModify";
-    }
 
-    //TODO:创建token+显示所有没有失效的token
+    //TODO:创建token+显示所有没有失效的token（OK）
     @GetMapping("/token/create")
     public String createToken(Model model) {
         List<Report> reports = reportService.findAllReports();
@@ -168,7 +166,7 @@ public class AdministratorController {
         return "admin/tokenCreate";
     }
 
-    //TODO:获取所有已截止的token
+    //TODO:获取所有已截止的token（OK）
     @GetMapping("/token")
     @PreAuthorize("hasAuthority('ManageToken')")
     public String allTokens(Model model) {
@@ -177,7 +175,7 @@ public class AdministratorController {
         return "admin/tokenHistory";
     }
 
-    //TODO:获取所有未综合评审完的项目报告
+    //TODO:获取所有未综合评审完的项目报告(OK)
     @GetMapping("/report/result")
     public String reportViewAndResult(Model model) {
         List<Result> results = resultService.findBySubmittedFalse();
@@ -186,18 +184,16 @@ public class AdministratorController {
         return "admin/reportViewAndResult";
     }
 
-    //TODO:获取所有综合评审完的项目报告
+    //TODO:获取所有综合评审完的项目报告(OK)
     @GetMapping("/report/history")
     @PreAuthorize("hasAuthority('ViewReport')")
     public String reportHistory(Model model) {
-        List<Report> reports = reportService.findAllReports();
-        Set<Team> teams = reports.stream().map(Report::getTeamId).distinct().map(teamService::loadById).collect(Collectors.toSet());
-        model.addAttribute("reports", reports);
-        model.addAttribute("teams", teams);
+        List<Result> results = resultService.findBySubmittedTrue();
+        model.addAttribute("results", results);
         return "admin/reportHistory";
     }
 
-    //TODO:获取某个项目报告的内容和所有评审结果
+    //TODO:获取某个项目报告的内容和所有评审结果(OK)
     @GetMapping("/report/{resultId:\\d+}/info")
     public String reportResult(@PathVariable int resultId, Model model) {
         Optional<Result> result = resultService.findById(resultId);
@@ -213,7 +209,26 @@ public class AdministratorController {
         return "admin/reportResult";
     }
 
-    //TODO:
+    //TODO:管理员进行综合评审
+    @PutMapping("/report/{resultId:\\d+}/info")
+    public ResponseEntity<Map<String, String>> updateReportResult(@PathVariable int resultId, ResultDto resultDto, Model model) {
+        log.debug("Update result ");
+
+        Optional<Result> reportResult = resultService.findById(resultId);
+        if (!reportResult.isPresent()) {
+            throw new ResourceNotFoundException("result.id.not_found", resultId);
+        }
+
+        Map<String, String> result = new HashMap<>();
+        Locale locale = LocaleContextHolder.getLocale();
+
+        resultService.updateResult(resultId, resultDto);
+
+        result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
+        result.put("message", messageSource.getMessage("result.update.ok", new Object[]{}, locale));
+        return ResponseEntity.ok(result);
+    }
+
 
     @PostMapping(value = "/admin/{adminId:\\d+}/password", produces = MediaType.TEXT_HTML_VALUE)
     @PreAuthorize("hasAuthority('ManageAdministrator') " +
