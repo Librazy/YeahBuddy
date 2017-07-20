@@ -1,6 +1,5 @@
 package cn.edu.xmu.yeahbuddy.service;
 
-import cn.edu.xmu.yeahbuddy.domain.Administrator;
 import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.Result;
 import cn.edu.xmu.yeahbuddy.domain.repo.ResultRepository;
@@ -11,10 +10,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Service
 public class ResultService {
 
     @NonNls
@@ -29,7 +30,9 @@ public class ResultService {
      * @param resultRepository Autowired
      */
     @Autowired
-    public ResultService(ResultRepository resultRepository){ this.resultRepository = resultRepository; }
+    public ResultService(ResultRepository resultRepository) {
+        this.resultRepository = resultRepository;
+    }
 
     /**
      * 查找综合评审报告
@@ -47,23 +50,11 @@ public class ResultService {
      * 查找评审报告
      *
      * @param report 报告
-     * @param viewer 审核者
      * @return 评审报告
      */
     @Transactional(readOnly = true)
-    public Optional<Result> find(Report report, Administrator viewer) {
-        log.debug("Finding Result");
-        return resultRepository.find(report, viewer);
-    }
-
-    /**
-     * 查找某个团队项目报告的综合评审报告
-     *
-     * @param report 项目报告
-     * @return 综合评审报告
-     */
-    @Transactional
     public Optional<Result> findByReport(Report report) {
+        log.debug("Finding Result");
         return resultRepository.findByReport(report);
     }
 
@@ -71,20 +62,19 @@ public class ResultService {
      * 新建综合评审报告
      *
      * @param report 目标报告
-     * @param viewer 审核管理员
      * @return 新注册的综合评审报告
      */
     @Transactional
-    public Result createReview(Report report, Administrator viewer) throws IdentifierAlreadyExistsException {
-        log.debug(String.format("Trying to create Result: %s %s", report, viewer));
-        if (resultRepository.find(report, viewer).isPresent()) {
-            log.info(String.format("Fail to create Result with id: %s %s: id already exist", report, viewer));
+    public Result createResult(Report report) throws IdentifierAlreadyExistsException {
+        log.debug(String.format("Trying to create Result: %s", report));
+        if (resultRepository.findByReport(report).isPresent()) {
+            log.info(String.format("Fail to create Result with id: %s: report already exist", report));
             throw new IdentifierAlreadyExistsException("review.id.exist", null);
         }
 
-        Result result = new Result(report, viewer);
+        Result result = new Result(report);
         result = resultRepository.save(result);
-        log.debug(String.format("Created new Result with id: %s %s", report, viewer));
+        log.debug(String.format("Created new Result with report: %s", report));
         return result;
     }
 
@@ -111,7 +101,7 @@ public class ResultService {
         Result result = r.get();
         if (dto.getSubmitted() != null) {
             log.trace("Updated submitted for Result with id " + id + ":" + result.isSubmitted() +
-                    " -> " + dto.getSubmitted());
+                              " -> " + dto.getSubmitted());
             result.setSubmitted(dto.getSubmitted());
         }
 
@@ -120,10 +110,10 @@ public class ResultService {
             result.setContent(dto.getContent());
         }
 
-        if (dto.getRank() != null) {
-            log.trace("Updated rank for Result with id " + id + ":" + result.getRank() +
-                    " -> " + dto.getRank());
-            result.setRank(dto.getRank());
+        if (dto.getBrief() != null) {
+            log.trace("Updated rank for Result with id " + id + ":" + result.getBrief() +
+                              " -> " + dto.getBrief());
+            result.setBrief(dto.getBrief());
         }
 
         return resultRepository.save(result);

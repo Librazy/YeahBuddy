@@ -134,7 +134,7 @@ public abstract class ApplicationTestBase extends AbstractTransactionalJUnit4Spr
 
             review = reviewService.createReview(report, tutor1);
 
-            token = tokenService.createToken(tutor1, Collections.singletonList(review)).getTokenValue();
+            token = tokenService.createToken(tutor1, Collections.singletonList(review), stage.getEnd()).getTokenValue();
 
             SecurityContextHolder.getContext().setAuthentication(null);
             return null;

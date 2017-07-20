@@ -167,7 +167,7 @@ public class AdministratorController {
     }
 
     //TODO:获取某个项目报告的内容和所有评审结果(还没加上返回综合评审结果:result)
-    @GetMapping("/report/{reportId:\\d+}")
+    @GetMapping("/report/{reportId:\\d+}/info")
     public String reportResult(@PathVariable int reportId, Model model){
         Optional<Report> report = reportService.findById(reportId);
         if(!report.isPresent()){

@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
@@ -109,12 +110,12 @@ public class TokenService {
      */
     @Transactional
     @PreAuthorize("hasAuthority('ManageTutor')")
-    public Token createToken(Tutor tutor, Collection<Review> reviews) {
+    public Token createToken(Tutor tutor, Collection<Review> reviews, Timestamp end) {
         String tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         while (!tokenValue.matches("[a-zA-Z0-9]+")) {
             tokenValue = Base64.getUrlEncoder().encodeToString(PasswordUtils.generateSalt(18));
         }
-        Token result = tokenRepository.save(new Token(tokenValue, tutor, reviews));
+        Token result = tokenRepository.save(new Token(tokenValue, tutor, reviews, end));
         log.debug("Created Token " + result);
         return result;
     }

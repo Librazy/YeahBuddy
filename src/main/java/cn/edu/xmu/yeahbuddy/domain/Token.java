@@ -4,7 +4,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.jetbrains.annotations.Contract;
 
 import javax.persistence.*;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -22,8 +22,11 @@ public class Token {
     private Tutor tutor;
 
     @CreationTimestamp
-    @Column(name = "TokenTime", updatable = false, nullable = false)
-    private Time time;
+    @Column(name = "TokenStartTime", updatable = false, nullable = false)
+    private Timestamp start;
+
+    @Column(name = "TokenEndTime", nullable = false)
+    private Timestamp end;
 
     @Column(name = "TokenRevoked", nullable = false)
     private boolean revoked;
@@ -34,10 +37,11 @@ public class Token {
     public Token() {
     }
 
-    public Token(String tokenValue, Tutor tutor, Collection<Review> reviews) {
+    public Token(String tokenValue, Tutor tutor, Collection<Review> reviews, Timestamp end) {
         this.tokenValue = tokenValue;
         this.tutor = tutor;
         this.reviews = reviews;
+        this.end = end;
     }
 
     @Contract(pure = true)
@@ -56,8 +60,8 @@ public class Token {
     }
 
     @Contract(pure = true)
-    public Time getTime() {
-        return time;
+    public Timestamp getStart() {
+        return start;
     }
 
     @Contract(pure = true)
@@ -74,8 +78,19 @@ public class Token {
         return reviews;
     }
 
+    @Contract(pure = true)
+    public Timestamp getEnd() {
+        return end;
+    }
+
+    public void setEnd(Timestamp end) {
+        this.end = end;
+    }
+
     @Override
     public String toString() {
         return String.format("tokenValue:%s tutor:%s revoked:%b reviews:[%s]", tokenValue, tutor, revoked, reviews.stream().map(Object::toString).collect(Collectors.joining(", ")));
     }
+
+
 }

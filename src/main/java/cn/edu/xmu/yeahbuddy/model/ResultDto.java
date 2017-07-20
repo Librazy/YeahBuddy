@@ -6,19 +6,19 @@ import java.util.Map;
 
 public class ResultDto {
 
-    private Integer rank;
+    private String brief;
 
     private Map<Integer, String> content;
 
     private Boolean submitted;
 
     @Contract(pure = true)
-    public Integer getRank() {
-        return rank;
+    public String getBrief() {
+        return brief;
     }
 
-    public ResultDto setRank(Integer rank) {
-        this.rank = rank;
+    public ResultDto setBrief(String brief) {
+        this.brief = brief;
         return this;
     }
 
@@ -27,7 +27,7 @@ public class ResultDto {
         return content;
     }
 
-    public ResultDto getContent(Map<Integer, String> content) {
+    public ResultDto setContent(Map<Integer, String> content) {
         this.content = content;
         return this;
     }
@@ -37,7 +37,7 @@ public class ResultDto {
         return submitted;
     }
 
-    public ResultDto setSubmitted(Boolean submitted) {
+    public ResultDto setSubmitted(boolean submitted) {
         this.submitted = submitted;
         return this;
     }

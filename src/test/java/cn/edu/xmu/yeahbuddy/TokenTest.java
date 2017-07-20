@@ -58,7 +58,7 @@ public class TokenTest extends ApplicationTestBase {
         reviewSet.add(review);
         reviewSet.add(review2);
 
-        Token t = tokenService.createToken(tutor1, reviewSet);
+        Token t = tokenService.createToken(tutor1, reviewSet, stage.getEnd());
         Assert.assertTrue(tokenService.loadAndValidateToken(t.getTokenValue()).getFirst().equals(tutor1));
         Assert.assertEquals(2, tokenService.loadAndValidateToken(t.getTokenValue()).getSecond().getReviews().size());
 

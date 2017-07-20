@@ -6,10 +6,6 @@ import org.jetbrains.annotations.Contract;
 import javax.persistence.*;
 import java.util.Map;
 
-@Table(
-        uniqueConstraints =
-        @UniqueConstraint(columnNames = {"ResultReportId", "ResultViewer"})
-)
 @Entity
 public class Result {
 
@@ -19,20 +15,15 @@ public class Result {
     private int id = Integer.MIN_VALUE;
 
     @NaturalId
-    @ManyToOne
-    @JoinColumn(name = "ResultReportId", updatable = false, nullable = false)
+    @OneToOne
+    @JoinColumn(name = "ResultReportId", updatable = false, nullable = false, unique = true)
     private Report report;
 
-    @NaturalId
-    @ManyToOne
-    @JoinColumn(name = "ResultViewer", updatable = false, nullable = false)
-    private Administrator administrator;
-
-    @Column(name = "ResultResult", nullable = false)
-    private int rank = -1;
+    @Column(name = "ResultBrief", nullable = false)
+    private String brief;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "ReviewContent")
+    @CollectionTable(name = "ResultContent")
     private Map<Integer, String> content;
 
     @Column(name = "ResultSubmitted", nullable = false)
@@ -40,9 +31,8 @@ public class Result {
 
     public Result(){ }
 
-    public Result(Report report, Administrator administrator){
+    public Result(Report report) {
         this.report = report;
-        this.administrator = administrator;
     }
 
     @Contract(pure = true)
@@ -68,12 +58,13 @@ public class Result {
     }
 
     @Contract(pure = true)
-    public Administrator getAdministrator(){ return administrator; }
+    public String getBrief() {
+        return brief;
+    }
 
-    @Contract(pure = true)
-    public int getRank(){ return rank; }
-
-    public void setRank(int rank){ this.rank = rank; }
+    public void setBrief(String brief) {
+        this.brief = brief;
+    }
 
     @Contract(pure = true)
     public Map<Integer, String> getContent() {

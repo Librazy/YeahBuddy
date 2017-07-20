@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.LockModeType;
-import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +15,6 @@ import java.util.Optional;
 public interface TokenRepository extends JpaRepository<Token, String> {
 
     List<Token> findByTutor(Tutor tutor);
-
-    List<Token> findByTimeBefore(Time time);
 
     List<Token> findByRevokedIsTrue();
 
