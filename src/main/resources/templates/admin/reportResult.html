@@ -25,6 +25,17 @@
             min-width: 4rem;
         }
     </style>
+
+    <style type="text/css">
+        .input-group input, .input-group label, .is-focused .input-group input, .is-focused .input-group label, .form-group textarea, .form-group textarea:focus {
+            color: black;
+        }
+
+        #team-info .input-group input.form-control, #report .form-group input.form-control, #report .form-group textarea, #review .form-group input.form-control, #review .form-group textarea {
+            background: none;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -47,91 +58,144 @@
                 <a href="#" class="list-group-item active">
                     我的菜单
                 </a>
-                <a href="#" class="list-group-item">项目报告管理</a>
-                <a href="#" class="list-group-item">项目评审</a>
-                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseExample">评审生成</a>
-                <a href="#" class="list-group-item" data-toggle="collapse" data-target="#collapseExample">评审查看</a>
-                <a href="#" class="list-group-item">用户管理</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">基本信息</a>
+                <a href="#" class="list-group-item">个人信息</a>
+                <a href="#" class="list-group-item">密码修改</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">项目报告任务</a>
+                <a href="#" class="list-group-item">新建任务</a>
+                <a href="#" class="list-group-item">历史任务</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">导师评审链接</a>
+                <a href="#" class="list-group-item">新建链接</a>
+                <a href="#" class="list-group-item">历史链接</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">团队项目报告</a>
+                <a href="#" class="list-group-item">查看与评审</a>
+                <a href="#" class="list-group-item">历史项目报告</a>
+                <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">用户管理</a>
+                <a href="#" class="list-group-item">导师管理</a>
+                <a href="#" class="list-group-item">团队管理</a>
             </div>
         </div>
         <div class="col-md-7 pl-md-0">
-            <h2 style="text-align: center" data-th-text="${readOnly} ? #{team.teameport.view_title} : #{team.teameport.title}">
-                2017年度期末报告
-            </h2>
-            <div class="form-group row mt-2">
-                <span>团队名称：</span>
-                <span data-th-text="#{username}">xxx</span>
-                <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电子邮件：</span>
-                <span data-th-text="#{email}">xxx</span>
-            </div>
-            <div class="form-group row mt-3">
-                <span>团队负责人：</span>
-                <span data-th-text="#{display_name}">xxx</span>
-                <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;手机号码：</span>
-                <span data-th-text="#{phone}">xxx</span>
-            </div>
-            <div class="form-group row mt-3">
-                <span>项目名称：</span>
-                <span data-th-text="#{project_name}">xxx</span>
-            </div>
-            <span>项目综述：<br></span>
-
-            <textarea rows="8" cols="10" placeholder="项目综述" data-th-text="#{ReportContent}" style="width:100%;/*自动适应父布局宽度*/  overflow:auto;  word-break:break-all;"></textarea>
-
-            <span>项目进展情况及已取得的成果：<br></span>
-
-            <textarea rows="8" cols="10" placeholder="项目进展情况及已取得的成果" data-th-text="#{ReportContent}" style="width:100%;/*自动适应父布局宽度*/  overflow:auto;  word-break:break-all;"></textarea>
-
-            <span>下一阶段计划及时间表：<br></span>
-
-            <textarea rows="8" cols="10" placeholder="下一阶段计划及时间表" data-th-text="#{ReportContent}" style="width:100%;/*自动适应父布局宽度*/  overflow:auto;  word-break:break-all;"></textarea>
-            <div class="span4">
-            </div>
-            <span>创客导师评审<br></span>
-
-            <div class="row pre-scrollable">
-                <div class="span3">
-                    <span>导师:</span>
-                    <span data-th-text="#{TutorDisplayName}">xxx</span>
+        <div class="card pr-3 pl-3 pb-3" style="background-color: rgba(255,255,255, 0.7);">
+            <div id="team-info">
+                <h2 class="text-center pt-3">
+                    团队信息
+                </h2>
+                <div class="form-group row">
+                    <div class="input-group col-md-5">
+                        <label for="projectName" class="input-group-addon"
+                               data-th-text="#{project_name}">项目名</label>
+                        <input class="form-control" id="projectName" name="projectName" readonly
+                               data-th-value="${team.projectName}" value="YeahBuddy"/>
+                    </div>
+                    <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                        <label for="email" class="input-group-addon" data-th-text="#{email}">电子邮件</label>
+                        <input type="email" class="form-control" id="email" name="email" readonly
+                               data-th-value="${team.email}" value="123456@qq.com"/>
+                    </div>
                 </div>
-                <div class="span3">
-                    <span><br>评审排名：</span>
-                    <span data-th-text="#{ReviewRank}">3</span>
-                </div>
-                <textarea rows="8" cols="10" placeholder="评审意见"data-th-text="#{ReviewContent}" style="width:100%;/*自动适应父布局宽度*/  overflow:auto;  word-break:break-all;"></textarea>
-                <div class="span3">
-                    <span>导师:</span>
-                    <span data-th-text="#{TutorDisplayName}">xxx</span>
-                </div>
-                <div class="span3">
-                    <span><br>评审排名：</span>
-                    <span data-th-text="#{ReviewRank}">1</span>
-                </div>
-                <textarea rows="8" cols="10" placeholder="评审意见"data-th-text="#{ReviewContent}" style="width:100%;/*自动适应父布局宽度*/  overflow:auto;  word-break:break-all;"></textarea>
-                <div class="span3">
-                    <span>导师:</span>
-                    <span data-th-text="#{TutorDisplayName}">xxx</span>
-                </div>
-
-                <div class="span3">
-                    <span><br>评审排名：</span>
-                    <span data-th-text="#{ReviewRank}">2</span>
-                </div>
-                <textarea rows="8" cols="10" placeholder="评审意见"data-th-text="#{ReviewContent}" style="width:100%;/*自动适应父布局宽度*/  overflow:auto;  word-break:break-all;"></textarea>
-
-
-            </div>
-            <div class="row">
-                <div class="col-md-7 offset-md-5">
-                    <nav>
-                        <button type="button" class="btn btn-success btn-mini" type="button" data-th-text="#{submit}">提交</button>
-
-                        <button type="button" class="btn btn-default btn-mini">取消</button>
-                    </nav>
+                <div class="form-group row">
+                    <div class="input-group col-md-5">
+                        <label for="displayName" class="input-group-addon"
+                               data-th-text="#{display_name}">团队名</label>
+                        <input class="form-control" id="displayName" name="displayName" readonly
+                               data-th-value="${team.displayName}" value="YeahBuddy"/>
+                    </div>
+                    <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                        <label for="phone" class="input-group-addon" data-th-text="#{phone}">手机号码</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" readonly
+                               data-th-value="${team.phone}" value="18999999999"/>
+                    </div>
                 </div>
             </div>
+            <div id="report">
+                <h2 class="text-center pt-3">
+                    报告详情
+                </h2>
+                <div class="form-group">
+                    <label for="title" class="bmd-label-floating">报告标题：</label>
+                    <input class="form-control" id="title" name="title" readonly
+                           data-th-value="${report.title}"/>
+                </div>
+                <div class="form-group">
+                    <label for="report-content0" class="bmd-label-floating">项目综述：</label>
+                    <textarea class="form-control" rows="8" readonly
+                              data-th-text="${report.content[0]}" id="report-content0"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="report-content1" class="bmd-label-floating">项目进展情况及已取得的成果：</label>
+                    <textarea class="form-control" rows="8" readonly
+                              data-th-text="${report.content[1]}" id="report-content1"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="report-content2" class="bmd-label-floating">下一阶段计划及时间表：</label>
+                    <textarea class="form-control" rows="8" readonly
+                              data-th-text="${report.content[2]}" id="report-content2"></textarea>
+                </div>
+            </div>
+                <h2 class="text-center pt-3">
+                    报告评审
+                </h2>
+            <div id="review" data-th-each="review : ${reviews}">
+                <div class="form-group">
+                    <label class="bmd-label-floating">审核导师：</label>
+                    <input class="form-control" readonly
+                           data-th-text="${review.tutor.username}"/>
+                </div>
+                <div class="form-group">
+                    <label for="content0" class="bmd-label-floating">评审评价：</label>
+                    <textarea class="form-control" rows="8" readonly
+                              data-th-text="${review.content[0]}" id="content0"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="content1" class="bmd-label-floating">评审意见：</label>
+                    <textarea class="form-control" rows="8" readonly
+                              data-th-text="${review.content[1]}" id="content1"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="rank" class="bmd-label-floating">评审排名：</label>
+                    <input class="form-control" type="number"
+                           data-th-value="${review.rank} == -1 ? '' : ${review.rank}" readonly id="rank"/>
+                </div>
+                <hr>
+            </div>
+            <form id="resultForm" data-th-action="${formAction}" method="POST">
+                <h2 class="text-center pt-3">
+                    评审结果
+                </h2>
+                <input type="hidden" name="_method" value="PUT"/>
+                <input type="hidden" id="submitted" name="submitted" value="false"
+                       data-th-value="${result.submitted}"/>
+                <div class="form-group">
+                    <label for="content0" class="bmd-label-floating">导师综合评审意见：</label>
+                    <textarea class="form-control" rows="8" required
+                              data-th-text="${result.content[0]}" id="result-content0" name="content"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="content1" class="bmd-label-floating">创客空间意见：</label>
+                    <textarea class="form-control" rows="8" required
+                              data-th-text="${result.content[1]}" id="result-content1" name="content"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="rank" class="bmd-label-floating">考核结果：</label>
+                    <select class="form-control" data-th-value="${result.rank}" id="result-rank" name="rank">
+                        <option value ="perfect">优秀</option>
+                        <option value="good">良好</option>
+                        <option value="pass">及格</option>
+                        <option value="fail">不及格</option>
+                    </select>
+                </div>
+                <div class="row" id="submits">
+                    <div class="col-md-7 offset-md-5">
+                        <nav>
+                            <button id="submit" class="btn btn-primary" data-th-text="#{submit}">提交</button>
+                            <button id="save" class="btn btn-default">暂存</button>
+                        </nav>
+                    </div>
+                </div>
+            </form>
         </div>
-
+    </div>
     </div>
 
 
