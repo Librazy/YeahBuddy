@@ -25,7 +25,10 @@ public class ReportService {
 
     @NonNls
     private static Log log = LogFactory.getLog(ReportService.class);
+
     private ReportRepository reportRepository;
+
+    private final ResultService resultService;
 
     /**
      * 构造函数
@@ -34,8 +37,9 @@ public class ReportService {
      * @param reportRepository Autowired
      */
     @Autowired
-    public ReportService(ReportRepository reportRepository) {
+    public ReportService(ReportRepository reportRepository, ResultService resultService) {
         this.reportRepository = reportRepository;
+        this.resultService = resultService;
     }
 
     /**
@@ -105,6 +109,9 @@ public class ReportService {
         report.setSubmitted(false);
         report.setTitle(title);
         report = reportRepository.save(report);
+
+        resultService.createResult(report);
+
         log.debug("Created new Report with id " + team + ", " + stage);
         return report;
     }

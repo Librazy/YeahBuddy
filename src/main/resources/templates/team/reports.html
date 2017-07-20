@@ -67,11 +67,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-th-each="report:${reports}">
-                    <td><a href="#" data-th-text="${report.title}">2017年度期末报告</a></td>
-                    <td data-th-text="${report.stage.end}">2017-07-20 00:00</td>
-                    <td data-th-text="${report.submitted}">是</td>
-                    <td data-th-text="$">优秀</td><!-- 数据待定 -->
+                <tr data-th-each="result:${results}">
+                    <td><a href="#" data-th-text="${result.report.title}">2017年度期末报告</a></td>
+                    <td data-th-text="${result.report.stage.end}">2017-07-20 00:00</td>
+                    <td data-th-text="${result.report.submitted} ? #{yes} : #{no}">是</td>
+                    <td data-th-text="${result.brief}">优秀</td>
                     <td><a href="#">查看结果</a></td>
                 </tr>
                 </tbody>

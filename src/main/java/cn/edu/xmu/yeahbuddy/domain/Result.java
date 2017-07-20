@@ -31,8 +31,9 @@ public class Result {
 
     public Result(){ }
 
-    public Result(Report report) {
+    public Result(Report report, String brief) {
         this.report = report;
+        this.brief = brief;
     }
 
     @Contract(pure = true)

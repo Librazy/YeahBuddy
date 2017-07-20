@@ -2,6 +2,7 @@ package cn.edu.xmu.yeahbuddy.service;
 
 import cn.edu.xmu.yeahbuddy.domain.Report;
 import cn.edu.xmu.yeahbuddy.domain.Result;
+import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.domain.repo.ResultRepository;
 import cn.edu.xmu.yeahbuddy.model.ResultDto;
 import cn.edu.xmu.yeahbuddy.utils.IdentifierAlreadyExistsException;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -59,6 +61,18 @@ public class ResultService {
     }
 
     /**
+     * 按团队查找评审报告
+     *
+     * @param team 团队
+     * @return 评审报告
+     */
+    @Transactional(readOnly = true)
+    public List<Result> findByTeam(Team team) {
+        log.debug("Finding Result");
+        return resultRepository.findByTeam(team);
+    }
+
+    /**
      * 新建综合评审报告
      *
      * @param report 目标报告
@@ -72,7 +86,7 @@ public class ResultService {
             throw new IdentifierAlreadyExistsException("review.id.exist", null);
         }
 
-        Result result = new Result(report);
+        Result result = new Result(report, "未评审");
         result = resultRepository.save(result);
         log.debug(String.format("Created new Result with report: %s", report));
         return result;

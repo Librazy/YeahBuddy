@@ -1,9 +1,9 @@
 package cn.edu.xmu.yeahbuddy.web;
 
-import cn.edu.xmu.yeahbuddy.domain.Report;
+import cn.edu.xmu.yeahbuddy.domain.Result;
 import cn.edu.xmu.yeahbuddy.domain.Team;
 import cn.edu.xmu.yeahbuddy.model.TeamDto;
-import cn.edu.xmu.yeahbuddy.service.ReportService;
+import cn.edu.xmu.yeahbuddy.service.ResultService;
 import cn.edu.xmu.yeahbuddy.service.ReviewService;
 import cn.edu.xmu.yeahbuddy.service.StageService;
 import cn.edu.xmu.yeahbuddy.service.TeamService;
@@ -34,21 +34,15 @@ public class TeamController {
 
     private final TeamService teamService;
 
-    private final ReportService reportService;
-
-    private final StageService stageService;
+    private final ResultService resultService;
 
     private final MessageSource messageSource;
 
-    private final ReviewService reviewService;
-
     @Autowired
-    public TeamController(TeamService teamService, ReportService reportService, StageService stageService, MessageSource messageSource, ReviewService reviewService) {
+    public TeamController(TeamService teamService, ResultService resultService, StageService stageService, MessageSource messageSource, ReviewService reviewService) {
         this.teamService = teamService;
-        this.reportService = reportService;
-        this.stageService = stageService;
+        this.resultService = resultService;
         this.messageSource = messageSource;
-        this.reviewService = reviewService;
     }
 
     @GetMapping("/team/login")
@@ -75,6 +69,8 @@ public class TeamController {
     }
 
     @GetMapping(value = "/team/{teamId:\\d+}", produces = MediaType.TEXT_HTML_VALUE)
+    @PreAuthorize("hasAuthority('ManageTeam') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TeamService).isTeam(principal) && T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id == #teamId)")
     public String profile(@PathVariable int teamId, Model model) {
         Optional<Team> team = teamService.findById(teamId);
         if (!team.isPresent()) {
@@ -91,6 +87,8 @@ public class TeamController {
     }
 
     @PutMapping(value = "/team/{teamId:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAuthority('ManageTeam') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TeamService).isTeam(principal) && T(cn.edu.xmu.yeahbuddy.service.TeamService).asTeam(principal).id == #teamId)")
     public ResponseEntity<Map<String, String>> update(@PathVariable int teamId, TeamDto teamDto) {
         log.debug("Update team " + teamId + ": " + teamDto);
         teamService.updateTeam(teamId, teamDto);
@@ -132,10 +130,10 @@ public class TeamController {
 
     @GetMapping("/team/{teamId:\\d+}/report")
     //TODO
-    public ResponseEntity<Model> showReports(@PathVariable int teamId, Model model) {
-        List<Report> reports = reportService.findByTeamId(teamId);
-        model.addAttribute("reports", reports);
+    public String showReports(@PathVariable int teamId, Model model) {
+        List<Result> results = resultService.findByTeam(teamService.loadById(teamId));
+        model.addAttribute("results", results);
         model.addAttribute("formAction", String.format("/team/%d/reports", teamId));
-        return ResponseEntity.ok(model);
+        return "team/reports";
     }
 }
