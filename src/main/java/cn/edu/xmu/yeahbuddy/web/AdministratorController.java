@@ -1,9 +1,7 @@
 package cn.edu.xmu.yeahbuddy.web;
 
 import cn.edu.xmu.yeahbuddy.domain.*;
-import cn.edu.xmu.yeahbuddy.model.AdministratorDto;
-import cn.edu.xmu.yeahbuddy.model.ResultDto;
-import cn.edu.xmu.yeahbuddy.model.TokenCreationDto;
+import cn.edu.xmu.yeahbuddy.model.*;
 import cn.edu.xmu.yeahbuddy.service.*;
 import cn.edu.xmu.yeahbuddy.utils.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
@@ -108,7 +106,6 @@ public class AdministratorController {
         return ResponseEntity.ok(result);
     }
 
-    //TODO:创建任务＋显示所有没有截止的项目报告任务(OK)
     @GetMapping("/task/create")
     @PreAuthorize("hasAuthority('ManageTask')")
     public String createTask(Model model) {
@@ -118,10 +115,20 @@ public class AdministratorController {
         List<Stage> stages = stageService.findByEndAfter(current);
         model.addAttribute("teams", teams);
         model.addAttribute("stages", stages);
+        model.addAttribute("formAction", "/task/create");
+
         return "admin/taskCreate";
     }
 
-    //TODO:获取所有已经截止的项目报告任务(OK)
+    @PostMapping("/task/create")
+    @PreAuthorize("hasAuthority('ManageTask')")
+    public RedirectView createTask(StageCreationDto dto, Model model) {
+        List<Team> teams = dto.getTeamChosen().stream().map(teamService::loadById).collect(Collectors.toList());
+        Stage stage = stageService.createStage(dto.getId(), new StageDto().setStart(dto.getStart()).setEnd(dto.getEnd()).setTitle(dto.getTitle()));
+        teams.forEach(team -> reportService.createReport(team, stage, dto.getTitle()));
+        return new RedirectView("/task/create", false, false);
+    }
+
     @GetMapping("/task/history")
     @PreAuthorize("hasAuthority('ManageTask')")
     public String taskHistory(Model model) {
