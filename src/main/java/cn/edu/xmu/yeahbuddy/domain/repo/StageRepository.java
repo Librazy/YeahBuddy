@@ -7,10 +7,14 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.LockModeType;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface StageRepository extends JpaRepository<Stage, Integer> {
+
+    List<Stage> findByEndAfter(Timestamp timestamp);
 
     @NotNull
     @Lock(LockModeType.PESSIMISTIC_WRITE)

@@ -117,10 +117,8 @@ public class AdministratorController {
     //TODO:获取所有已经截止的项目报告任务
     @GetMapping("/task/history")
     public String taskHistory(Model model){
-        List<Stage> stages = stageService.findAllStages();
         Timestamp current = new Timestamp(System.currentTimeMillis());
-        for(Stage stage: stages)
-            if(stage.getEnd().getTime() < current.getTime())stages.remove(stage);
+        List<Stage> stages = stageService.findByEndAfter(current);
 
         model.addAttribute("stages",stages);
         return "admin/taskHistory";
@@ -139,7 +137,7 @@ public class AdministratorController {
         return "admin/taskDetail";
     }
 
-    //TODO:taskDetail.html 未写（修改某任务的截止时间）, 来自taskCreate中的 修改 按钮
+    //TODO:taskModify.html 未写（修改某任务的截止时间）, 来自taskCreate中的 修改 按钮
     @GetMapping("/task/{stageId:\\d+}/modify")
     public String taskModify(@PathVariable int stageId, Model model){
         Optional<Stage> stage = stageService.findById(stageId);
@@ -216,7 +214,7 @@ public class AdministratorController {
         return "admin/reportResult";
     }
 
-
+    //TODO:
 
     @PostMapping(value = "/admin/{adminId:\\d+}/password", produces = MediaType.TEXT_HTML_VALUE)
     @PreAuthorize("hasAuthority('ManageAdministrator') " +

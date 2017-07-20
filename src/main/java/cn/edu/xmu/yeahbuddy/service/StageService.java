@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,14 @@ public class StageService {
         log.debug("Finding all Stages");
         return stageRepository.findAll();
     }
+
+    /**
+     * 查找所有阶段
+     *
+     * @return 阶段
+     */
+    @Transactional
+    public List<Stage> findByEndAfter(Timestamp timestamp){ return stageRepository.findByEndAfter(timestamp); }
 
     /**
      * 按ID查找阶段
