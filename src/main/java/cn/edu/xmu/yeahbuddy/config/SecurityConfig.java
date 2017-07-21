@@ -59,7 +59,7 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                        .antMatchers("/webjars/**", "/favicon.ico", "/static/image/**", "/static/css/**", "/204", "/login/**")
+                        .antMatchers("/webjars/**", "/favicon.ico", "/static/image/**", "/static/css/**", "/204", "/login/**", "/team/login/**", "/tutor/login/**")
                             .permitAll();
 
             String activeDb = environment.getProperty("spring.datasource.driver-class-name");
@@ -129,7 +129,7 @@ public class SecurityConfig {
                             .authenticated().and()
                     // log in
                         .formLogin()
-                            .loginPage("/team/login/**")
+                            .loginPage("/team/login")
                                 .permitAll()
                             .defaultSuccessUrl("/team", true).and()
                     // logout
@@ -194,7 +194,7 @@ public class SecurityConfig {
                     .authenticated().and()
                     // log in
                     .formLogin()
-                    .loginPage("/tutor/login/**")
+                    .loginPage("/tutor/login")
                     .permitAll()
                     .defaultSuccessUrl("/tutor", true).and()
                     // logout

@@ -84,7 +84,7 @@ public class Application extends SpringBootServletInitializer {
                     new AdministratorDto()
                             .setUsername("admin")
                             .setPassword("admin")
-                            .setDisplayName("Admin 1")
+                            .setDisplayName("管理员 1")
                             .setAuthorities(
                                     Arrays.stream(Administrator.AdministratorPermission.values())
                                           .map(Administrator.AdministratorPermission::name)
@@ -95,7 +95,7 @@ public class Application extends SpringBootServletInitializer {
                     new TeamDto()
                             .setUsername("team")
                             .setPassword("team")
-                            .setDisplayName("Team 1")
+                            .setDisplayName("团队 1")
                             .setEmail("a@b.com")
                             .setPhone("18988888888")
                             .setProjectName("yeahbuddy"));
@@ -104,23 +104,23 @@ public class Application extends SpringBootServletInitializer {
                     new TeamDto()
                             .setUsername("team2")
                             .setPassword("team2")
-                            .setDisplayName("Team 2")
+                            .setDisplayName("团队 2")
                             .setEmail("c@b.com")
                             .setPhone("18908888888")
                             .setProjectName("yeaddy"));
 
-            Team team3 = teamService.registerNewTeam(
+            teamService.registerNewTeam(
                     new TeamDto()
                             .setUsername("team3")
                             .setPassword("team3")
-                            .setDisplayName("Team 3")
+                            .setDisplayName("团队 3")
                             .setEmail("e@b.com")
                             .setPhone("18908888888")
                             .setProjectName("yeaddy"));
 
             Stage stage = stageService.createStage(201701,
                     new StageDto()
-                            .setTitle("2017 01")
+                            .setTitle("16~17 学年第一学期")
                             .setStart(Timestamp.valueOf("2017-01-01 20:00:00"))
                             .setEnd(Timestamp.valueOf("2017-08-01 20:00:00")));
             List<String> content = new ArrayList<>();
@@ -128,9 +128,9 @@ public class Application extends SpringBootServletInitializer {
             content.add("报告内容2");
             content.add("报告内容3");
 
-            Report report = reportService.createReport(team, stage, "Report");
+            Report report = reportService.createReport(team, stage, "16~17 学年第一学期团队1报告");
             reportService.updateReport(report.getId(), new ReportDto().setContent(content));
-            Report report2 = reportService.createReport(team2, stage, "Report 2");
+            Report report2 = reportService.createReport(team2, stage, "16~17 学年第一学期团队2报告");
             reportService.updateReport(report2.getId(), new ReportDto().setContent(content));
 
             Tutor tutor = tutorService.registerNewTutor(
