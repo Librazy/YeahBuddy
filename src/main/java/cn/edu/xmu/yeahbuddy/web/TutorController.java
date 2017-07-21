@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -59,6 +61,13 @@ public class TutorController {
         return new RedirectView(String.format("/tutor/%d", id), false, false);
     }
 
+    @PostMapping({"/tutor", "/tutor/"})
+    @PreAuthorize("hasAuthority('ManageTutor')")
+    public RedirectView register(TutorDto dto) {
+        Tutor tutor = tutorService.registerNewTutor(dto);
+        return new RedirectView(String.format("/tutor/%d", tutor.getId()), false, false);
+    }
+
     @GetMapping("/tutor/{tutorId:\\d+}/review")
     @PreAuthorize("hasRole('TUTOR')")
     public String tokenReview(@PathVariable int tutorId, Model model) {
@@ -83,6 +92,8 @@ public class TutorController {
     }
 
     @GetMapping("/tutor/{tutorId:\\d+}")
+    @PreAuthorize("hasAuthority('ManageTutor') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TutorService).isTutor(principal) && T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id == #tutorId)")
     public String profile(@PathVariable int tutorId, Model model) {
         Optional<Tutor> tutor = tutorService.findById(tutorId);
         if (!tutor.isPresent()) {
@@ -99,6 +110,8 @@ public class TutorController {
     }
 
     @PutMapping("/tutor/{tutorId:\\d+}")
+    @PreAuthorize("hasAuthority('ManageTutor') " +
+                          "|| (T(cn.edu.xmu.yeahbuddy.service.TutorService).isTutor(principal) && T(cn.edu.xmu.yeahbuddy.service.TutorService).asTutor(principal).id == #tutorId)")
     public ResponseEntity<Map<String, String>> update(@PathVariable int tutorId, TutorDto tutorDto) {
         log.debug("Update Tutor " + tutorId + ": " + tutorDto);
         tutorService.updateTutor(tutorId, tutorDto);
@@ -106,6 +119,25 @@ public class TutorController {
         Locale locale = LocaleContextHolder.getLocale();
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
         result.put("message", messageSource.getMessage("tutor.update.ok", new Object[]{}, locale));
+        return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/tutor/{tutorId:\\d+}")
+    @PreAuthorize("hasAuthority('ManageTutor')")
+    public ResponseEntity<Map<String, String>> delete(@PathVariable int tutorId) {
+        log.debug("Delete Tutor " + tutorId);
+        Map<String, String> result = new HashMap<>();
+        Locale locale = LocaleContextHolder.getLocale();
+        try {
+            tutorService.deleteTutor(tutorId);
+        } catch (DataIntegrityViolationException e) {
+            result.put("error", messageSource.getMessage("http.status.409", new Object[]{}, locale));
+            result.put("message", messageSource.getMessage("tutor.delete.fail", new Object[]{}, locale));
+            return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+        }
+
+        result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
+        result.put("message", messageSource.getMessage("tutor.delete.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);
     }
 

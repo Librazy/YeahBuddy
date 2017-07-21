@@ -76,15 +76,46 @@
                 <a href="teamAdmin.html" data-th-href="@{/admin/team}" class="list-group-item">团队管理</a>
             </div>
         </div>
-        <div class="col-md-7 pl-md-0">
+        <div id="main" class="col-md-7 pl-md-0">
             <h2 style="text-align: center;">
                 导师管理
             </h2>
-
             <div class="form-group">
-                <button href="#" class="btn btn-primary">新增导师</button>
+                <button id="register" class="btn btn-primary">新增导师</button>
             </div>
-
+            <form id="profileForm" data-th-action="@{/tutor}" method="POST" style="display: none">
+                <div class="form-group row mt-2">
+                    <div class="input-group col-md-5">
+                        <label for="username" class="input-group-addon" data-th-text="#{username}">用户名</label>
+                        <input class="form-control" id="username" name="username" required/>
+                    </div>
+                    <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                        <label for="email" class="input-group-addon" data-th-text="#{email}">电子邮件</label>
+                        <input type="email" class="form-control" id="email" name="email"/>
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <div class="input-group col-md-5">
+                        <label for="displayName" class="input-group-addon" data-th-text="#{display_name}">姓名</label>
+                        <input class="form-control" id="displayName" name="displayName" required/>
+                    </div>
+                    <div class="input-group col-md-6 pl-md-0 offset-md-1 mt-3 mt-md-0">
+                        <label for="phone" class="input-group-addon" data-th-text="#{phone}">手机号码</label>
+                        <input type="tel" class="form-control" id="phone" name="phone"/>
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <div class="input-group col-md-12">
+                        <label for="password" class="input-group-addon" data-th-text="#{password}">密码</label>
+                        <input class="form-control" type="password" id="password" name="password" required/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" data-th-text="#{submit}"
+                            id="submit">提交
+                    </button>
+                </div>
+            </form>
             <table id="main-table" class="table table-responsive table-striped table-hover">
                 <thead>
                 <tr>
@@ -98,18 +129,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-th-each="tutor : ${tutors}"><!-- 数据待定 -->
+                <tr data-th-each="tutor : ${tutors}">
                     <td data-th-text="${tutor.id}">2017072001</td>
                     <td data-th-text="${tutor.username}">tutor Luo</td>
                     <td data-th-text="${tutor.displayName}">tutor Luo</td>
                     <td data-th-text="${tutor.phone}">8888 8888</td>
                     <td data-th-text="${tutor.email}">888888@xmu.edu.com</td>
-                    <td><button href="#" class="btn btn-primary">修改</button></td><!-- 数据待定 -->
-                    <td><button class="btn btn-primary">删除</button></td>
+                    <td>
+                        <button class="btn btn-primary btn-manage" type="button" data-th-data-id="${tutor.id}">修改
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-delete" type="button" data-th-data-id="${tutor.id}">删除
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
-
         </div>
     </div>
 
@@ -140,6 +176,30 @@
         data-th-src="@{/webjars/tether/dist/js/tether.min.js}"></script>
 <script src="../../webjars/bootstrap/dist/js/bootstrap.min.js"
         data-th-src="@{/webjars/bootstrap/dist/js/bootstrap.min.js}"></script>
+<!--suppress XmlDefaultAttributeValue -->
+<script>
+    $(function () {
+        $(".btn-manage").click(function () {
+            location.href = "/tutor/" + $(this).attr("data-id");
+        });
+        $(".btn-delete").click(function () {
+            $.ajax({
+                method: "DELETE",
+                url: "/tutor/" + $(this).attr("data-id"),
+                success: function (data) {
+                    $("#main").prepend('<div class="row"><div class="alert alert-success alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + data.status + '</strong>' + data.message + '</div></div>');
+                },
+                error: function (jqXHR) {
+                    $("#main").prepend('<div class="row"><div class="alert alert-warning alert-dismissible fade show col-12" role="alert"><button type="button" class="close m-0 p-0" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>' + jqXHR.responseJSON.error + '</strong>' + jqXHR.responseJSON.message + '</div></div>');
+                }
+            });
+        });
+        $("#register").click(function () {
+            $(this).hide();
+            $("#profileForm").show();
+        })
+    });
 
+</script>
 </body>
 </html>

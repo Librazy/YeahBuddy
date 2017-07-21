@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NonNls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -129,6 +131,26 @@ public class TeamController {
         model.addAttribute("formAction", String.format("/team/%d/password", teamId));
         return "team/password";
     }
+
+    @DeleteMapping("/team/{teamId:\\d+}")
+    @PreAuthorize("hasAuthority('ManageTutor')")
+    public ResponseEntity<Map<String, String>> delete(@PathVariable int teamId) {
+        log.debug("Delete Team " + teamId);
+        Map<String, String> result = new HashMap<>();
+        Locale locale = LocaleContextHolder.getLocale();
+        try {
+            teamService.deleteTeam(teamId);
+        } catch (DataIntegrityViolationException e) {
+            result.put("error", messageSource.getMessage("http.status.409", new Object[]{}, locale));
+            result.put("message", messageSource.getMessage("team.delete.fail", new Object[]{}, locale));
+            return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+        }
+
+        result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
+        result.put("message", messageSource.getMessage("team.delete.ok", new Object[]{}, locale));
+        return ResponseEntity.ok(result);
+    }
+
 
     @GetMapping("/team/{teamId:\\d+}/report")
     //TODO
