@@ -271,6 +271,20 @@ public class AdministratorController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/admin/tutor")
+    public String adminTutors(Model model){
+        List<Tutor> tutors = tutorService.findAllTutors();
+        model.addAttribute("tutors",tutors);
+        return "admin/tutorAdmin";
+    }
+
+    @GetMapping("/admin/team")
+    public String adminTeams(Model model){
+        List<Team> teams = teamService.findAllTeams();
+        model.addAttribute("teams",teams);
+        return "admin/tutorAdmin";
+    }
+
 
     @PostMapping(value = "/admin/{adminId:\\d+}/password", produces = MediaType.TEXT_HTML_VALUE)
     @PreAuthorize("hasAuthority('ManageAdministrator') " +
