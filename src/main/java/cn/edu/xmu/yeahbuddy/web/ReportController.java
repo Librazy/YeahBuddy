@@ -51,6 +51,7 @@ public class ReportController {
         }
         model.addAttribute("formAction", String.format("/report/%d", reportId));
         model.addAttribute("report", report.get());
+        model.addAttribute("teamId", report.get().getTeamId());
         if (report.get().isSubmitted()) {
             model.addAttribute("readOnly", true);
         }

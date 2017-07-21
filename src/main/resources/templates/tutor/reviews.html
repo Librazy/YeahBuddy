@@ -48,10 +48,10 @@
                     我的菜单
                 </a>
                 <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">基本信息</a>
-                <a href="profile.html" class="list-group-item">个人信息</a>
-                <a href="password.html" class="list-group-item">密码修改</a>
+                <a href="profile.html" data-th-href="@{'/tutor/' + ${tutorId}}" class="list-group-item">个人信息</a>
+                <a href="password.html" data-th-href="@{'/tutor/' + ${tutorId} + '/password'}" class="list-group-item">密码修改</a>
                 <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">评审链接</a>
-                <a href="reviews.html" class="list-group-item">评审与提交</a>
+                <a href="reviews.html" data-th-href="@{'/tutor/' + ${tutorId} + '/reviews'}" class="list-group-item">评审与提交</a>
             </div>
         </div>
         <div class="col-md-7 pl-md-0">

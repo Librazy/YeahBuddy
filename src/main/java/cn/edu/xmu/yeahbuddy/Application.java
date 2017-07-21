@@ -137,7 +137,7 @@ public class Application extends SpringBootServletInitializer {
                     new TutorDto()
                             .setUsername("tutor")
                             .setPassword("tutor")
-                            .setDisplayName("Tutor 1")
+                            .setDisplayName("导师 1")
                             .setEmail("c@b.com")
                             .setPhone("13988888888"));
 
@@ -145,7 +145,7 @@ public class Application extends SpringBootServletInitializer {
                     new TutorDto()
                             .setUsername("tutor2")
                             .setPassword("tutor2")
-                            .setDisplayName("Tutor 2")
+                            .setDisplayName("导师 2")
                             .setEmail("c@b.com")
                             .setPhone("13988888888"));
 
@@ -153,7 +153,7 @@ public class Application extends SpringBootServletInitializer {
                     new TutorDto()
                             .setUsername("tutor3")
                             .setPassword("tutor3")
-                            .setDisplayName("Tutor 3")
+                            .setDisplayName("导师 3")
                             .setEmail("c@b.com")
                             .setPhone("13988888888"));
             Review review = reviewService.createReview(report, tutor);

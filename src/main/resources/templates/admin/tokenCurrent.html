@@ -91,7 +91,7 @@
                 </thead>
                 <tbody>
                 <tr data-th-each="token : ${tokens}">
-                    <td><a href="#" data-th-href="'/tutor/token?auth_token' + ${token.tokenValue}"
+                    <td><a href="#" data-th-href="'/tutor/token?auth_token=' + ${token.tokenValue}"
                            data-th-text="${token.tokenValue}">rGHVewFYdser</a></td>
                     <td data-th-text="${token.tutor.displayName}">tutor Luo</td>
                     <td data-th-text="${token.start}">2017-07-10 12:00</td>

@@ -82,6 +82,7 @@ public class TeamController {
         }
 
         model.addAttribute("team", team.get());
+        model.addAttribute("teamId", teamId);
         model.addAttribute("formAction", String.format("/team/%d", teamId));
         return "team/profile";
     }
@@ -124,6 +125,7 @@ public class TeamController {
             throw new ResourceNotFoundException("team.id.not_found", teamId);
         }
         model.addAttribute("team", team.get());
+        model.addAttribute("teamId", teamId);
         model.addAttribute("formAction", String.format("/team/%d/password", teamId));
         return "team/password";
     }
@@ -133,6 +135,8 @@ public class TeamController {
     public String showReports(@PathVariable int teamId, Model model) {
         List<Result> results = resultService.findByTeam(teamService.loadById(teamId));
         model.addAttribute("results", results);
+        model.addAttribute("teamId", teamId);
+
         model.addAttribute("formAction", String.format("/team/%d/reports", teamId));
         return "team/reports";
     }

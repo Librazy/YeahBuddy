@@ -54,6 +54,8 @@ public class ReviewController {
         model.addAttribute("team", review.get().getTeam());
         model.addAttribute("report", review.get().getReport());
         model.addAttribute("review", review.get());
+        model.addAttribute("tutorId", review.get().getTutor().getId());
+
         if (review.get().isSubmitted()) {
             model.addAttribute("readOnly", true);
         }

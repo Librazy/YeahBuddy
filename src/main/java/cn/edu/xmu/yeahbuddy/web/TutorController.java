@@ -66,6 +66,7 @@ public class TutorController {
             Token token = (Token) SecurityContextHolder.getContext().getAuthentication().getCredentials();
             Collection<Review> reviews = token.getReviews();
             model.addAttribute("reviews", reviews);
+            model.addAttribute("tutorId", tutorId);
             return "tutor/reviews";
         } catch (Exception e) {
             return String.format("redirect:/tutor/%d/reviews", tutorId);
@@ -77,6 +78,7 @@ public class TutorController {
     public String tutorReview(@PathVariable int tutorId, Model model) {
         List<Review> reviews = reviewService.findByTutor((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         model.addAttribute("reviews", reviews);
+        model.addAttribute("tutorId", tutorId);
         return "tutor/reviews";
     }
 
@@ -91,6 +93,7 @@ public class TutorController {
             model.addAttribute("readOnly", ((Tutor) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId() != tutorId);
         }
         model.addAttribute("tutor", tutor.get());
+        model.addAttribute("tutorId", tutorId);
         model.addAttribute("formAction", String.format("/tutor/%d", tutorId));
         return "tutor/profile";
     }
@@ -131,6 +134,7 @@ public class TutorController {
             throw new ResourceNotFoundException("tutor.id.not_found", tutorId);
         }
         model.addAttribute("tutor", tutor.get());
+        model.addAttribute("tutorId", tutorId);
         model.addAttribute("formAction", String.format("/tutor/%d/password", tutorId));
         return "tutor/password";
     }

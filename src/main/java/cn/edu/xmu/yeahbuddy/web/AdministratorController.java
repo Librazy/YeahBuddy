@@ -289,6 +289,7 @@ public class AdministratorController {
     public String adminTutors(Model model){
         List<Tutor> tutors = tutorService.findAllTutors();
         model.addAttribute("tutors",tutors);
+        model.addAttribute("adminId", ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         return "admin/tutorAdmin";
     }
 
@@ -296,6 +297,7 @@ public class AdministratorController {
     public String adminTeams(Model model){
         List<Team> teams = teamService.findAllTeams();
         model.addAttribute("teams",teams);
+        model.addAttribute("adminId", ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         return "admin/tutorAdmin";
     }
 
@@ -326,6 +328,7 @@ public class AdministratorController {
             throw new ResourceNotFoundException("admin.id.not_found", adminId);
         }
         model.addAttribute("admin", administrator.get());
+        model.addAttribute("adminId", administrator.get().getId());
         model.addAttribute("formAction", String.format("/admin/%d/password", adminId));
         return "admin/password";
     }
