@@ -11,20 +11,18 @@
           data-th-href="@{/webjars/bootstrap-material-design/dist/bootstrap-material-design.min.css}">
     <link rel="stylesheet" href="../../static/css/bg.css" data-th-href="@{/static/css/bg.css}">
     <style type="text/css">
-        .input-group-addon {
-            color: rgba(100, 114, 116, 0.2);
+        #main-table {
+            display: table;
         }
 
-        .form-control:focus {
-            color: #ceeccf;
+        @media screen and (max-width: 768px) {
+            #main-table {
+                display: inline-block;
+            }
         }
 
-        #submit {
-            background: rgba(0, 0, 0, .12);
-        }
-
-        #submit:hover {
-            background: rgba(0, 0, 128, .22);
+        .table thead th, .table tbody tr td {
+            min-width: 4rem;
         }
 
         .alert-dismissible .close {
@@ -87,7 +85,7 @@
                 <button href="#" class="btn btn-primary">新增导师</button>
             </div>
 
-            <table class="table table-striped table-hover">
+            <table id="main-table" class="table table-responsive table-striped table-hover">
                 <thead>
                 <tr>
                     <th>导师编号</th>

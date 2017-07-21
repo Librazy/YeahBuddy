@@ -102,7 +102,7 @@ public class AdministratorController {
         Map<String, String> result = new HashMap<>();
         Locale locale = LocaleContextHolder.getLocale();
         result.put("status", messageSource.getMessage("response.ok", new Object[]{}, locale));
-        result.put("message", messageSource.getMessage("administrator.update.ok", new Object[]{}, locale));
+        result.put("message", messageSource.getMessage("admin.update.ok", new Object[]{}, locale));
         return ResponseEntity.ok(result);
     }
 
@@ -298,7 +298,7 @@ public class AdministratorController {
         List<Team> teams = teamService.findAllTeams();
         model.addAttribute("teams",teams);
         model.addAttribute("adminId", ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
-        return "admin/tutorAdmin";
+        return "admin/teamAdmin";
     }
 
 
