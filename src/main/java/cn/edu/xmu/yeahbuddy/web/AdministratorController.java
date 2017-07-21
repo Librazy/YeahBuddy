@@ -116,7 +116,7 @@ public class AdministratorController {
         model.addAttribute("teams", teams);
         model.addAttribute("stages", stages);
         model.addAttribute("formAction", "/task/create");
-
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         return "admin/taskCreate";
     }
 
@@ -136,6 +136,8 @@ public class AdministratorController {
         List<Stage> stages = stageService.findByEndBefore(current);
 
         model.addAttribute("stages", stages);
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+
         return "admin/taskHistory";
     }
 
@@ -151,6 +153,7 @@ public class AdministratorController {
         List<Report> reports = reportService.findByStage(stage.get());
         model.addAttribute("stage", stage.get());
         model.addAttribute("reports", reports);
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
         return "admin/taskDetail";
     }
 
@@ -172,6 +175,7 @@ public class AdministratorController {
         model.addAttribute("teams", teams);
         model.addAttribute("tutors", tutorService.findAllTutors());
         model.addAttribute("formAction", String.format("/token/create/%d", stageId));
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
 
         return "admin/tokenCreate";
     }
@@ -197,6 +201,8 @@ public class AdministratorController {
     public String currentTokens(Model model) {
         model.addAttribute("tokens", tokenService.findByNotRevoked());
         model.addAttribute("stages", stageService.findByEndAfter(Timestamp.from(Instant.now())));
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+
         return "admin/tokenCurrent";
     }
 
@@ -205,6 +211,8 @@ public class AdministratorController {
     @PreAuthorize("hasAuthority('ManageToken')")
     public String allTokens(Model model) {
         model.addAttribute("tokens", tokenService.findByRevoked());
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+
         return "admin/tokenHistory";
     }
 
@@ -222,6 +230,8 @@ public class AdministratorController {
                });
         model.addAttribute("results", results);
         model.addAttribute("reviewStat", stat);
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+
         return "admin/results";
     }
 
@@ -230,6 +240,8 @@ public class AdministratorController {
     public String reportHistory(Model model) {
         List<Result> results = resultService.findBySubmittedTrue();
         model.addAttribute("results", results);
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+
         return "admin/reportHistory";
     }
 
@@ -248,6 +260,8 @@ public class AdministratorController {
         model.addAttribute("report", result.get().getReport());
         model.addAttribute("team", result.get().getTeam());
         model.addAttribute("formAction", String.format("/result/%d", resultId));
+        model.addAttribute("adminId",  ((Administrator) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
+
         return "admin/result";
     }
 
@@ -298,6 +312,7 @@ public class AdministratorController {
         } catch (BadCredentialsException e) {
             model.addAttribute("passwordError", true);
         }
+        model.addAttribute("adminId", adminId);
         model.addAttribute("formAction", String.format("/admin/%d/password", adminId));
         return "admin/password";
     }

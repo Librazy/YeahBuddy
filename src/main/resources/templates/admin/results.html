@@ -48,20 +48,20 @@
                     我的菜单
                 </a>
                 <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">基本信息</a>
-                <a href="profile.html" class="list-group-item">个人信息</a>
-                <a href="password.html" class="list-group-item">密码修改</a>
+                <a href="profile.html" data-th-href="@{'/admin/' + ${adminId}}" class="list-group-item">个人信息</a>
+                <a href="password.html" data-th-href="@{'/admin/' + ${adminId} + '/password'}" class="list-group-item">密码修改</a>
                 <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">项目报告任务</a>
-                <a href="taskCreate.html" class="list-group-item">新建任务</a>
-                <a href="taskHistory.html" class="list-group-item">历史任务</a>
+                <a href="taskCreate.html" data-th-href="@{/task/create}" class="list-group-item">新建任务</a>
+                <a href="taskHistory.html" data-th-href="@{/task/history}" class="list-group-item">历史任务</a>
                 <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">导师评审链接</a>
-                <a href="tokenCurrent.html" class="list-group-item">新建链接</a>
-                <a href="tokenHistory.html" class="list-group-item">历史链接</a>
+                <a href="tokenCurrent.html" data-th-href="@{/token/current}" class="list-group-item">新建链接</a>
+                <a href="tokenHistory.html" data-th-href="@{/token/history}" class="list-group-item">历史链接</a>
                 <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">团队项目报告</a>
-                <a href="results.html" class="list-group-item">查看与评审</a>
-                <a href="reportHistory.html" class="list-group-item">历史项目报告</a>
+                <a href="results.html" data-th-href="@{/result/current}" class="list-group-item">查看与评审</a>
+                <a href="reportHistory.html" data-th-href="@{/result/history}" class="list-group-item">历史项目报告</a>
                 <a href="#" class="list-group-item" style="background-color: rgba(200,230,201,0.41)">用户管理</a>
-                <a href="tutorAdmin.html" class="list-group-item">导师管理</a>
-                <a href="teamAdmin.html" class="list-group-item">团队管理</a>
+                <a href="tutorAdmin.html" data-th-href="@{/admin/tutor}" class="list-group-item">导师管理</a>
+                <a href="teamAdmin.html" data-th-href="@{/admin/team}" class="list-group-item">团队管理</a>
             </div>
         </div>
         <div class="col-md-7 pl-md-0">
